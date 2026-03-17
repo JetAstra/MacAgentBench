@@ -26,8 +26,8 @@
           "api": "openai-completions",
           "models": [
             {
-              "id": "your model id here",
-              "name": "your model name here",
+              "id": "gpt-5.4",
+              "name": "gpt-5.4",
               "reasoning": true,
               "input": [
                 "text"
@@ -51,11 +51,11 @@
     "agents": {
       "defaults": {
         "model": {
-          "primary": "your model id here",
+          "primary": "openai/gpt-5.4",
           "fallbacks": []
         },
         "models": {
-          "your model id here": {}
+          "openai/gpt-5.4": {}
         },
         "workspace": "/Users/pipiwu/.openclaw/workspace",
         "contextPruning": {
