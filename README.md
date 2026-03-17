@@ -14,7 +14,7 @@ Reproducible tasks, rule-based evaluation, and native app coverage across everyd
 
 
 <p align="center">
-  <img src="assets/intro.png" alt="CLI-Anything intro" width="800">
+  <img src="assets/intro.png" alt="intro" width="800">
 </p>
 
 ---
