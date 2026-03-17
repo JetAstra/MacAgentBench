@@ -1,0 +1,42 @@
+{
+  "id": "keynote_5",
+  "system_img": "default",
+  "instruction": "In the Keynote app, do the following steps: \n1. Create a new document'. \n2. Insert a table with 5 rows and 3 columns. \n3. Write 'teeeeest!' at cell A1 (row 1, column 1)",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_table_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 3,
+        "row": 1,
+        "col": 1,
+        "content": "teeeeest!"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

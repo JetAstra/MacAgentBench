@@ -1,0 +1,44 @@
+{
+  "id": "new_sherpa_onnx_tts_1_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, use `node \"$HOME/Desktop/sherpa-onnx-tts.cjs\"` to turn the sentence \"Stand-up starts in ten minutes.\" into speech and save the WAV file to \"$HOME/Desktop/sherpa_tts_1_1.wav\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/sherpa_tts_1_1.wav\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "SHERPA_ONNX_RUNTIME_DIR=\"$HOME/.openclaw/tools/sherpa-onnx-tts/runtime\" SHERPA_ONNX_MODEL_DIR=\"$HOME/.openclaw/tools/sherpa-onnx-tts/models/vits-piper-en_US-lessac-high\" node \"$HOME/Desktop/sherpa-onnx-tts.cjs\" -o \"$HOME/Desktop/sherpa_tts_1_1.wav\" \"Stand-up starts in ten minutes.\"",
+  "evaluator": {
+    "func": [
+      "new_sherpa_onnx_tts_check_wav_properties"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/sherpa_tts_1_1.wav",
+        "min_duration_seconds": 0.8,
+        "max_duration_seconds": 6.0,
+        "min_size_bytes": 40000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "new_peekaboo_10_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "Clear the current clipboard contents.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "printf 'clipboard seed clear test' | pbcopy",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "peekaboo clipboard --action clear --json",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_clipboard_empty"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

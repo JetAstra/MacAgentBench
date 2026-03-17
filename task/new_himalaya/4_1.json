@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_4_1",
+  "system_img": "default",
+  "instruction": "In Inbox, find the 5 most recent emails from sender domain \"security.example.com\" (search across all pages), then save JSON to \"$HOME/Desktop/mail_sender_domain_4_1.json\". Return JSON only (no extra text). Required keys: domain (string), emails (array of objects). Each email object must include: sender (string), subject (string). Do not include extra keys.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then jq -n --arg d \"security.example.com\" '{domain:$d,emails:[]}' > \"$HOME/Desktop/mail_sender_domain_4_1.json\"; else printf '%s\\n' \"$all\" | jq -s --arg d \"security.example.com\" 'add | [ .[] | select((.from.addr // \"\") | endswith($d)) | {sender:(.from.addr // \"\"),subject:(.subject // \"\")} ][0:5] as $items | {domain:$d,emails:$items}' > \"$HOME/Desktop/mail_sender_domain_4_1.json\"; fi",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_json_equals_live"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_sender_domain_4_1.json",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then jq -n --arg d \"security.example.com\" '{domain:$d,emails:[]}'; else printf '%s\\n' \"$all\" | jq -s --arg d \"security.example.com\" 'add | [ .[] | select((.from.addr // \"\") | endswith($d)) | {sender:(.from.addr // \"\"),subject:(.subject // \"\")} ][0:5] as $items | {domain:$d,emails:$items}'; fi"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "new_github_4_1",
+  "system_img": "default",
+  "instruction": "Find the latest open issue in \"openclaw/openclaw\" matching keyword \"bug\", and save it as \"#<number> <title>\" to \"$HOME/Desktop/gh_issue_search_4_1.txt\". If no matching issue is found, save an empty file.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh issue list --repo openclaw/openclaw --state open --search 'bug sort:created-desc' --limit 1 --json number,title --jq '.[] | \"#\\(.number) \\(.title)\"' > \"$HOME/Desktop/gh_issue_search_4_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_file_contains_live_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_issue_search_4_1.txt",
+        "expected_command": "gh issue list --repo openclaw/openclaw --state open --search 'bug sort:created-desc' --limit 1 --json number,title --jq '.[] | \"#\\(.number) \\(.title)\"'",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

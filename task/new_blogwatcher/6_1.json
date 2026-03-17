@@ -1,0 +1,41 @@
+{
+  "id": "new_blogwatcher_6_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, mark all unread articles from \"GitHub Blog Feed\" as read.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"GitHub Blog Feed\" \"https://github.blog/feed/\" --feed-url \"https://github.blog/feed/\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher read-all --blog \"GitHub Blog Feed\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_has_no_unread_articles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "GitHub Blog Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

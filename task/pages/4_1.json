@@ -1,0 +1,42 @@
+{
+  "id": "pages_4",
+  "system_img": "default",
+  "instruction": "In the Pages app, do the following steps: \n1. Create a new document. \n2. Insert a table and write Hi to cell at cloumn 1 row 1.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_insert_table"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "col": 1,
+        "row": 1,
+        "target_val": "Hi"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "pages_8",
+  "system_img": "default",
+  "instruction": "In the Pages app, add a page break to the current document, and write 'The quick brown fox jumps over the lazy dog!' to page 2",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    },
+    {
+      "type": "pages_init_content",
+      "parameters": {
+        "content": "This is a test file, which is used to test the ability of replacing all 'test' with other pattern"
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_check_body_text"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "p_idx": 2,
+        "expected_text": "The quick brown fox jumps over the lazy dog!"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

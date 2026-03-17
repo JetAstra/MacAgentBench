@@ -1,0 +1,81 @@
+{
+  "id": "new_tmux_6_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, check all tmux worker sessions, then save the result as JSON to \"$HOME/Desktop/tmux_result_6_1.json\". Set \"completed\" to the tmux session names that are completed, set \"running\" to the tmux session names that are still running, and set \"errored\" to the tmux session names that have errors.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/tmux_result_6_1.json\"",
+          "tmux kill-session -t \"tmux-worker-e1a\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-worker-e1b\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-worker-e1c\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-worker-e1a\" \"printf '%s\\\\n' 'job finished successfully' 'TMUX_DONE_6A'; tail -f /dev/null\"",
+          "tmux new-session -d -s \"tmux-worker-e1b\" \"printf '%s\\\\n' 'processing batch 8' 'TMUX_RUNNING_6A'; tail -f /dev/null\"",
+          "tmux new-session -d -s \"tmux-worker-e1c\" \"printf '%s\\\\n' 'ERROR: timeout while fetching' 'TMUX_ERROR_6A'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/tmux_result_6_1.json\"\nimport json\nimport subprocess\nsessions = ['tmux-worker-e1a', 'tmux-worker-e1b', 'tmux-worker-e1c']\ncompleted = []\nrunning = []\nerrored = []\nfor session in sessions:\n    out = subprocess.check_output(['tmux', 'capture-pane', '-t', session, '-p'], text=True)\n    if 'ERROR:' in out:\n        errored.append(session)\n    elif 'finished successfully' in out:\n        completed.append(session)\n    else:\n        running.append(session)\nprint(json.dumps({'completed': completed, 'running': running, 'errored': errored}))\nPY",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_json_list_exact",
+      "new_tmux_check_json_list_exact",
+      "new_tmux_check_json_list_exact"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tmux_result_6_1.json",
+        "key": "completed",
+        "expected_list": [
+          "tmux-worker-e1a"
+        ]
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_6_1.json",
+        "key": "running",
+        "expected_list": [
+          "tmux-worker-e1b"
+        ]
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_6_1.json",
+        "key": "errored",
+        "expected_list": [
+          "tmux-worker-e1c"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "new_gifgrep_3_1",
+  "system_img": "default",
+  "instruction": "Extract a still PNG at 0s from \"$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif\" and save it as \"$HOME/Desktop/gifgrep_still_3_1.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gifgrep still \"$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif\" --at 0s -o \"$HOME/Desktop/gifgrep_still_3_1.png\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_still_matches_expected_hash"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_still_3_1.png",
+        "input_gif_path": "$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif",
+        "at_time": "0s"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

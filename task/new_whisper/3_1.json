@@ -1,0 +1,44 @@
+{
+  "id": "new_whisper_3_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, help me use Whisper's tiny model to translate \"$HOME/Documents/whisper_audio_fr_1.ogg\" into English text and save the result to \"$HOME/Desktop/whisper_translation_3_1.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/whisper_translation_3_1.txt\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "tmpdir=$(mktemp -d) && whisper \"$HOME/Documents/whisper_audio_fr_1.ogg\" --model tiny --task translate --output_format txt --output_dir \"$tmpdir\" >/dev/null && mv \"$tmpdir/whisper_audio_fr_1.txt\" \"$HOME/Desktop/whisper_translation_3_1.txt\" && rmdir \"$tmpdir\"",
+  "evaluator": {
+    "func": [
+      "new_whisper_check_file_matches_live_output"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/whisper_translation_3_1.txt",
+        "expected_command": "tmpdir=$(mktemp -d) && whisper \"$HOME/Documents/whisper_audio_fr_1.ogg\" --model tiny --task translate --output_format txt --output_dir \"$tmpdir\" >/dev/null && cat \"$tmpdir/whisper_audio_fr_1.txt\"; rm -rf \"$tmpdir\"",
+        "file_format": "txt",
+        "min_similarity": 0.8
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

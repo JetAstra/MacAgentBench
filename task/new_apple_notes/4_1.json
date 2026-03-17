@@ -1,0 +1,40 @@
+{
+  "id": "new_apple_notes_4_1",
+  "system_img": "default",
+  "instruction": "In Apple Notes, create a new note titled \"Quick Note\" and set its content to \"This is a quick note.\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "cat > /tmp/memo_auto_add.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nQuick Note\n\nThis is a quick note.\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_add.sh\nEDITOR=/tmp/memo_auto_add.sh memo notes --folder \"Work\" --add",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_with_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Quick Note",
+        "note_content": "This is a quick note."
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

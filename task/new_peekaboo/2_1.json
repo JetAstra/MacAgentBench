@@ -1,0 +1,45 @@
+{
+  "id": "new_peekaboo_2_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In TextEdit, type the following text exactly, preserving line breaks:\nQuarterly ops review\n- Confirm vendor timeline\n- Send final budget draft",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'TextEdit'",
+          "open -a 'Terminal'",
+          "osascript -e 'tell application \"TextEdit\" to activate'",
+          "osascript -e 'tell application \"TextEdit\" to if (count of documents) = 0 then make new document'",
+          "osascript -e 'tell application \"TextEdit\" to set text of document 1 to \"\"'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset",
+    "textedit"
+  ],
+  "reference_command": "peekaboo app launch \"TextEdit\" && peekaboo type 'Quarterly ops review\n- Confirm vendor timeline\n- Send final budget draft'",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_textedit_document_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_content": "Quarterly ops review\n- Confirm vendor timeline\n- Send final budget draft"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

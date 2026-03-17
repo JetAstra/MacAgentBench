@@ -1,0 +1,40 @@
+{
+  "id": "new_github_1_1",
+  "system_img": "default",
+  "instruction": "Check the \"openclaw/openclaw\" repository and get its full_name, description, license_name, homepage_url, and main_language. Then save them to \"$HOME/Desktop/gh_repo_info_1_1.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh api repos/openclaw/openclaw --jq '\"full_name: \\(.full_name)\\ndescription: \\(.description // \"\")\\nlicense_name: \\(.license.name // \"NO LICENSE\")\\nhomepage_url: \\(.homepage // \"\")\\nmain_language: \\(.language // \"\")\"' > \"$HOME/Desktop/gh_repo_info_1_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_repo_info_matches"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_repo_info_1_1.txt",
+        "repo": "openclaw/openclaw"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

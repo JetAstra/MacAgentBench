@@ -1,0 +1,42 @@
+{
+  "id": "keynote_1",
+  "system_img": "default",
+  "instruction": "In the Pages app, do the following steps: \n1. Create a new document using the template 'Blank Black' and name it 'pages_t1_test_1'. \n2. Write the following content into the body text: Passwd: 111111.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_create_and_enter_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "template_name": "Blank Black",
+        "doc_name": "pages_t1_test_1",
+        "content": "Passwd: 111111"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

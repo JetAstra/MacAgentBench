@@ -1,0 +1,41 @@
+{
+  "id": "new_gifgrep_2_1",
+  "system_img": "default",
+  "instruction": "Find the first Tenor GIF result for \"cat typing on keyboard\", then download that GIF and save it as \"$HOME/Desktop/gifgrep_download_2_1.gif\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "first_url=$(gifgrep \"cat typing on keyboard\" --source tenor --format url | head -n 1)\nif [ -z \"$first_url\" ]; then\n  echo \"No GIF URL found for query: cat typing on keyboard\"\n  exit 1\nfi\ncurl -L \"$first_url\" -o \"$HOME/Desktop/gifgrep_download_2_1.gif\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_download_matches_first_result"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_download_2_1.gif",
+        "query": "cat typing on keyboard",
+        "source": "tenor"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

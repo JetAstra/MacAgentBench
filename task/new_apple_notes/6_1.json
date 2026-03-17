@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_6_1",
+  "system_img": "default",
+  "instruction": "In Apple Notes, edit the note titled \"Project Ideas\" and append the line \"Reviewed on Tuesday.\".",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Project Ideas",
+        "note_body": "Initial draft"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "note_index=$(memo notes | awk '/^[0-9]+\\./ { idx=$1; sub(/\\./, \"\", idx); line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title == \"Project Ideas\") { print idx; exit } }')\nif [ -z \"$note_index\" ]; then\n  echo \"Note not found: Project Ideas\"\n  exit 1\nfi\ncat > /tmp/memo_auto_edit.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nProject Ideas\n\nInitial draft\nReviewed on Tuesday.\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_edit.sh\nprintf '%s\\n' \"$note_index\" | env EDITOR=/tmp/memo_auto_edit.sh memo notes --edit",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_with_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Project Ideas",
+        "note_content": "Reviewed on Tuesday."
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

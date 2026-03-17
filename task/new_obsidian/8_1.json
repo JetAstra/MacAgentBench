@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_8_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, set the frontmatter field \"status\" in \"Projects/Metadata Check.md\" to \"done\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Projects/Metadata Check.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '---\\nstatus: active\\nowner: pipiwu\\n---\\n\\n# Metadata Check\\n\\nNeed to flip the status when the task is done.\\n'); obsidian-cli create \"Projects/Metadata Check.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli frontmatter \"Projects/Metadata Check.md\" --edit --key \"status\" --value \"done\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_frontmatter_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Projects/Metadata Check.md",
+        "key": "status",
+        "expected_value": "done"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

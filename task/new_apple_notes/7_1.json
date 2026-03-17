@@ -1,0 +1,47 @@
+{
+  "id": "new_apple_notes_7_1",
+  "system_img": "default",
+  "instruction": "In Apple Notes, delete the note titled \"Old Draft\".",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Old Draft",
+        "note_body": "This draft can be removed."
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "note_index=$(memo notes | awk '/^[0-9]+\\./ { idx=$1; sub(/\\./, \"\", idx); line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title == \"Old Draft\") { print idx; exit } }')\nif [ -z \"$note_index\" ]; then\n  echo \"Note not found: Old Draft\"\n  exit 1\nfi\nprintf '%s\\n' \"$note_index\" | memo notes --delete",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Old Draft"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "new_obsidian_5_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, add the line \"- verify the handoff doc before Friday\" to the end of the note \"Projects/Launch Checklist.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Projects/Launch Checklist.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Launch Checklist\\n\\n- ship evaluator updates\\n- confirm task names\\n'); obsidian-cli create \"Projects/Launch Checklist.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "content=$(printf '%b' '- verify the handoff doc before Friday'); obsidian-cli create \"Projects/Launch Checklist.md\" --content \"$content\" --append --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_contains_all_texts"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Projects/Launch Checklist.md",
+        "expected_texts": [
+          "# Launch Checklist",
+          "- ship evaluator updates",
+          "- confirm task names",
+          "- verify the handoff doc before Friday"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

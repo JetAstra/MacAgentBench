@@ -1,0 +1,40 @@
+{
+  "id": "new_weather_1_1",
+  "system_img": "default",
+  "instruction": "Can you check the weather in \"San Francisco\" right now? Save the result to \"$HOME/Desktop/weather_now_1_1.txt\" using exactly this 4-line format:\ntemperature: <value>C\nwind: <value>km/h\nhumidity: <value>%\nprecipitation: <value>mm",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "curl -s 'wttr.in/San+Francisco?m&format=temperature:%t%20wind:%w%20humidity:%h%20precipitation:%p' > \"$HOME/Desktop/weather_now_1_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_weather_check_contains_live_current_values"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/weather_now_1_1.txt",
+        "expected_command": "curl -s 'wttr.in/San+Francisco?m&format=temperature:%t%20wind:%w%20humidity:%h%20precipitation:%p'"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

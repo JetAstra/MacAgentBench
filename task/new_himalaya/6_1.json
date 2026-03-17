@@ -1,0 +1,41 @@
+{
+  "id": "new_himalaya_6_1",
+  "system_img": "default",
+  "instruction": "Move all emails whose subject contains \"newsletter\" from Inbox to Archive.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then exit 0; fi; printf '%s\\n' \"$all\" | jq -s -r '\"newsletter\" as $kw | add | [ .[] | select(((.subject // \"\") | ascii_downcase) | contains(($kw|ascii_downcase))) | .id ] | unique | .[]' | while IFS= read -r id; do [ -n \"$id\" ] || continue; himalaya message move --folder Inbox Archive \"$id\"; done",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_keyword_moved_after"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "source_folder": "Inbox",
+        "target_folder": "Archive",
+        "keyword": "newsletter"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

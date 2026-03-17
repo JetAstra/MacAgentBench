@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_2_1",
+  "system_img": "default",
+  "instruction": "Find the newest email in Inbox whose subject contains the keyword \"Security\" (search across all pages) and save one line to \"$HOME/Desktop/mail_matched_subject_2_1.txt\" as \"matched_subject: <subject>\". If no matching email exists, write \"matched_subject: none\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then subject=none; else subject=$(printf '%s\\n' \"$all\" | jq -s -r 'add | [.[] | select(.subject | test(\"Security\"))][0].subject // \"none\"'); fi; printf 'matched_subject: %s\\n' \"$subject\" > \"$HOME/Desktop/mail_matched_subject_2_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_single_kv_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_matched_subject_2_1.txt",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then subject=none; else subject=$(printf '%s\\n' \"$all\" | jq -s -r 'add | [.[] | select(.subject | test(\"Security\"))][0].subject // \"none\"'); fi; printf 'matched_subject: %s\\n' \"$subject\""
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

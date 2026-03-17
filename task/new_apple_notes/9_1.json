@@ -1,0 +1,49 @@
+{
+  "id": "new_apple_notes_9_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Apple Notes, export your notes to HTML using the default export path.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Q2 Planning Summary",
+        "note_body": "Capture priorities, budget assumptions, and owners for the Q2 plan."
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "default_export=\"$HOME/Desktop/notes\"\ntarget=\"$HOME/Desktop/notes_export_1\"\nif [ -d \"$target\" ]; then\n  rm -rf \"$target\"\nfi\nprintf 'y\\n\\n' | memo notes --export\nif [ -d \"$default_export\" ]; then\n  mv \"$default_export\" \"$target\"\nfi",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_export_contains_note_title"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "export_dir": "$HOME/Desktop/notes_export_1",
+        "note_title": "Q2 Planning Summary"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

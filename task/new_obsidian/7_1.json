@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_7_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, delete the note \"Inbox/Temporary Parking Note.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Inbox/Temporary Parking Note.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Temporary Parking Note\\n\\nSafe to remove after review.\\n'); obsidian-cli create \"Inbox/Temporary Parking Note.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli delete \"Inbox/Temporary Parking Note.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Inbox/Temporary Parking Note.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_3_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, open the note \"Projects/Weekly Brief.md\" and copy its full contents into \"$HOME/Desktop/obsidian_note_copy_1.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_note_copy_1.md\"",
+          "obsidian-cli delete \"Projects/Weekly Brief.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '---\\nstatus: active\\n---\\n\\n# Weekly Brief\\n\\n- close the review loop\\n- keep notes concise\\n'); obsidian-cli create \"Projects/Weekly Brief.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli print \"Projects/Weekly Brief.md\" --vault \"Benchmark\" > \"$HOME/Desktop/obsidian_note_copy_1.md\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_equals_note_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Projects/Weekly Brief.md",
+        "output_file": "$HOME/Desktop/obsidian_note_copy_1.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_8_1",
+  "system_img": "default",
+  "instruction": "In the Reminders app, mark the reminder titled \"Pick up laundry\" as completed.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Pick up laundry\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Pick up laundry\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Pick up laundry\"\n  exit 1\nfi\nremindctl complete \"$reminder_id\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_completed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Pick up laundry"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

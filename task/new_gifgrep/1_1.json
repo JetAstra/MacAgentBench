@@ -1,0 +1,43 @@
+{
+  "id": "new_gifgrep_1_1",
+  "system_img": "default",
+  "instruction": "Search Tenor for \"cat typing on keyboard\", then save GIF result URLs to \"$HOME/Desktop/gifgrep_urls_1_1.txt\", one URL per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gifgrep \"cat typing on keyboard\" --source tenor --format url > \"$HOME/Desktop/gifgrep_urls_1_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_url_file_has_min_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_urls_1_1.txt",
+        "min_lines": 1,
+        "query": "cat typing on keyboard",
+        "source": "tenor",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "pages_3",
+  "system_img": "default",
+  "instruction": "In the Pages app, do the following steps: \n1. Create a new document. \n2. Write the following content into the body text then change the font to 'HanziPen TC': passwd: 111111.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_change_text_font"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "idx": 1,
+        "target_font": "HanziPenTC-W3"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

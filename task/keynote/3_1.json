@@ -1,0 +1,38 @@
+{
+  "id": "keynote_3",
+  "system_img": "default",
+  "instruction": "In the Keynote app, do the following steps: \n1. Create a new document and name it 'key_note_save_test_1'. \n2. export to PowerPoint and save to folder 'Documents'",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "check_file_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "~/Documents/key_note_save_test_1.pptx"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

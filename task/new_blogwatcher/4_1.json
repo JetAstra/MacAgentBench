@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_4_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, list all discovered articles and write all article titles into a file named \"articles_1.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"NPR News Feed\" \"https://feeds.npr.org/1001/rss.xml\" --feed-url \"https://feeds.npr.org/1001/rss.xml\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "necessary": true,
+  "reference_command": "blogwatcher articles > \"$HOME/Desktop/articles_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_article_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/articles_1.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

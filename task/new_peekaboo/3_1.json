@@ -1,0 +1,41 @@
+{
+  "id": "new_peekaboo_3_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "Open \"https://example.com\" in Safari.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset",
+    "safari"
+  ],
+  "reference_command": "peekaboo open \"https://example.com\" --app \"Safari\" --wait-until-ready && peekaboo sleep 2",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_safari_front_url"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_url": "https://example.com/"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

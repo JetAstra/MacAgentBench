@@ -1,0 +1,53 @@
+{
+  "id": "new_reminders_4_1",
+  "system_img": "default",
+  "instruction": "In the Reminders app, create a reminder titled \"Finalize slide deck\" in the list \"Work\" due \"2026-04-20\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Work\" --create && remindctl add --title \"Finalize slide deck\" --list \"Work\" --due \"2026-04-20\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists_in_list",
+      "new_reminders_check_reminder_due_date_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Finalize slide deck",
+        "list_name": "Work"
+      },
+      {
+        "title": "Finalize slide deck",
+        "list_name": "Work",
+        "due_date": "2026-04-20"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

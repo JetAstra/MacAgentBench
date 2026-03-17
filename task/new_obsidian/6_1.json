@@ -1,0 +1,62 @@
+{
+  "id": "new_obsidian_6_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, move the note \"Inbox/Move Me to Projects.md\" to \"Projects/Move Me to Projects.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Obsidian'",
+          "obsidian-cli delete \"Inbox/Move Me to Projects.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Projects/Move Me to Projects.md\" --vault \"Benchmark\" || true",
+          "mkdir -p \"/Users/pipiwu/Documents/Benchmark/Benchmark/Projects\"",
+          "content=$(printf '%b' '# Move Me to Projects\\n\\nmarker: launch-brief\\n'); obsidian-cli create \"Inbox/Move Me to Projects.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Move Reference\\n\\nWiki link: [[Inbox/Move Me to Projects]]\\nMarkdown link: [source](Inbox/Move%20Me%20to%20Projects.md)\\n'); obsidian-cli create \"Projects/Move Reference.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli move \"Inbox/Move Me to Projects.md\" \"Projects/Move Me to Projects.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_moved",
+      "new_obsidian_check_links_updated_after_move"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "source_note_path": "Inbox/Move Me to Projects.md",
+        "target_note_path": "Projects/Move Me to Projects.md",
+        "expected_text": "launch-brief"
+      },
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "referrer_note_path": "Projects/Move Reference.md",
+        "old_link_text": "Inbox/Move Me to Projects",
+        "new_link_text": "Projects/Move Me to Projects"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

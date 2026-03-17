@@ -1,0 +1,40 @@
+{
+  "id": "new_blogwatcher_7_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, remove the blog named \"HNRSS Frontpage\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"HNRSS Frontpage\" \"https://hnrss.org/frontpage\" --feed-url \"https://hnrss.org/frontpage\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher remove \"HNRSS Frontpage\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "HNRSS Frontpage"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

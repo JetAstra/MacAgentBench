@@ -1,0 +1,40 @@
+{
+  "id": "new_weather_3_1",
+  "system_img": "default",
+  "instruction": "Please check the next 7 days in \"San Francisco\" and list only the dates that are expected to have rain. Save one date per line to \"$HOME/Desktop/weather_rain_dates_3_1.txt\" in YYYY-MM-DD format. If none of the next 7 days has rain, write exactly: none",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "geo=$(curl -s 'https://geocoding-api.open-meteo.com/v1/search?name=San+Francisco&count=1&language=en&format=json')\nlat=$(echo \"$geo\" | jq -r '.results[0].latitude')\nlon=$(echo \"$geo\" | jq -r '.results[0].longitude')\nforecast=$(curl -s \"https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=precipitation_sum&timezone=auto&forecast_days=7\")\nlines=$(echo \"$forecast\" | jq -r '.daily.time as $t | .daily.precipitation_sum as $p | [range(0; ($t|length)) | select(($p[.] // 0) > 0) | $t[.]] | .[]')\nif [ -z \"$lines\" ]; then\n  echo 'none' > \"$HOME/Desktop/weather_rain_dates_3_1.txt\"\nelse\n  printf '%s\\n' \"$lines\" > \"$HOME/Desktop/weather_rain_dates_3_1.txt\"\nfi",
+  "evaluator": {
+    "func": [
+      "new_weather_check_rain_dates_exact"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/weather_rain_dates_3_1.txt",
+        "expected_command": "geo=$(curl -s 'https://geocoding-api.open-meteo.com/v1/search?name=San+Francisco&count=1&language=en&format=json')\nlat=$(echo \"$geo\" | jq -r '.results[0].latitude')\nlon=$(echo \"$geo\" | jq -r '.results[0].longitude')\nforecast=$(curl -s \"https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=precipitation_sum&timezone=auto&forecast_days=7\")\nlines=$(echo \"$forecast\" | jq -r '.daily.time as $t | .daily.precipitation_sum as $p | [range(0; ($t|length)) | select(($p[.] // 0) > 0) | $t[.]] | .[]')\nif [ -z \"$lines\" ]; then\n  echo 'none'\nelse\n  printf '%s\\n' \"$lines\"\nfi"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

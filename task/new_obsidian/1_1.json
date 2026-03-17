@@ -1,0 +1,47 @@
+{
+  "id": "new_obsidian_1_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, list all notes in the \"Projects/Planning\" folder and save the note paths to \"$HOME/Desktop/obsidian_projects_list_1.txt\", one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_projects_list_1.txt\"",
+          "obsidian-cli delete \"Projects/Planning/Roadmap Draft.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Projects/Planning/Risk List.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Roadmap Draft\\n\\n- align launch checklist\\n- confirm reviewer rotation\\n'); obsidian-cli create \"Projects/Planning/Roadmap Draft.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Risk List\\n\\n- unclear owner for migration\\n- benchmark validation drift\\n'); obsidian-cli create \"Projects/Planning/Risk List.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli list \"Projects/Planning\" --vault \"Benchmark\" | sed -E 's/^[[:space:]]*\u2022 //' | sed '/\\/$/d' | sed '/^$/d' | awk '{print \"Projects/Planning/\" $0}' | sort > \"$HOME/Desktop/obsidian_projects_list_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_note_paths_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "folder_path": "Projects/Planning",
+        "output_file": "$HOME/Desktop/obsidian_projects_list_1.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

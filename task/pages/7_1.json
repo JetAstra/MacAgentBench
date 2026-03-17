@@ -1,0 +1,45 @@
+{
+  "id": "pages_7",
+  "system_img": "default",
+  "instruction": "In the Pages app, add a oval shape to the front document, and then change its position to (0, 0), its width to 4 inches and its height to 4 inches.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_shape_pos_and_size"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "pos": "0, 0",
+        "width": 4,
+        "height": 4
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

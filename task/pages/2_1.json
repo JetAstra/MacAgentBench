@@ -1,0 +1,40 @@
+{
+  "id": "pages_2",
+  "system_img": "default",
+  "instruction": "In the Pages app, do the following steps: \n1. Create a new document. \n2. Write the following content into the body text using red font color: Passwd: 111111.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_change_font_color"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "red"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

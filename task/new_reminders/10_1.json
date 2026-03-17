@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_10_1",
+  "system_img": "default",
+  "instruction": "In the Reminders app, delete the list \"Quarterly Planning\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Quarterly Planning\" --create",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Quarterly Planning\" --delete",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_list_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Quarterly Planning"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

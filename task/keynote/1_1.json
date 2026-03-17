@@ -1,0 +1,39 @@
+{
+  "id": "keynote_1",
+  "system_img": "default",
+  "instruction": "In the Keynote app, do the following steps: \n1. Create a new document using the template 'Basic Black' and name it 'keynote_t1_test_1'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_doc_creation"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "template_name": "Basic Black",
+        "doc_name": "keynote_t1_test_1"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

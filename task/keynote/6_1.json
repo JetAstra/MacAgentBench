@@ -1,0 +1,41 @@
+{
+  "id": "keynote_5",
+  "system_img": "default",
+  "instruction": "In the Keynote app, do the following steps: \n1. Create a new document'. \n2. Insert a text box then write 'teeeeest!' into it with font: 'HelveticaNeue', color: 'red', font size: '90'",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_text_box_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "red",
+        "content": "teeeeest!",
+        "font_size": 90,
+        "font": "HelveticaNeue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

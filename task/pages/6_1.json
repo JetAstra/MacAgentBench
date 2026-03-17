@@ -1,0 +1,49 @@
+{
+  "id": "pages_6",
+  "system_img": "default",
+  "instruction": "In the Pages app, export the front document to EPUB format and save at ~/Documents/save_test.epub",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    },
+    {
+      "type": "pages_init_content",
+      "parameters": {
+        "content": "This is a test file, which is used to test the ability of replacing all 'test' with other pattern"
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "check_file_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "~/Documents/save_test.epub"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

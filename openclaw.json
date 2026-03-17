@@ -1,0 +1,159 @@
+{
+    "meta": {
+      "lastTouchedVersion": "2026.2.21",
+      "lastTouchedAt": "2026-03-12T15:38:17.020Z"
+    },
+    "wizard": {
+      "lastRunAt": "2026-03-07T08:36:00.889Z",
+      "lastRunVersion": "2026.2.21",
+      "lastRunCommand": "configure",
+      "lastRunMode": "local"
+    },
+    "auth": {
+      "profiles": {
+        "anthropic:default": {
+          "provider": "anthropic",
+          "mode": "token"
+        }
+      }
+    },
+    "models": {
+      "mode": "merge",
+      "providers": {
+        "openai": {
+          "baseUrl": "your url here",
+          "apiKey": "your api key here",
+          "api": "openai-completions",
+          "models": [
+            {
+              "id": "your model id here",
+              "name": "your model name here",
+              "reasoning": true,
+              "input": [
+                "text"
+              ],
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0
+              },
+              "contextWindow": 262144,
+              "maxTokens": 16384,
+              "compat": {
+                "supportsDeveloperRole": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    "agents": {
+      "defaults": {
+        "model": {
+          "primary": "your model id here",
+          "fallbacks": []
+        },
+        "models": {
+          "your model id here": {}
+        },
+        "workspace": "/Users/pipiwu/.openclaw/workspace",
+        "contextPruning": {
+          "mode": "cache-ttl",
+          "ttl": "1h"
+        },
+        "compaction": {
+          "mode": "safeguard"
+        },
+        "heartbeat": {
+          "every": "1h"
+        },
+        "maxConcurrent": 4,
+        "subagents": {
+          "maxConcurrent": 8
+        }
+      }
+    },
+    "tools": {
+      "web": {
+        "search": {
+          "enabled": false
+        },
+        "fetch": {
+          "enabled": true
+        }
+      }
+    },
+    "messages": {
+      "ackReactionScope": "group-mentions"
+    },
+    "commands": {
+      "native": "auto",
+      "nativeSkills": "auto",
+      "restart": true,
+      "ownerDisplay": "raw"
+    },
+    "channels": {
+      "feishu": {
+        "appId": "cli_a906c97ba2781cc0",
+        "appSecret": "5mkFb3VXZij9sielo3kyKgHF7PJRKKna",
+        "domain": "feishu",
+        "enabled": true,
+        "groupPolicy": "open"
+      }
+    },
+    "gateway": {
+      "port": 18789,
+      "mode": "local",
+      "bind": "loopback",
+      "auth": {
+        "mode": "token",
+        "token": "local"
+      },
+      "remote": {
+        "token": "local"
+      },
+      "tailscale": {
+        "mode": "off",
+        "resetOnExit": false
+      },
+      "nodes": {
+        "denyCommands": []
+      }
+    },
+    "skills": {
+      "entries": {
+        "apple-notes": {
+          "enabled": true
+        },
+        "sherpa-onnx-tts": {
+          "env": {
+            "SHERPA_ONNX_RUNTIME_DIR": "~/.openclaw/tools/sherpa-onnx-tts/runtime",
+            "SHERPA_ONNX_MODEL_DIR": "~/.openclaw/tools/sherpa-onnx-tts/models/vits-piper-en_US-lessac-high"
+          }
+        }
+      }
+    },
+    "plugins": {
+      "load": {
+        "paths": [
+          "/Users/pipiwu/Codes/openclaw/extensions/feishu"
+        ]
+      },
+      "entries": {
+        "feishu": {
+          "enabled": true
+        },
+        "voice-call": {
+          "enabled": true,
+          "config": {
+            "provider": "mock",
+            "serve": {
+              "port": 3345
+            }
+          }
+        }
+      }
+    }
+  }
+  

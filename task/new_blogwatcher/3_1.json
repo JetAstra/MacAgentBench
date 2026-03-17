@@ -1,0 +1,41 @@
+{
+  "id": "new_blogwatcher_3_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, scan all tracked blogs for updates.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Cloudflare Engineering Feed\" \"https://blog.cloudflare.com/rss/\" --feed-url \"https://blog.cloudflare.com/rss/\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "necessary": true,
+  "reference_command": "blogwatcher scan",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_scan_success_for_blog"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "Cloudflare Engineering Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "new_peekaboo_4_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "Open Terminal, then move its front window to the top-left corner and resize it to 1200 by 700.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "peekaboo sleep 1 && peekaboo window set-bounds --app \"Terminal\" --x 0 --y 25 --width 1200 --height 700",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_window_bounds"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "app_name": "Terminal",
+        "expected_x": 0,
+        "expected_y": 25,
+        "expected_width": 1200,
+        "expected_height": 700,
+        "tolerance": 30
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

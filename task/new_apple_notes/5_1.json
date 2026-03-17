@@ -1,0 +1,46 @@
+{
+  "id": "new_apple_notes_5_1",
+  "system_img": "default",
+  "instruction": "In Apple Notes, create a new note titled \"Project Ideas\" in the folder \"Work\".",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder",
+      "parameters": {
+        "folder_name": "Work"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "cat > /tmp/memo_auto_add.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nProject Ideas\n\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_add.sh\nEDITOR=/tmp/memo_auto_add.sh memo notes --folder \"Work\" --add",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Project Ideas",
+        "folder_name": "Work"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

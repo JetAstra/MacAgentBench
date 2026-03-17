@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_7_1",
+  "system_img": "default",
+  "instruction": "List the latest 5 emails in Inbox (search across all pages), then save JSON to \"$HOME/Desktop/mail_latest_7_1.json\". Return JSON only (no extra text). Required keys: folder (string), limit (integer), emails (array of objects). Each email object must include: subject (string), body (string). Do not include extra keys.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "cat <<'PY' | python3 > \"$HOME/Desktop/mail_latest_7_1.json\"\nimport json, subprocess\nfolder = \"Inbox\"\nlimit = int(5)\npages = []\nfor p in range(1, 51):\n    cmd = f\"himalaya envelope list --folder {folder} --page {p} --page-size 100 -o json\"\n    out = subprocess.run(['/bin/zsh','-lc',cmd], capture_output=True, text=True).stdout.strip()\n    if not out or out == '[]':\n        break\n    try:\n        pages.append(json.loads(out))\n    except Exception:\n        pass\nrows = [x for page in pages for x in page]\nrows = rows[:limit]\nemails = []\nfor row in rows:\n    mid = str(row.get('id','')).strip()\n    subject = (row.get('subject') or '').strip()\n    body = ''\n    if mid:\n        rcmd = f\"himalaya message read --folder {folder} {mid}\"\n        rout = subprocess.run(['/bin/zsh','-lc',rcmd], capture_output=True, text=True).stdout\n        lines = rout.splitlines()\n        if lines:\n            try:\n                i = lines.index('')\n                body = '\\n'.join(lines[i+1:]).strip()\n            except ValueError:\n                body = '\\n'.join(lines).strip()\n    emails.append({'subject': subject, 'body': body})\nprint(json.dumps({'folder': folder, 'limit': limit, 'emails': emails}, ensure_ascii=False))\nPY",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_json_equals_live"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_latest_7_1.json",
+        "expected_command": "cat <<'PY' | python3\nimport json, subprocess\nfolder = \"Inbox\"\nlimit = int(5)\npages = []\nfor p in range(1, 51):\n    cmd = f\"himalaya envelope list --folder {folder} --page {p} --page-size 100 -o json\"\n    out = subprocess.run(['/bin/zsh','-lc',cmd], capture_output=True, text=True).stdout.strip()\n    if not out or out == '[]':\n        break\n    try:\n        pages.append(json.loads(out))\n    except Exception:\n        pass\nrows = [x for page in pages for x in page]\nrows = rows[:limit]\nemails = []\nfor row in rows:\n    mid = str(row.get('id','')).strip()\n    subject = (row.get('subject') or '').strip()\n    body = ''\n    if mid:\n        rcmd = f\"himalaya message read --folder {folder} {mid}\"\n        rout = subprocess.run(['/bin/zsh','-lc',rcmd], capture_output=True, text=True).stdout\n        lines = rout.splitlines()\n        if lines:\n            try:\n                i = lines.index('')\n                body = '\\n'.join(lines[i+1:]).strip()\n            except ValueError:\n                body = '\\n'.join(lines).strip()\n    emails.append({'subject': subject, 'body': body})\nprint(json.dumps({'folder': folder, 'limit': limit, 'emails': emails}, ensure_ascii=False))\nPY"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

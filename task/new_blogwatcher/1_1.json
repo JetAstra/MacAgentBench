@@ -1,0 +1,39 @@
+{
+  "id": "new_blogwatcher_1_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, add a blog named \"OpenAI Blog\" with URL \"https://openai.com/news/rss.xml\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher add \"OpenAI Blog\" \"https://openai.com/news/rss.xml\" --feed-url \"https://openai.com/news/rss.xml\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "OpenAI Blog"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_apple_notes_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Apple Notes, list all existing notes and write all note titles into a file named \"test.md\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "memo notes | awk '/^[0-9]+\\./ { line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title != \"\") print title }' > \"$HOME/Desktop/test.md\"",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_file_contains_all_note_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/test.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

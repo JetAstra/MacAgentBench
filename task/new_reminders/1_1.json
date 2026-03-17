@@ -1,0 +1,39 @@
+{
+  "id": "new_reminders_1_1",
+  "system_img": "default",
+  "instruction": "In the Reminders app, create a new reminder titled \"Submit expense report\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl add --title \"Submit expense report\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Submit expense report"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

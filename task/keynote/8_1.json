@@ -1,0 +1,39 @@
+{
+  "id": "keynote_8",
+  "system_img": "default",
+  "instruction": "In the Keynote app, do the following steps: \n1. Create a new document'. \n2. Insert 1 new slide(s), then skip slide 2",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_slide_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "insert_cnt": 1,
+        "skip_idx": 2
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

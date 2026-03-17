@@ -1,0 +1,83 @@
+{
+  "id": "new_tmux_4_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, send `status` to the tmux session \"tmux-status-send-c1\", then save the result as JSON to \"$HOME/Desktop/tmux_result_4_1.json\". Set \"session\" to \"tmux-status-send-c1\", set \"command\" to \"status\", and set \"reply\" to the reply from that tmux session.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/tmux_result_4_1.json\"",
+          "tmux kill-session -t \"tmux-status-send-c1\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-status-send-c1\" \"python3 -u -c 'import sys,time; line=sys.stdin.readline().rstrip(\\\"\\\\r\\\\n\\\"); ok=(line==\\\"status\\\"); print(\\\"SYSTEM STATUS: green\\\", flush=True) if ok else print(\\\"unknown command\\\", flush=True); print(\\\"TMUX_STATUS_REPLY_4A\\\", flush=True) if ok else None; time.sleep(3600)'\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "tmux send-keys -t \"tmux-status-send-c1\" -l -- 'status'\ntmux send-keys -t \"tmux-status-send-c1\" Enter\nsleep 0.5\npython3 - <<'PY' > \"$HOME/Desktop/tmux_result_4_1.json\"\nimport json\nimport subprocess\nout = subprocess.check_output(['tmux', 'capture-pane', '-t', 'tmux-status-send-c1', '-p'], text=True)\nlines = [line for line in out.splitlines() if line.strip()]\nreply = '\\n'.join(lines[-20:])\nprint(json.dumps({'session': 'tmux-status-send-c1', 'command': 'status', 'reply': reply}))\nPY",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_json_key_value",
+      "new_tmux_check_json_key_value",
+      "new_tmux_check_json_key_contains_text",
+      "new_tmux_check_pane_contains_text"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tmux_result_4_1.json",
+        "key": "session",
+        "expected_value": "tmux-status-send-c1"
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_4_1.json",
+        "key": "command",
+        "expected_value": "status"
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_4_1.json",
+        "key": "reply",
+        "expected_text": "TMUX_STATUS_REPLY_4A"
+      },
+      {
+        "target": "tmux-status-send-c1",
+        "expected_text": "TMUX_STATUS_REPLY_4A"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_3_1",
+  "system_img": "default",
+  "instruction": "Count how many emails in Inbox contain the keyword \"code\" in the email body (search across all pages), then save JSON to \"$HOME/Desktop/mail_body_keyword_count_3_1.json\". Return JSON only (no extra text). Required keys: keyword (string), count (integer). Do not include extra keys.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json body \"code\" 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then count=0; else count=$(printf '%s\\n' \"$all\" | jq -s 'add | length'); fi; jq -n --arg keyword \"code\" --argjson count \"$count\" '{keyword:$keyword,count:$count}' > \"$HOME/Desktop/mail_body_keyword_count_3_1.json\"",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_json_equals_live"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_body_keyword_count_3_1.json",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json body \"code\" 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then count=0; else count=$(printf '%s\\n' \"$all\" | jq -s 'add | length'); fi; jq -n --arg keyword \"code\" --argjson count \"$count\" '{keyword:$keyword,count:$count}'"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

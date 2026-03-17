@@ -1,0 +1,51 @@
+{
+  "id": "pages_5",
+  "system_img": "default",
+  "instruction": "In the Pages app, at the front document, use the find&replace tool to replace all 'test' with 'Test'",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    },
+    {
+      "type": "pages_init_content",
+      "parameters": {
+        "content": "This is a test file, which is used to test the ability of replacing all 'test' with other pattern"
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_find_and_replace"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "content": "This is a test file, which is used to test the ability of replacing all 'test' with other pattern",
+        "target": "test",
+        "replace": "Test"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

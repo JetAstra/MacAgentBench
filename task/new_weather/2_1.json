@@ -1,0 +1,41 @@
+{
+  "id": "new_weather_2_1",
+  "system_img": "default",
+  "instruction": "Can you check tomorrow's weather in \"San Francisco\" and tell me whether it will be rainy? Save only one yes/no line to \"$HOME/Desktop/weather_tomorrow_rain_2_1.txt\" in this exact format: rain_tomorrow: yes|no",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "geo=$(curl -s 'https://geocoding-api.open-meteo.com/v1/search?name=San+Francisco&count=1&language=en&format=json')\nlat=$(echo \"$geo\" | jq -r '.results[0].latitude')\nlon=$(echo \"$geo\" | jq -r '.results[0].longitude')\nfc=$(curl -s \"https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code&timezone=auto&forecast_days=2\")\ncode=$(echo \"$fc\" | jq -r '.daily.weather_code[1] // .daily.weather_code[0]')\nclear=no\ncloudy=no\nrain=no\nsnowy=no\ncase \"$code\" in\n  0) clear=yes ;;\n  1|2|3|45|48) cloudy=yes ;;\n  51|53|55|56|57|61|63|65|66|67|80|81|82|95|96|99) rain=yes ;;\n  71|73|75|77|85|86) snowy=yes ;;\nesac\nvalue=no\ncase \"rain\" in\n  rain) value=\"$rain\" ;;\n  cloudy) value=\"$cloudy\" ;;\n  snowy) value=\"$snowy\" ;;\n  clear) value=\"$clear\" ;;\n  *) value=no ;;\nesac\nprintf 'rain_tomorrow: %s\\n' \"$value\" > \"$HOME/Desktop/weather_tomorrow_rain_2_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_weather_check_yes_no_matches_live"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/weather_tomorrow_rain_2_1.txt",
+        "expected_command": "geo=$(curl -s 'https://geocoding-api.open-meteo.com/v1/search?name=San+Francisco&count=1&language=en&format=json')\nlat=$(echo \"$geo\" | jq -r '.results[0].latitude')\nlon=$(echo \"$geo\" | jq -r '.results[0].longitude')\nfc=$(curl -s \"https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code&timezone=auto&forecast_days=2\")\ncode=$(echo \"$fc\" | jq -r '.daily.weather_code[1] // .daily.weather_code[0]')\nclear=no\ncloudy=no\nrain=no\nsnowy=no\ncase \"$code\" in\n  0) clear=yes ;;\n  1|2|3|45|48) cloudy=yes ;;\n  51|53|55|56|57|61|63|65|66|67|80|81|82|95|96|99) rain=yes ;;\n  71|73|75|77|85|86) snowy=yes ;;\nesac\nvalue=no\ncase \"rain\" in\n  rain) value=\"$rain\" ;;\n  cloudy) value=\"$cloudy\" ;;\n  snowy) value=\"$snowy\" ;;\n  clear) value=\"$clear\" ;;\n  *) value=no ;;\nesac\nprintf 'rain_tomorrow: %s\\n' \"$value\"",
+        "output_key": "rain_tomorrow"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

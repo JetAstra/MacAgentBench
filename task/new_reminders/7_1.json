@@ -1,0 +1,42 @@
+{
+  "id": "new_reminders_7_1",
+  "system_img": "default",
+  "instruction": "In the Reminders app, list all reminders in \"Work\" and write all reminder titles into a file named \"work_reminders.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Work\" --create",
+          "remindctl add --title \"Work Seed Reminder\" --list \"Work\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Work\" --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/work_reminders.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_all_titles_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Work",
+        "output_file": "$HOME/Desktop/work_reminders.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

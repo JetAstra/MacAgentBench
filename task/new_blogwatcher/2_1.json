@@ -1,0 +1,40 @@
+{
+  "id": "new_blogwatcher_2_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, list all tracked blogs and write all blog names into a file named \"tracked_blogs_1.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"The Verge Feed\" \"https://www.theverge.com/rss/index.xml\" --feed-url \"https://www.theverge.com/rss/index.xml\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher blogs > \"$HOME/Desktop/tracked_blogs_1.txt\" 2>&1",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_blog_names"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tracked_blogs_1.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

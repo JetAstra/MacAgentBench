@@ -1,0 +1,49 @@
+{
+  "id": "new_obsidian_2_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Obsidian, find all notes that mention \"lighthouse-sprint\" and save the matching note paths to \"$HOME/Desktop/obsidian_search_1.txt\", one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_search_1.txt\"",
+          "open -a 'Obsidian'",
+          "obsidian-cli delete \"Inbox/Lighthouse Capture.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Projects/Lighthouse Timeline.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Journal/Normal Tuesday.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Lighthouse Capture\\n\\nRemember to bring lighthouse-sprint into the April planning doc.\\n'); obsidian-cli create \"Inbox/Lighthouse Capture.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Lighthouse Timeline\\n\\nThe lighthouse-sprint summary should stay in the benchmark vault.\\n'); obsidian-cli create \"Projects/Lighthouse Timeline.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Normal Tuesday\\n\\nMostly admin and note cleanup.\\n'); obsidian-cli create \"Journal/Normal Tuesday.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/obsidian_search_1.txt\"\nimport subprocess\nfrom pathlib import Path\nvault = Path(r'''/Users/pipiwu/Documents/Benchmark/Benchmark''')\nquery = r'''lighthouse-sprint'''\nfor path in sorted(vault.rglob('*.md')):\n    rel = str(path.relative_to(vault))\n    out = subprocess.run(['obsidian-cli', 'print', rel, '--vault', 'Benchmark'], capture_output=True, text=True)\n    if out.returncode == 0 and query in out.stdout:\n        print(rel)\nPY",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_search_matches"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "query": "lighthouse-sprint",
+        "output_file": "$HOME/Desktop/obsidian_search_1.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

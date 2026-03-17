@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_2_1",
+  "system_img": "default",
+  "instruction": "In Apple Notes, list all notes in the folder \"Work\" and write all note titles into a file named \"work_notes.md\" on the Desktop.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Work",
+        "note_title": "Work hard",
+        "note_body": "Work hard"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "memo notes -f \"Work\" | awk '/^[0-9]+\\./ { line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title != \"\") print title }' > \"$HOME/Desktop/work_notes.md\"",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_file_contains_all_titles_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Work",
+        "output_file": "$HOME/Desktop/work_notes.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

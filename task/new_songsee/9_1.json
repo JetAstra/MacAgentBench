@@ -1,0 +1,53 @@
+{
+  "id": "new_songsee_9_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, use songsee to generate a multi-panel visualization for \"$HOME/Desktop/Ode to Joy.mp3\" with spectrogram,mel,chroma,mfcc, starting at 18 seconds and lasting 12 seconds, using the magma style, with width 1600 and height 900, window 4096, hop 512, and a frequency range from 80 Hz to 8000 Hz, then save the result as a PNG file at \"$HOME/Desktop/songsee_combo_1.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_combo_1.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --viz spectrogram,mel,chroma,mfcc --start 18 --duration 12 --style magma --width 1600 --height 900 --window 4096 --hop 512 --min-freq 80 --max-freq 8000 --format png -o \"$HOME/Desktop/songsee_combo_1.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_combo_1.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "viz_list": "spectrogram,mel,chroma,mfcc",
+        "start_seconds": "18",
+        "duration_seconds": "12",
+        "style": "magma",
+        "width": 1600,
+        "height": 900,
+        "window": 4096,
+        "hop": 512,
+        "min_freq": 80,
+        "max_freq": 8000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "new_video_frames_3_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, extract a frame at 00:00:01 from \"$HOME/Desktop/benchmark_source.mp4\", resize it to 640x720, and save it as \"$HOME/Desktop/vf_thumb_1.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/vf_thumb_1.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "ffmpeg -y -ss \"00:00:01\" -i \"$HOME/Desktop/benchmark_source.mp4\" -vf \"scale=640:720\" -frames:v 1 -update 1 \"$HOME/Desktop/vf_thumb_1.png\" >/dev/null 2>&1 && sleep 1",
+  "evaluator": {
+    "func": [
+      "new_video_frames_check_scaled_frame_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/vf_thumb_1.png",
+        "input_video": "$HOME/Desktop/benchmark_source.mp4",
+        "timestamp": "00:00:01",
+        "width": 640,
+        "height": 720
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

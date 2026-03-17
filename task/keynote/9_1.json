@@ -1,0 +1,42 @@
+{
+  "id": "keynote_9",
+  "system_img": "default",
+  "instruction": "In the Keynote app, do the following steps: \n1. Create a new document'. \n2. Insert three oval shapes with size 100×100, then set their position respectively as (0, 0), (100, 100), (200, 200)",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_shape_insertion_multi"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "width": 100,
+        "height": 100,
+        "pos1": "0, 0",
+        "pos2": "100, 100",
+        "pos3": "200, 200"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

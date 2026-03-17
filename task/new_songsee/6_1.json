@@ -1,0 +1,44 @@
+{
+  "id": "new_songsee_6_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, use songsee to generate a spectrogram for \"$HOME/Desktop/Ode to Joy.mp3\" with the magma style, then save it to \"$HOME/Desktop/songsee_style_1.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_style_1.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --style magma -o \"$HOME/Desktop/songsee_style_1.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_style_1.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "style": "magma"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

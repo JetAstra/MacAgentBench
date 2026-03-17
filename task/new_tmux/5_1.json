@@ -1,0 +1,47 @@
+{
+  "id": "new_tmux_5_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, send `c` to the tmux session that is currently waiting for confirmation.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "tmux kill-session -t \"tmux-confirm-idle-d1\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-confirm-target-d1\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-confirm-other-d1\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-confirm-idle-d1\" \"printf '%s\\\\n' 'watcher: sleeping' 'TMUX_IDLE_MARKER_5A'; tail -f /dev/null\"",
+          "tmux new-session -d -s \"tmux-confirm-target-d1\" \"python3 -u -c 'import sys,time; print(\\\"Press c to continue\\\", flush=True); print(\\\"TMUX_CONFIRM_PROMPT_5A\\\", flush=True); line=sys.stdin.readline().rstrip(\\\"\\\\r\\\\n\\\"); print(\\\"TMUX_CONFIRMED_5A\\\", flush=True) if line==\\\"c\\\" else print(\\\"TMUX_REJECTED_5A\\\", flush=True); time.sleep(3600)'\"",
+          "tmux new-session -d -s \"tmux-confirm-other-d1\" \"printf '%s\\\\n' 'indexer: running' 'TMUX_OTHER_MARKER_5A'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "tmux send-keys -t \"tmux-confirm-target-d1\" 'c' Enter",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_pane_contains_text"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "target": "tmux-confirm-target-d1",
+        "expected_text": "TMUX_CONFIRMED_5A"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

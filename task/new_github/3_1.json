@@ -1,0 +1,41 @@
+{
+  "id": "new_github_3_1",
+  "system_img": "default",
+  "instruction": "Find the latest open pull request in \"openclaw/openclaw\" with label \"size: XS\", and save it as \"#<number> | <labels> | <title>\" to \"$HOME/Desktop/gh_open_prs_3_1.txt\". If no matching pull request is found, save an empty file.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh pr list --repo openclaw/openclaw --search 'label:\"size: XS\" sort:created-desc' --limit 1 --json number,title,labels --jq '.[] | \"#\\(.number) | \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end)) | \\(.title)\"' > \"$HOME/Desktop/gh_open_prs_3_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_file_contains_live_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_open_prs_3_1.txt",
+        "expected_command": "gh pr list --repo openclaw/openclaw --search 'label:\"size: XS\" sort:created-desc' --limit 1 --json number,title,labels --jq '.[] | \"#\\(.number) | \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end)) | \\(.title)\"'",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

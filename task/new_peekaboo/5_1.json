@@ -1,0 +1,44 @@
+{
+  "id": "new_peekaboo_5_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Safari, create a new window.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Safari'",
+          "osascript -e 'tell application \"Safari\" to activate'",
+          "osascript -e 'tell application \"Safari\" to close every window' || true",
+          "osascript -e 'tell application \"Safari\" to make new document'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari"
+  ],
+  "reference_command": "peekaboo sleep 1 && peekaboo hotkey --keys \"cmd,n\" --app \"Safari\"",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_window_count_at_least"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "app_name": "Safari",
+        "min_count": 2
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "new_weather_4_1",
+  "system_img": "default",
+  "instruction": "Please check today's temperature range for \"San Francisco\" and save one line to \"$HOME/Desktop/weather_today_range_4_1.txt\" in this format: today_temp_range: max=<value>C min=<value>C.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "geo=$(curl -s 'https://geocoding-api.open-meteo.com/v1/search?name=San+Francisco&count=1&language=en&format=json')\nlat=$(echo \"$geo\" | jq -r '.results[0].latitude')\nlon=$(echo \"$geo\" | jq -r '.results[0].longitude')\nforecast=$(curl -s \"https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1\")\nmax_t=$(echo \"$forecast\" | jq -r '.daily.temperature_2m_max[0]')\nmin_t=$(echo \"$forecast\" | jq -r '.daily.temperature_2m_min[0]')\nprintf 'today_temp_range: max=%sC min=%sC\\n' \"$max_t\" \"$min_t\" > \"$HOME/Desktop/weather_today_range_4_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_weather_check_temp_range_with_tolerance"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/weather_today_range_4_1.txt",
+        "expected_command": "geo=$(curl -s 'https://geocoding-api.open-meteo.com/v1/search?name=San+Francisco&count=1&language=en&format=json')\nlat=$(echo \"$geo\" | jq -r '.results[0].latitude')\nlon=$(echo \"$geo\" | jq -r '.results[0].longitude')\nforecast=$(curl -s \"https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1\")\nmax_t=$(echo \"$forecast\" | jq -r '.daily.temperature_2m_max[0]')\nmin_t=$(echo \"$forecast\" | jq -r '.daily.temperature_2m_min[0]')\nprintf 'today_temp_range: max=%sC min=%sC\\n' \"$max_t\" \"$min_t\"",
+        "tolerance_c": 2.0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

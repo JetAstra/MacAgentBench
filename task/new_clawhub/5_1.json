@@ -1,0 +1,40 @@
+{
+  "id": "new_clawhub_5_1",
+  "system_img": "default",
+  "instruction": "From ClawHub, list installed skills and save the output to \"$HOME/Desktop/clawhub_skills_report_1.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "clawhub list > \"$HOME/Desktop/clawhub_skills_report_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_clawhub_check_list_output_contains_all_skills"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/clawhub_skills_report_1.txt",
+        "skill_slugs": "find-skills"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

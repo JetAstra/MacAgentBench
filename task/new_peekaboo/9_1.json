@@ -1,0 +1,43 @@
+{
+  "id": "new_peekaboo_9_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "Generate an annotated screenshot of the TextEdit window and save it to \"$HOME/Desktop/peekaboo_annotated_1.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/peekaboo_annotated_1.png\"",
+          "open -a 'Terminal'",
+          "open -a 'TextEdit'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "sleep 2 && peekaboo see --app \"TextEdit\" --annotate --path \"$HOME/Desktop/peekaboo_annotated_1.png\"",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_image_exists_nonempty"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/peekaboo_annotated_1.png",
+        "min_size_bytes": 4096
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

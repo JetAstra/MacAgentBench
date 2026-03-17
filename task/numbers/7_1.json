@@ -1,0 +1,45 @@
+{
+  "id": "numbers_6",
+  "system_img": "default",
+  "instruction": "In the Numbers app, in the currently selected table, paint all the cell with value larger than 10 red.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 5,
+        "cols": 5
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_change_bgcolor"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 5,
+        "is_larger": true,
+        "min": 10,
+        "is_smaller": false,
+        "max": 20,
+        "is_equal": false
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

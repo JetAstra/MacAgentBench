@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_9_1",
+  "system_img": "default",
+  "instruction": "In the Reminders app, delete the reminder titled \"Old grocery draft\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Old grocery draft\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Old grocery draft\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Old grocery draft\"\n  exit 1\nfi\nremindctl delete \"$reminder_id\" --force",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Old grocery draft"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

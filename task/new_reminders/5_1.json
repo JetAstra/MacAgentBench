@@ -1,0 +1,41 @@
+{
+  "id": "new_reminders_5_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In the Reminders app, list all reminders due today and write all reminder titles into a file named \"today_reminders.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Today Seed Reminder A\" --due today",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl today --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/today_reminders.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_today_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/today_reminders.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

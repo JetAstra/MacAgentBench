@@ -1,0 +1,44 @@
+{
+  "id": "new_whisper_4_1",
+  "system_img": "default",
+  "necessary": true,
+  "instruction": "In Terminal, use Whisper's tiny model to make an English SRT subtitle file for \"$HOME/Documents/whisper_audio_ru_1.ogg\" and save it to \"$HOME/Desktop/whisper_translation_4_1.srt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/whisper_translation_4_1.srt\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "tmpdir=$(mktemp -d) && whisper \"$HOME/Documents/whisper_audio_ru_1.ogg\" --model tiny --task translate --output_format srt --output_dir \"$tmpdir\" >/dev/null && mv \"$tmpdir/whisper_audio_ru_1.srt\" \"$HOME/Desktop/whisper_translation_4_1.srt\" && rmdir \"$tmpdir\"",
+  "evaluator": {
+    "func": [
+      "new_whisper_check_file_matches_live_output"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/whisper_translation_4_1.srt",
+        "expected_command": "tmpdir=$(mktemp -d) && whisper \"$HOME/Documents/whisper_audio_ru_1.ogg\" --model tiny --task translate --output_format srt --output_dir \"$tmpdir\" >/dev/null && cat \"$tmpdir/whisper_audio_ru_1.srt\"; rm -rf \"$tmpdir\"",
+        "file_format": "srt",
+        "min_similarity": 0.8
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "numbers_1",
+  "system_img": "default",
+  "instruction": "In the Numbers app, create a new blank document. \nInsert a new table into the first sheet if there is no table. \nThen enter the value 'test' into the cell at row 1, column 1 (cell A1).",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Numbers'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_cell_operation"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "cells": [
+          [
+            1,
+            1
+          ]
+        ],
+        "values": [
+          "test"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

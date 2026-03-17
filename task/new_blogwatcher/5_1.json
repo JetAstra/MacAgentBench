@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_5_1",
+  "system_img": "default",
+  "instruction": "In blogwatcher, mark the article titled \"Microsoft previews tech to ease creation of keyboard-accessible websites\" from \"The Register Feed\" as read.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"The Register Feed\" \"https://www.theregister.com/headlines.atom\" --feed-url \"https://www.theregister.com/headlines.atom\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "target_id=$(blogwatcher articles --all | awk -v target_blog=\"The Register Feed\" -v target_title=\"Microsoft previews tech to ease creation of keyboard-accessible websites\" '/^[[:space:]]*\\[[0-9]+\\][[:space:]]*\\[[^]]+\\][[:space:]]+/ { id=$1; gsub(/\\[|\\]/, \"\", id); line=$0; sub(/^[[:space:]]*\\[[0-9]+\\][[:space:]]*\\[[^]]+\\][[:space:]]+/, \"\", line); title=line; next } /^[[:space:]]*Blog:[[:space:]]*/ { blog=$0; sub(/^[[:space:]]*Blog:[[:space:]]*/, \"\", blog); if (blog == target_blog && title == target_title) { print id; exit } }')\nif [ -z \"$target_id\" ]; then\n  echo \"Article not found for blog/title: The Register Feed / Microsoft previews tech to ease creation of keyboard-accessible websites\"\n  exit 1\nfi\nblogwatcher read \"$target_id\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_article_title_is_read"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "The Register Feed",
+        "article_title": "Microsoft previews tech to ease creation of keyboard-accessible websites"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

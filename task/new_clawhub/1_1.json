@@ -1,0 +1,41 @@
+{
+  "id": "new_clawhub_1_1",
+  "system_img": "default",
+  "instruction": "From ClawHub, install \"incident-triage-playbook\" at version \"1.0.0\" into \"$HOME/Desktop/clawhub_skills_1_1\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p \"$HOME/Desktop/clawhub_skills_1_1\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "# Note: This step may fail intermittently due to ClawHub rate limits. If it fails, retry a few times.\nclawhub install incident-triage-playbook --version 1.0.0 --dir \"$HOME/Desktop/clawhub_skills_1_1\"",
+  "evaluator": {
+    "func": [
+      "new_clawhub_check_skill_installed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "install_dir": "$HOME/Desktop/clawhub_skills_1_1",
+        "skill_slug": "incident-triage-playbook"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

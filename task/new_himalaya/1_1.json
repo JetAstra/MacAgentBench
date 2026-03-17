@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_1_1",
+  "system_img": "default",
+  "instruction": "Check the latest OTP email in Inbox (search across all pages) and save only one line to \"$HOME/Desktop/mail_otp_1_1.txt\" as \"otp_code: <6-digit-code>\". If no OTP email exists, write \"otp_code: none\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then code=none; else code=$(printf '%s\\n' \"$all\" | jq -s -r 'add | [.[] | select(.subject | test(\"verification code|otp\";\"i\"))][0].subject // \"\" | match(\"[0-9]{6}\").string? // \"none\"'); fi; printf 'otp_code: %s\\n' \"$code\" > \"$HOME/Desktop/mail_otp_1_1.txt\"",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_single_kv_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_otp_1_1.txt",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then code=none; else code=$(printf '%s\\n' \"$all\" | jq -s -r 'add | [.[] | select(.subject | test(\"verification code|otp\";\"i\"))][0].subject // \"\" | match(\"[0-9]{6}\").string? // \"none\"'); fi; printf 'otp_code: %s\\n' \"$code\""
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}
