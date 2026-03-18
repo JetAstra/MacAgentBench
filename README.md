@@ -1,15 +1,16 @@
 <h1 align="center"><img src="assets/icon.jpg" alt="MacAgentBench icon" width="64" style="vertical-align: middle;">&nbsp; MacAgentBench: Benchmark agents where they actually work — on macOS.</h1>
 
 <p align="center">
-  <strong>A macOS benchmark for evaluating AI agents on real desktop workflows.<br>
-Reproducible tasks, rule-based evaluation, and native app coverage across everyday work scenarios.</strong><br>
+  <strong>A macOS benchmark for evaluating AI agents on real desktop tasks.<br>
+Reproducible tasks, rule-based evaluation, and native app coverage across everyday work scenarios.<br>
+<a href="#quick-start">Fully configured OpenClaw macOS image for Linux and Windows</a></strong><br>
 </p>
 
 <p align="center">
   <a href="https://jetastra.github.io/MacAgentBench/"><img src="https://img.shields.io/badge/Leaderboard-Live-red?style=for-the-badge" alt="Leaderboard"></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-5_min-blue?style=for-the-badge" alt="Quick Start"></a>
   <a href="#benchmark-feature"><img src="https://img.shields.io/badge/Categories-18-green?style=for-the-badge" alt="Categories"></a>
-  <a href="./evaluation/MacOSArena/task_jing"><img src="https://img.shields.io/badge/Tasks-110-brightgreen?style=for-the-badge" alt="Tasks"></a>
+  <a href="https://github.com/JetAstra/MacAgentBench/tree/main/task"><img src="https://img.shields.io/badge/Tasks-110-brightgreen?style=for-the-badge" alt="Tasks"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a>
 </p>
 
@@ -22,17 +23,67 @@ Reproducible tasks, rule-based evaluation, and native app coverage across everyd
 ## 🔎TL;DR
 
 1. We provide a fully configured macOS-based OpenClaw environment that runs out-of-the-box on both Linux and Windows via Docker. In addition, we address the complex permission issues in macOS, ensuring that OpenClaw can execute tasks without failing due to permission restrictions. Everyone is welcome to try it out and contribute! 👏
-🔗 https://github.com/JiaranI/Mac-in-Docker-OpenClaw
-
 2. We introduce a benchmark designed to evaluate OpenClaw in real-world usage scenarios. 
 It covers both the default tasks supported by OpenClaw and tasks commonly encountered in real working environments.
 
 3. Our evaluation relies on manually designed rule-based evaluators, avoiding the uncertainty introduced by using LLMs as judges.
 Each task is executed in an independent container, ensuring that tasks do not interfere with each other during evaluation.
 
-1. Running the benchmark is straightforward: only a model ID and API key are required, with no additional configuration needed.
+<a id="quick-start"></a>
 
-## Quick Start
+## 🚀Quick Start
+
+Want to try the image first? Start with Part 1. Want to run benchmark evaluation? Jump to Part 2.
+
+### 1. Try OpenClaw in macOS on Linux or Windows
+
+1. Download the required image files from Hugging Face (~40GB):
+
+```bash
+pip install huggingface_hub
+
+huggingface-cli download JetLM/OpenClaw-macOS --local-dir .
+```
+
+2. Start the macOS Docker container:
+
+```bash
+bash launcher/docker/simple_start.sh
+```
+
+3. Connect to macOS:
+
+```bash
+vncviewer localhost:5901
+```
+
+Next, open OpenClaw. You should see the OpenClaw icon in the top menu bar, which means you are ready to start using OpenClaw on macOS.
+
+<p align="center">
+  <img src="assets/macos.png" alt="OpenClaw running inside macOS" width="900">
+</p>
+
+### 2. Run the evaluation benchmark
+
+1. Download the required image files from Hugging Face (~50GB):
+
+```bash
+pip install huggingface_hub
+
+huggingface-cli download JetLM/OpenClaw-macOS --local-dir .
+```
+
+2. Fill in your API key and base URL in [`openclaw.json`](/home/fuyikun/Documents/MacAgentBench/openclaw.json).
+
+3. Update the required local paths in [`eval.sh`](/home/fuyikun/Documents/MacAgentBench/eval.sh), especially the image paths and your local `WORK_DIR`.
+
+4. Start the evaluation:
+
+```bash
+bash eval.sh
+```
+
+<a id="benchmark-feature"></a>
 
 ## 📋Benchmark feature
 
