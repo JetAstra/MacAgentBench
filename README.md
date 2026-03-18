@@ -6,6 +6,7 @@ Reproducible tasks, rule-based evaluation, and native app coverage across everyd
 </p>
 
 <p align="center">
+  <a href="https://jetastra.github.io/MacAgentBench/"><img src="https://img.shields.io/badge/Leaderboard-Live-red?style=for-the-badge" alt="Leaderboard"></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-5_min-blue?style=for-the-badge" alt="Quick Start"></a>
   <a href="#benchmark-feature"><img src="https://img.shields.io/badge/Categories-18-green?style=for-the-badge" alt="Categories"></a>
   <a href="./evaluation/MacOSArena/task_jing"><img src="https://img.shields.io/badge/Tasks-110-brightgreen?style=for-the-badge" alt="Tasks"></a>
