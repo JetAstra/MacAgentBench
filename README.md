@@ -186,11 +186,15 @@ We warmly welcome contributions to improve the OpenClaw Benchmark for macOS! Her
 ## ❤ Acknowledgments
 We would like to thank the following projects and communities for their invaluable contributions, which helped make this benchmark possible:
 
+Claw-Eval - https://github.com/openclaw/claweval
+
 OpenClaw - https://github.com/openclaw/openclaw
 
 OpenGVLab – https://github.com/OpenGVLab
 
 Docker-OSX – https://github.com/sickcodes/Docker-OSX
+
+PinBench - https://github.com/xlang-ai/PinBench
 
 ## 📬 Contact
 If you have questions or would like to collaborate, please contact us at:
