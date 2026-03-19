@@ -194,7 +194,7 @@ OpenGVLab – https://github.com/OpenGVLab
 
 Docker-OSX – https://github.com/sickcodes/Docker-OSX
 
-PinBench - https://github.com/xlang-ai/PinBench
+PinchBench - https://github.com/pinchbench/
 
 ## 📬 Contact
 If you have questions or would like to collaborate, please contact us at:
