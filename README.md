@@ -201,5 +201,12 @@ If you have questions or would like to collaborate, please contact us at:
 - [Bowen Fu](https://github.com/HappyBug7), XJTU
   📧 HappyBug@stu.xjtu.edu.cn
 
+- [zhenyu wu](https://github.com/numbmelon)
+  📧 zywu01@sjtu.edu.cn
+
+- [kaiyan zhang](https://github.com/iseesaw)
+  📧 zhang-ky22@mails.tsinghua.edu.cn
+
+  
 - [Biqing Qi](https://github.com/Biqing-Qi), Shanghai AI Laboratory
   📧 qibiqing@pjlab.org.cn
