@@ -186,7 +186,7 @@ We warmly welcome contributions to improve the OpenClaw Benchmark for macOS! Her
 ## ❤ Acknowledgments
 We would like to thank the following projects and communities for their invaluable contributions, which helped make this benchmark possible:
 
-Claw-Eval - https://github.com/openclaw/claweval
+Claw-Eval - https://github.com/claw-eval/claw-eval
 
 OpenClaw - https://github.com/openclaw/openclaw
 
