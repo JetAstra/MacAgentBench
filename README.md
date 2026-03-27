@@ -14,6 +14,19 @@ Reproducible tasks, rule-based evaluation, and native app coverage across everyd
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a>
 </p>
 
+<!-- leaderboard:start -->
+## 🏆 Live Leaderboard Snapshot
+
+<p align="center">
+  <a href="https://jetastra.github.io/MacAgentBench/">
+    <img src="assets/leaderboard.png" alt="MacAgentBench live leaderboard screenshot" width="900">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://jetastra.github.io/MacAgentBench/"><strong>See the full live leaderboard →</strong></a>
+</p>
+<!-- leaderboard:end -->
 
 <p align="center">
   <img src="assets/intro.png" alt="intro" width="800">
