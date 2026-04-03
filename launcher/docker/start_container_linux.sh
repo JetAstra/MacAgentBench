@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 docker_name=$1
 host_port=$2
 
@@ -23,6 +25,7 @@ sudo docker run -itd \
     -e CPUID_FLAGS='kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on' \
     -v "$mac_hdd_img:/home/arch/OSX-KVM/mac_hdd_ng_src.img" \
     -v "$base_system_img:/home/arch/OSX-KVM/BaseSystem_src.img" \
+    -v "${SCRIPT_DIR}/custom_entrypoint.sh:/home/arch/OSX-KVM/entrypoint.sh" \
     -e SHORTNAME=sonoma \
     -e USERNAME=pipiwu \
     -e PASSWORD='1234' \
