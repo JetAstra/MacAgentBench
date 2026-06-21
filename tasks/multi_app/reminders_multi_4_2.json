@@ -1,0 +1,171 @@
+{
+  "id": "reminders_multi_4_2",
+  "system_img": "default",
+  "instruction": "Open the Contacts app, locate the contact named \"Alice\", and copy her phone number. Then, in the Reminders app, create a reminder with the title \"Text Alice at {phone number}\"(without any hyphens or parentheses), setting it due next week at 10:00 AM.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_work_due_next_week",
+      "reminders_check_due_time"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "Text Alice at 1234567888"
+      },
+      {
+        "reminder_name": "Text Alice at 1234567888",
+        "target_hour": 10,
+        "target_minute": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "has_reminder_prefix",
+      "weight": 0.14,
+      "capability": "app_state",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Reminders"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Text Alice"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_phone",
+      "weight": 0.14,
+      "capability": "research",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Reminders"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "1234567888"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "reminder_exact",
+      "weight": 0.15,
+      "capability": "content_match",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "Text Alice at 1234567888"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_due_date",
+      "weight": 0.14,
+      "capability": "app_state",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "Text Alice at 1234567888"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "has_due": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_next_week",
+      "weight": 0.15,
+      "capability": "content_match",
+      "func": "reminders_check_work_due_next_week",
+      "parameters": {
+        "reminder_name": "Text Alice at 1234567888"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "due_hour",
+      "weight": 0.14,
+      "capability": "content_match",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "Text Alice at 1234567888"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hour": 10
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_minute",
+      "weight": 0.14,
+      "capability": "content_match",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "Text Alice at 1234567888"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minute": 0
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "new_obsidian_2_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Search through Obsidian for every note containing \"harbor-ticket\", then write the absolute paths of all matching notes to \"$HOME/Desktop/obsidian_search_3.txt\", listing one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_search_3.txt\"",
+          "obsidian-cli delete \"Meetings/Harbor Follow-up.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Projects/Harbor Backlog.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Areas/Health Check.md\" --vault \"Benchmark\" || true",
+          "open -a 'Obsidian'",
+          "sleep 5",
+          "content=$(printf '%b' '# Harbor Follow-up\\n\\nNeed one clean harbor-ticket example for testing.\\n'); obsidian-cli create \"Meetings/Harbor Follow-up.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Harbor Backlog\\n\\nKeep the harbor-ticket issue separate from UI cleanup.\\n'); obsidian-cli create \"Projects/Harbor Backlog.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Health Check\\n\\nBook a routine appointment next month.\\n'); obsidian-cli create \"Areas/Health Check.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/obsidian_search_3.txt\"\nimport subprocess\nfrom pathlib import Path\nvault = Path(r'''/Users/pipiwu/Documents/Benchmark/Benchmark''')\nquery = r'''harbor-ticket'''\nfor path in sorted(vault.rglob('*.md')):\n    rel = str(path.relative_to(vault))\n    out = subprocess.run(['obsidian-cli', 'print', rel, '--vault', 'Benchmark'], capture_output=True, text=True)\n    if out.returncode == 0 and query in out.stdout:\n        print(path)\nPY",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_search_matches"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "query": "harbor-ticket",
+        "output_file": "$HOME/Desktop/obsidian_search_3.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

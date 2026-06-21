@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_10_3",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, go ahead and remove the list called \"Home Maintenance\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Home Maintenance\" --create",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Home Maintenance\" --delete",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_list_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Home Maintenance"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

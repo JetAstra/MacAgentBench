@@ -1,0 +1,43 @@
+{
+  "id": "1_3",
+  "system_img": "default",
+  "instruction": "In VSCode, you'll need to add exactly two folders — /Users/Shared/src and /Users/Shared/test — to the current workspace. No other folders should be included in the workspace, and the workspace must be saved as a .code-workspace file in the /Users/Shared directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p /Users/Shared/src",
+          "mkdir -p /Users/Shared/test",
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_workspace_folders"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_folder_list": [
+          "src",
+          "test"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app. Create a new reminder list called 'Schedule'. Add a reminder titled 'exercise' with a due date in the year 2028.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_due_year"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "exercise",
+        "list_name": "Schedule"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            2028
+          ]
+        }
+      }
+    ]
+  }
+}

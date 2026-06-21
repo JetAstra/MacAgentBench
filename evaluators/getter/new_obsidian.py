@@ -99,7 +99,7 @@ for path in sorted(vault.rglob("*.md")):
     except Exception:
         continue
     if query in content:
-        matches.append(str(path.relative_to(vault)))
+        matches.append(str(path))
 print(json.dumps(matches))
 """
     expected_paths = _read_remote_json(env, remote_py)

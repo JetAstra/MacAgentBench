@@ -1,0 +1,40 @@
+{
+  "id": "new_github_5_4",
+  "system_img": "default",
+  "instruction": "Look up the highest-ranked open issue in \"cli/cli\" and write the following details to \"$HOME/Desktop/gh_issue_detail_5_4.txt\": issue_number, title, state, author_login, labels. You may use any readable plain text format. If any requested field is empty or missing, write it as \"none\". If there are no open issues, save the file as empty.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh issue list --repo cli/cli --state open --limit 1 --json number,title,state,author,labels --jq '.[0] | \"issue_number: #\\(.number)\\ntitle: \\(.title)\\nstate: \\(.state)\\nauthor_login: \\(.author.login)\\nlabels: \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end))\"' > \"$HOME/Desktop/gh_issue_detail_5_4.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_top_issue_values_present"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_issue_detail_5_4.txt",
+        "repo": "cli/cli"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

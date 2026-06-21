@@ -1,0 +1,138 @@
+{
+  "id": "finder_multi_3_2",
+  "system_img": "default",
+  "instruction": "Search for all .csv files modified in the last 7 days using the terminal. Write their file paths into a text file named \"CSV_modified_in_last_7_days.txt\" in the ~/Library/Saved directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p ~/Library/Saved",
+          "echo 'name,age' > ~/Documents/users.csv",
+          "echo 'id,value' > ~/Documents/data.csv",
+          "echo 'key,score' > /Users/Shared/results.csv",
+          "echo 'x,y' > /Users/Shared/summary.csv"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_read_file_contents"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/pipiwu/Library/Saved/CSV_modified_in_last_7_days.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "Documents/users.csv",
+              "Documents/data.csv",
+              "/Users/Shared/results.csv",
+              "/Users/Shared/summary.csv"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "output_file_exists",
+      "weight": 0.2,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/CSV_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_users_csv",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/CSV_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/users.csv"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_data_csv",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/CSV_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/data.csv"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_results_csv",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/CSV_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/results.csv"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_summary_csv",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/CSV_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/summary.csv"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "new_obsidian_2_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Search Obsidian for all notes mentioning \"cedar-brief\" and write the matching absolute note paths to \"$HOME/Desktop/obsidian_search_2.txt\", one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_search_2.txt\"",
+          "obsidian-cli delete \"Projects/Cedar Plan.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Journal/Cedar Review.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Recipes/Roasted Carrots.md\" --vault \"Benchmark\" || true",
+          "open -a 'Obsidian'",
+          "sleep 5",
+          "content=$(printf '%b' '# Cedar Plan\\n\\nThe cedar-brief still needs final approval from operations.\\n'); obsidian-cli create \"Projects/Cedar Plan.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Cedar Review\\n\\nClosing thought: cedar-brief is clearer after trimming the examples.\\n'); obsidian-cli create \"Journal/Cedar Review.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Roasted Carrots\\n\\nOlive oil, salt, cumin.\\n'); obsidian-cli create \"Recipes/Roasted Carrots.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/obsidian_search_2.txt\"\nimport subprocess\nfrom pathlib import Path\nvault = Path(r'''/Users/pipiwu/Documents/Benchmark/Benchmark''')\nquery = r'''cedar-brief'''\nfor path in sorted(vault.rglob('*.md')):\n    rel = str(path.relative_to(vault))\n    out = subprocess.run(['obsidian-cli', 'print', rel, '--vault', 'Benchmark'], capture_output=True, text=True)\n    if out.returncode == 0 and query in out.stdout:\n        print(path)\nPY",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_search_matches"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "query": "cedar-brief",
+        "output_file": "$HOME/Desktop/obsidian_search_2.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

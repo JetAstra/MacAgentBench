@@ -1,0 +1,92 @@
+{
+  "id": "terminal_multi_7_4",
+  "system_img": "default",
+  "instruction": "I need you to look up the current users on the system and save that information in the notes titled 'user list'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a Safari"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "user list",
+        "folder": null
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "pipiwu"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "note_exists",
+      "weight": 0.34,
+      "capability": "app_state",
+      "func": "notes_find_note_by_title",
+      "parameters": {
+        "title": "user list"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.33,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "user list"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_username",
+      "weight": 0.33,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "user list"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "pipiwu"
+          ]
+        ]
+      }
+    }
+  ]
+}

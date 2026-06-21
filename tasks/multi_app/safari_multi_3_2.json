@@ -1,0 +1,111 @@
+{
+  "id": "safari_multi_3_2",
+  "system_img": "default",
+  "instruction": "Use Safari to look up the NeurIPS 2024 Best Paper Award winners (main track only, not runner-up). Enter the title(s) into a note titled 'Best Paper' in the macOS Notes app. Create the note first if it does not already exist.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a Safari"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari",
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "Best Paper",
+        "folder": null
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list_ci",
+          "parameters": [
+            [
+              "Visual Autoregressive Modeling",
+              "Stochastic Taylor Derivative Estimator"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "note_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_find_note_by_title",
+      "parameters": {
+        "title": "Best Paper"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Best Paper"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_paper_1",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Best Paper"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Visual Autoregressive Modeling"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_paper_2",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Best Paper"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Stochastic Taylor Derivative Estimator"
+          ]
+        ]
+      }
+    }
+  ]
+}

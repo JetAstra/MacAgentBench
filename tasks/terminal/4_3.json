@@ -1,0 +1,41 @@
+{
+  "id": "4_3",
+  "system_img": "default",
+  "instruction": "Using the Terminal, go ahead and create a new file located at the path /Users/Shared/hello.txt",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_files_in_directory"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "/Users/Shared",
+        "required_files": [
+          "hello.txt"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

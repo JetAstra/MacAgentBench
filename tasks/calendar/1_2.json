@@ -1,0 +1,41 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Open the Calendar App and add a recurring event named 'Lab Meeting' scheduled for every Thursday at 8:00PM.\nHint: Set the recurrence through the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_weekly_event"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "event_name": "Lab Meeting",
+        "start_hour": 20,
+        "start_minute": 0,
+        "day": "Thursday"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

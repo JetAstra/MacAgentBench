@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_7_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, remove the note located at \"Journal/Old Quick Note.md\" by deleting it.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Journal/Old Quick Note.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Old Quick Note\\n\\nThis was copied elsewhere already.\\n'); obsidian-cli create \"Journal/Old Quick Note.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli delete \"Journal/Old Quick Note.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Journal/Old Quick Note.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

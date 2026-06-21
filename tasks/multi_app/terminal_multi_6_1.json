@@ -1,0 +1,85 @@
+{
+  "id": "terminal_multi_6_1",
+  "system_img": "default",
+  "instruction": "Read the content of the file 'ddl.txt' Located at Desktop and use it as the note body for a reminder titled 'abs ddl terminal_multi_6' in the macOS Reminders app. If a reminder with that title does not exist, create it first.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "echo '20250512' > ~/Desktop/ddl.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "reminder"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_body_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "abs ddl terminal_multi_6"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": "20250512"
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.34,
+      "capability": "app_state",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "abs ddl terminal_multi_6"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_body",
+      "weight": 0.33,
+      "capability": "content_match",
+      "func": "reminders_get_body_by_name",
+      "parameters": {
+        "reminder_name": "abs ddl terminal_multi_6"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "body_correct",
+      "weight": 0.33,
+      "capability": "research",
+      "func": "reminders_get_body_by_name",
+      "parameters": {
+        "reminder_name": "abs ddl terminal_multi_6"
+      },
+      "rule": {
+        "type": "common",
+        "func": "exact_match",
+        "parameters": [
+          "20250512"
+        ]
+      }
+    }
+  ]
+}

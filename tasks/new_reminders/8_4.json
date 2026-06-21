@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_8_4",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and set the reminder with the title \"Backup photos\" to completed status.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Backup photos\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Backup photos\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Backup photos\"\n  exit 1\nfi\nremindctl complete \"$reminder_id\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_completed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Backup photos"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

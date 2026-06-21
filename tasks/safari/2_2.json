@@ -1,0 +1,50 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "At the top level of Safari's bookmarks (not inside the Bookmarks Bar), create a new folder named 'tech news'. Add at least three webpages to this folder, ensuring that one of them is 'https://www.google.com/'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Google Chrome'"
+        ]
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "safari_get_bookmarks_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "tech news"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "check_list_length_and_contains_element",
+          "parameters": [
+            ">=",
+            3,
+            "https://www.google.com/"
+          ]
+        }
+      }
+    ]
+  }
+}

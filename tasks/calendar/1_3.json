@@ -1,0 +1,41 @@
+{
+  "id": "1_3",
+  "system_img": "default",
+  "instruction": "Using the Calendar App, set up a recurring event named 'Gym' that takes place every Monday at 2:30PM.\nHint: The recurrence must be set using the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_weekly_event"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "event_name": "Gym",
+        "start_hour": 14,
+        "start_minute": 30,
+        "day": "Monday"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

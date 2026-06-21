@@ -1,0 +1,44 @@
+{
+  "id": "numbers_1_3",
+  "system_img": "default",
+  "instruction": "Working within the Numbers app, carry out each of the following steps:\n1. Using the template 'Blank', create a new document and assign it the name 'test'.\n2. Change the name of the default sheet so that it reads 'test sheet'.\n3. Give the default table the new name 'table 111'.\n4. Save the document at the path 'Documents/test.numbers'.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Numbers'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_create_and_save_table"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "template_name": "Blank",
+        "doc_name": "test",
+        "file_name": "Documents/test.numbers",
+        "sheet_name": "test sheet",
+        "table_name": "table 111"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "3_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app. Unmark all reminders in the list \"Groceries\" so they are uncompleted, then mark 'Milk', 'Eggs' and 'Bread' as completed.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_all_completed_with_expected_items"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Groceries",
+        "preset_items": [
+          "Milk",
+          "Eggs",
+          "Bread"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

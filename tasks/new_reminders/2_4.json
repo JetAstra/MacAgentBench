@@ -1,0 +1,51 @@
+{
+  "id": "new_reminders_2_4",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, add a reminder with the title \"Team retro prep\" and set its due date to \"2026-07-10 11:15\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl add --title \"Team retro prep\" --due \"2026-07-10 11:15\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists",
+      "new_reminders_check_reminder_due_datetime"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Team retro prep"
+      },
+      {
+        "title": "Team retro prep",
+        "due_datetime": "2026-07-10 11:15"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

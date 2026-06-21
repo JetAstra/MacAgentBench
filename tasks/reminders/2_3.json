@@ -1,0 +1,41 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, set up a new reminder list called 'TODO', then add a reminder titled 'todo list' with a due date in the year 2027.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_due_year"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "todo list",
+        "list_name": "TODO"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            2027
+          ]
+        }
+      }
+    ]
+  }
+}

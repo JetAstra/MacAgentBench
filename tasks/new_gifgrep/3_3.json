@@ -1,0 +1,41 @@
+{
+  "id": "new_gifgrep_3_3",
+  "system_img": "default",
+  "instruction": "From the file \"$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif\", capture a still frame at 1.0s as a PNG and write it to \"$HOME/Desktop/gifgrep_still_3_3.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gifgrep still \"$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif\" --at 1.0s -o \"$HOME/Desktop/gifgrep_still_3_3.png\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_still_matches_expected_hash"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_still_3_3.png",
+        "input_gif_path": "$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif",
+        "at_time": "1.0s"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -169,43 +169,55 @@ def setting_get_siri_status_and_voice(env: MacOSEnv) -> dict:
         }
     """
     env.connect_ssh()
-    force_close_system_settings(env)
-
-    open_script = """
-    tell application "System Settings"
-        if it is running then quit
-    end tell
-    delay 0.5
+    
+    open_siri_apple_script = """
+    if exists application "System Settings"
+        tell application "System Settings" to quit
+        delay 5
+    end if
+    
     tell application "System Settings"
         activate
-        reveal anchor "Siri" of pane id "com.apple.Siri-Settings.extension"
     end tell
-    """
-    env.run_command(f"sudo osascript -e '{open_script.strip()}'")
 
-    time.sleep(5)
+    delay 5
+    """
+    
+    open_siri_bash_script = """
+    open "x-apple.systempreferences:com.apple.Siri"
+    """
 
     apple_script = """
     tell application "System Events"
         tell application process "System Settings"
+            delay 2
             try
-                set siri_enabled to value of checkbox 1 of group 1 of scroll area 1 of group 1 of group 2 of splitter group 1 of group 1 of window 1
-            on error
-                set siri_enabled to "Error"
+                set siriContainer to group 2 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+                
+                set siri_enabled to value of checkbox "Siri" of siriContainer
+                
+                set all_texts to value of static texts of siriContainer
+                set voice_info to "Unknown"
+                
+                repeat with i from 1 to (count of all_texts)
+                    if item i of all_texts is "Voice" then
+                        set voice_info to item (i + 1) of all_texts
+                        exit repeat
+                    end if
+                end repeat
+                
+                return "Siri Enabled: " & siri_enabled & " | Voice: " & voice_info
+            on error errStr
+                return "Error: " & errStr
             end try
-
-            try
-                set voice_info to value of static text 4 of group 2 of scroll area 1 of group 1 of group 2 of splitter group 1 of group 1 of window 1
-            on error
-                set voice_info to "Error"
-            end try
-
-            return "Siri Enabled: " & siri_enabled & " | Voice: " & voice_info
         end tell
     end tell
     """
 
     try:
+        
+        stdout, stderr = env.run_command(f"osascript -e '{open_siri_apple_script}'")
+        stdout, stderr = env.run_command(f"{open_siri_bash_script}")
         stdout, stderr = env.run_command(f"osascript -e '{apple_script}'")
         output = (
             stdout.read().decode().strip()
@@ -213,6 +225,7 @@ def setting_get_siri_status_and_voice(env: MacOSEnv) -> dict:
             else stdout.strip()
         )
         logger.info(f"[setting_check_siri_status] Raw output: {output}")
+        logger.info(f"[setting_check_siri_status] Error: {stderr}")
 
         enabled = "Siri Enabled: 1" in output
         voice = output.split("Voice: ")[-1] if "Voice: " in output else "Unknown"
@@ -271,7 +284,7 @@ def setting_dump_siri_panel(env):
         return []
 
 
-def settings_check_purple_and_tinting_off(env) -> bool:
+def settings_check_color_and_tinting_status(env, color: str, status: str) -> bool:
     """
     Check if accent color is set to purple and 'Allow wallpaper tinting in windows' is disabled.
 
@@ -289,7 +302,7 @@ def settings_check_purple_and_tinting_off(env) -> bool:
             if hasattr(stdout, "read")
             else stdout.strip()
         )
-        accent_ok = accent_str == "5"
+        accent_ok = accent_str == color
 
         # 2. Navigate to Appearance via View menu
         nav_script = """
@@ -308,8 +321,15 @@ def settings_check_purple_and_tinting_off(env) -> bool:
         tint_script = """
         tell application "System Events"
             tell application process "System Settings"
-                set checkbox_val to value of checkbox 1 of group 1 of scroll area 1 of group 1 of group 2 of splitter group 1 of group 1 of window 1
-                return checkbox_val as string
+                -- 指定到 window "Appearance" 确保准确性
+                tell window "Appearance"
+                    -- 这是根据你提供的 entire contents 整理出的完整路径
+                    set targetCheckbox to checkbox "Tint window background with wallpaper color" of group 4 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1
+                    
+                    -- 获取当前状态（0 为关闭，1 为开启）
+                    set currentState to value of targetCheckbox as boolean
+                    return currentState
+                end tell
             end tell
         end tell
         """
@@ -319,10 +339,10 @@ def settings_check_purple_and_tinting_off(env) -> bool:
             if hasattr(stdout, "read")
             else stdout.strip()
         )
-        tinting_ok = checkbox_val == "0"
+        tinting_ok = checkbox_val == status
 
         logger.info(
-            f"[Accent] {accent_str} (purple? {accent_ok}) | [Wallpaper Tinting] {checkbox_val} (disabled? {tinting_ok})"
+            f"[Accent] {accent_str} (color? {accent_ok}) | [Wallpaper Tinting] {checkbox_val} (correct status? {tinting_ok})"
         )
 
         return accent_ok and tinting_ok
@@ -385,10 +405,10 @@ def settings_check_dnd_repeated_calls_enabled(env: MacOSEnv) -> bool:
     tell application "System Events"
         tell process "System Settings"
             try
-                click button 1 of group 1 of scroll area 1 of group 1 of group 2 of splitter group 1 of group 1 of window 1
-                delay 0.5
-                click button 1 of group 2 of scroll area 1 of group 1 of group 2 of splitter group 1 of group 1 of window 1
-                delay 0.5
+                click button 1 of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+                delay 1
+                click button 1 of group 2 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+                delay 1
             on error errMsg
                 return "Click error: " & errMsg
             end try
@@ -396,14 +416,20 @@ def settings_check_dnd_repeated_calls_enabled(env: MacOSEnv) -> bool:
     end tell
     """
     env.run_command(f"osascript -e '{click_dnd_script.strip()}'")
-    time.sleep(1)
+    time.sleep(2)
 
     read_checkbox_script = """
     tell application "System Events"
         tell process "System Settings"
             try
-                set repeated_call_value to value of checkbox 1 of group 2 of scroll area 1 of group 1 of sheet 1 of window 1
-                return repeated_call_value
+                set s to sheet 1 of window 1
+                set allElems to entire contents of s
+                repeat with el in allElems
+                    if role of el is "AXCheckBox" and name of el is "Allow repeated calls" then
+                        return value of el
+                    end if
+                end repeat
+                return "not found"
             on error errMsg
                 return "Read error: " & errMsg
             end try
@@ -418,6 +444,35 @@ def settings_check_dnd_repeated_calls_enabled(env: MacOSEnv) -> bool:
     logger.info(f"[settings_check_dnd_repeated_calls_enabled] Raw output: {output}")
 
     return output == "1"
+
+
+# ====================================================================== #
+# Fine-grained checkpoint helper (added 2026-04-12).
+# ====================================================================== #
+
+
+def check_app_is_running(env, app_name: str) -> bool:
+    """
+    Check whether a macOS application is currently running.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        app_name (str): Application name (e.g. "Contacts", "Safari")
+
+    Returns:
+        bool: True if the app is in the running process list.
+    """
+    env.connect_ssh()
+    cmd = f'pgrep -x "{app_name}" >/dev/null 2>&1 && echo "running" || echo "not_running"'
+    stdout, _ = env.run_command(cmd)
+    output = (
+        stdout.read().decode().strip()
+        if hasattr(stdout, "read")
+        else stdout.strip()
+    )
+    found = output == "running"
+    logger.info(f"[check_app_is_running] {app_name}: {found}")
+    return found
 
 
 if __name__ == "__main__":

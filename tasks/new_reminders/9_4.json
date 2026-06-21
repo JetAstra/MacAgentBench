@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_9_4",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and remove the reminder with the title \"Archive me\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Archive me\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Archive me\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Archive me\"\n  exit 1\nfi\nremindctl delete \"$reminder_id\" --force",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Archive me"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

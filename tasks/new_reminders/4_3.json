@@ -1,0 +1,53 @@
+{
+  "id": "new_reminders_4_3",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, add a new reminder with the title \"Submit tax docs\", placing it in the \"Admin\" list and setting its due date to \"2026-05-30\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Admin\" --create && remindctl add --title \"Submit tax docs\" --list \"Admin\" --due \"2026-05-30\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists_in_list",
+      "new_reminders_check_reminder_due_date_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Submit tax docs",
+        "list_name": "Admin"
+      },
+      {
+        "title": "Submit tax docs",
+        "list_name": "Admin",
+        "due_date": "2026-05-30"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

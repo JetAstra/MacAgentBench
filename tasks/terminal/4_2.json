@@ -1,0 +1,41 @@
+{
+  "id": "4_2",
+  "system_img": "default",
+  "instruction": "Using the Terminal, create a file at /Users/Shared/2.txt",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_files_in_directory"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "/Users/Shared",
+        "required_files": [
+          "2.txt"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

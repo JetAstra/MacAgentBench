@@ -1,0 +1,46 @@
+{
+  "id": "new_apple_notes_5_2",
+  "system_img": "default",
+  "instruction": "Open Apple Notes and add a note with the title \"Weekly Goals\" inside the \"Study\" folder.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder",
+      "parameters": {
+        "folder_name": "Study"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "cat > /tmp/memo_auto_add.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nWeekly Goals\n\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_add.sh\nEDITOR=/tmp/memo_auto_add.sh memo notes --folder \"Study\" --add",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Weekly Goals",
+        "folder_name": "Study"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_3_3",
+  "system_img": "default",
+  "instruction": "Your goal is to determine how many emails in the Inbox have the keyword \"Pipeline\" appearing in the email body, making sure to search across all pages. Once you have the count, save the result as JSON to \"$HOME/Desktop/mail_body_keyword_count_3_3.json\". The output should be JSON only, with no extra text. The required keys are: keyword (string) and count (integer) — no additional keys should be included.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json body \"Pipeline\" 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then count=0; else count=$(printf '%s\\n' \"$all\" | jq -s 'add | length'); fi; jq -n --arg keyword \"Pipeline\" --argjson count \"$count\" '{keyword:$keyword,count:$count}' > \"$HOME/Desktop/mail_body_keyword_count_3_3.json\"",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_json_equals_live"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_body_keyword_count_3_3.json",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json body \"Pipeline\" 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then count=0; else count=$(printf '%s\\n' \"$all\" | jq -s 'add | length'); fi; jq -n --arg keyword \"Pipeline\" --argjson count \"$count\" '{keyword:$keyword,count:$count}'"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

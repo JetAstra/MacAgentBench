@@ -1,0 +1,49 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "Open the VScode workspace at ~/Library/example_code1 and replace every tab character (\\t) across all files with exactly four spaces. Leave all other content untouched. Disregard any syntax errors or formatting issues present in the files.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p ~/Library/example_code1",
+          "printf 'def hello():\\n\\tprint(\"hello\")\\n\\tfor i in range(10):\\n\\t\\tprint(i)\\n\\t\\tif i > 5:\\n\\t\\t\\tbreak\\n\\treturn True\\n' > ~/Library/example_code1/main.py",
+          "printf 'Name\\tAge\\tCity\\nAlice\\t30\\tNew York\\nBob\\t25\\tLondon\\nCharlie\\t35\\tParis\\n' > ~/Library/example_code1/data.csv",
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_tab_to_4space_replacement"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder": "~/Library/example_code1",
+        "files": [
+          "main.py",
+          "data.csv"
+        ],
+        "original_contents": {
+          "main.py": "def hello():\n\tprint(\"hello\")\n\tfor i in range(10):\n\t\tprint(i)\n\t\tif i > 5:\n\t\t\tbreak\n\treturn True\n",
+          "data.csv": "Name\tAge\tCity\nAlice\t30\tNew York\nBob\t25\tLondon\nCharlie\t35\tParis\n"
+        }
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

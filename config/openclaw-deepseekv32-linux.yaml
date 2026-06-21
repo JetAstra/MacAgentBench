@@ -1,0 +1,8 @@
+mode: docker
+platform: linux
+docker_name: evalkit_macos_openclaw_deepseekv32
+host_ip: localhost
+port: 50938
+username: pipiwu
+password: "1234"
+action_space: "pyautogui"

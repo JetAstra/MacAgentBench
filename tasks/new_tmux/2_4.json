@@ -1,0 +1,58 @@
+{
+  "id": "new_tmux_2_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Terminal, determine if the tmux session \"tmux-wait-check-b4\" is currently awaiting user input, then store the outcome as JSON in \"$HOME/Desktop/tmux_result_2_4.json\". The field \"session\" should be set to \"tmux-wait-check-b4\", and the field \"waiting_for_input\" should be true when the session is waiting for input, or false otherwise.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/tmux_result_2_4.json\"",
+          "tmux kill-session -t \"tmux-wait-check-b4\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-wait-check-b4\" \"printf '%s\\n' 'scheduler loop active' 'Processing without prompt' 'TMUX_IDLE_MARKER_2D'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/tmux_result_2_4.json\"\nimport json\nimport subprocess\nout = subprocess.check_output(['tmux', 'capture-pane', '-t', 'tmux-wait-check-b4', '-p'], text=True)\nwaiting = 'Type y to continue' in out or 'Waiting for confirmation' in out\nprint(json.dumps({'session': 'tmux-wait-check-b4', 'waiting_for_input': waiting}))\nPY",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_json_key_value",
+      "new_tmux_check_json_key_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tmux_result_2_4.json",
+        "key": "session",
+        "expected_value": "tmux-wait-check-b4"
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_2_4.json",
+        "key": "waiting_for_input",
+        "expected_value": false
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

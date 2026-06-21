@@ -29,17 +29,27 @@ def _get_remote_timezone(env: MacOSEnv):
     """
     Best-effort fetch of the evaluated macOS timezone.
     """
+    tz_link = _run_command(env, "readlink /etc/localtime 2>/dev/null || true").strip()
+    if tz_link:
+        marker = "/zoneinfo/"
+        if marker in tz_link:
+            tz_name = tz_link.split(marker, 1)[1].strip()
+            try:
+                return ZoneInfo(tz_name)
+            except Exception:
+                logger.error(f"Failed to load remote timezone from /etc/localtime: {tz_name}")
+
     tz_name = _run_command(
         env,
-        r"""python3 -c 'from zoneinfo import ZoneInfo; import os; print(os.environ.get("TZ", "") or ZoneInfo("localtime").key)'""",
-    )
-    if not tz_name:
-        return None
-    try:
-        return ZoneInfo(tz_name.strip())
-    except Exception:
-        logger.error(f"Failed to load remote timezone: {tz_name}")
-        return None
+        r"""python3 -c 'import os; print(os.environ.get("TZ", ""))'""",
+    ).strip()
+    if tz_name:
+        try:
+            return ZoneInfo(tz_name)
+        except Exception:
+            logger.error(f"Failed to load remote timezone from TZ: {tz_name}")
+
+    return None
 
 
 def _run_osascript(env: MacOSEnv, script: str) -> str:
@@ -462,3 +472,38 @@ def new_reminders_check_list_absent(env: MacOSEnv, list_name: str) -> bool:
     Prefer remindctl JSON output; fallback to plain output.
     """
     return not new_reminders_check_list_exists(env, list_name)
+
+
+# ====================================================================== #
+# Fine-grained checkpoint helper (added 2026-04-12).
+# ====================================================================== #
+
+
+def reminders_get_titles_in_list(env: MacOSEnv, list_name: str) -> list:
+    """
+    Return all reminder titles in a given list.
+
+    Used with ``ratio_match`` to check whether a reminder whose title
+    contains a specific substring exists in the list (e.g. checking
+    that the title includes the correct postal code).
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        list_name (str): Exact list name to search in
+
+    Returns:
+        list[str]: Titles of all reminders in the list, or ``[]`` on error.
+    """
+    json_output = _run_remindctl(env, "all --json")
+    payload = _parse_remindctl_json(json_output)
+    if payload is None:
+        return []
+
+    entries = _collect_reminder_entries(payload)
+    titles = [
+        e.get("title", "")
+        for e in entries
+        if e.get("list_name") == list_name and e.get("title")
+    ]
+    logger.info(f"[reminders_get_titles_in_list] {list_name!r}: {titles}")
+    return titles

@@ -1,0 +1,125 @@
+{
+  "id": "reminders_multi_5_3",
+  "system_img": "default",
+  "instruction": "Using the Terminal app, determine which Swift version is currently installed on this Mac; next, in the Safari app, search for the release year of that particular Swift version; finally, within the Reminders app, set up a new list called \"Apple Systems\" and create a reminder with the title \"Swift {major.minor version} Release\", assigning its due date to that release year.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_due_year"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "Swift 6.2 Release",
+        "list_name": "Apple Systems"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            2025
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "list_exists",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "new_reminders_check_list_exists",
+      "parameters": {
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_keyword",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Swift"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_release",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Release"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "reminder_exact",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "new_reminders_check_reminder_exists_in_list",
+      "parameters": {
+        "title": "Swift 6.2 Release",
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "due_year_exact",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_year",
+      "parameters": {
+        "reminder_name": "Swift 6.2 Release",
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "exact_match",
+        "parameters": [
+          2025
+        ]
+      }
+    }
+  ]
+}

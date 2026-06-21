@@ -1,0 +1,144 @@
+{
+  "id": "notes_multi_3_1",
+  "system_img": "default",
+  "instruction": "In Safari, search for the Palace Museum in Beijing and find its official website URL; then in the Notes app, create a folder named \"Scenic Websites\", create a note inside it titled \"Palace Museum\", and enter the official website URL.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "Palace Museum",
+        "folder": "Scenic Websites"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "dpm.org.cn"
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "folder_exists",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "notes_check_folder_exists",
+      "parameters": {
+        "folder_name": "Scenic Websites"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "note_in_folder",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "new_apple_notes_check_note_exists_in_folder",
+      "parameters": {
+        "note_title": "Palace Museum",
+        "folder_name": "Scenic Websites"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Palace Museum",
+        "folder": "Scenic Websites"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_url_format",
+      "weight": 0.17,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Palace Museum",
+        "folder": "Scenic Websites"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            ".org"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_domain",
+      "weight": 0.16,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Palace Museum",
+        "folder": "Scenic Websites"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "dpm.org"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "url_exact",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Palace Museum",
+        "folder": "Scenic Websites"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "dpm.org.cn"
+          ]
+        ]
+      }
+    }
+  ]
+}

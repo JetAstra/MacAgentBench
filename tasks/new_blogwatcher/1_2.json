@@ -1,0 +1,39 @@
+{
+  "id": "new_blogwatcher_1_2",
+  "system_img": "default",
+  "instruction": "Open blogwatcher and create a new blog entry with the name \"xkcd\" and the URL \"https://xkcd.com/rss.xml\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher add \"xkcd\" \"https://xkcd.com/rss.xml\" --feed-url \"https://xkcd.com/rss.xml\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "xkcd"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_6_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using the Reminders app, find every overdue reminder and save all of their titles to a file called \"missed_items.txt\" located on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl overdue --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/missed_items.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_overdue_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/missed_items.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "new_blogwatcher_1_3",
+  "system_img": "default",
+  "instruction": "Within blogwatcher, create a new blog entry with the name \"HN Frontpage\" and the URL \"https://news.ycombinator.com/rss\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher add \"HN Frontpage\" \"https://news.ycombinator.com/rss\" --feed-url \"https://news.ycombinator.com/rss\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "HN Frontpage"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

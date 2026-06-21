@@ -1,0 +1,71 @@
+{
+  "id": "finder_multi_5_3",
+  "system_img": "default",
+  "instruction": "There's a new empty folder I just made—figure out which one it is, then go ahead and rename it to new_project in Finder.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p /Users/Shared/project",
+          "open -a 'Finder'",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_folder_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "/Users/Shared/new_project"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "found_folder",
+      "weight": 0.5,
+      "capability": "research",
+      "func": "finder_check_folder_exists",
+      "parameters": {
+        "folder_path": "/Users/Shared/project"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_false",
+        "parameters": []
+      }
+    },
+    {
+      "name": "renamed_correctly",
+      "weight": 0.5,
+      "capability": "app_state",
+      "func": "finder_check_folder_exists",
+      "parameters": {
+        "folder_path": "/Users/Shared/new_project"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

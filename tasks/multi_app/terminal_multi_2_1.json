@@ -1,0 +1,116 @@
+{
+  "id": "terminal_multi_2_1",
+  "system_img": "default",
+  "instruction": "Can you help me find the first command on the webpage shown in Safari that can show the top 10 largest files, copy it, and run it in the home directory (~)? Also save the command you found to ~/Desktop/command.txt and its output to ~/Desktop/output.txt.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a Safari https://unix.stackexchange.com/questions/37221/finding-files-that-use-the-most-disk-space"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_read_file_contents",
+      "terminal_check_output_matches_command"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "~/Desktop/command.txt"
+      },
+      {
+        "file_path": "~/Desktop/output.txt",
+        "reference_command": "cd ~ && du . | sort -nr | head -n10"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "du . | sort -nr | head -n10"
+          ]
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "command_file_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Desktop/command.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "command_correct",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Desktop/command.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "du . | sort -nr | head -n10"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "output_file_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Desktop/output.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "output_correct",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "terminal_check_output_matches_command",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Desktop/output.txt",
+        "reference_command": "cd ~ && du . | sort -nr | head -n10"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

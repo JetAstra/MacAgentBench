@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_6_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using the Reminders app, find every overdue reminder and then save all of their titles into a file called \"past_due.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl overdue --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/past_due.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_overdue_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/past_due.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

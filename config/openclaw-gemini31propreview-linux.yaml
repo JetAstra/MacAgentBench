@@ -1,0 +1,8 @@
+mode: docker
+platform: linux
+docker_name: evalkit_macos_openclaw_gemini31propreview
+host_ip: localhost
+port: 50934
+username: pipiwu
+password: "1234"
+action_space: "pyautogui"

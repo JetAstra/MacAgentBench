@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_2_2",
+  "system_img": "default",
+  "instruction": "Open Apple Notes, list all notes in the folder \"Study\", and save all note titles to a file named \"study_notes.md\" on the Desktop.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Study",
+        "note_title": "Study plan",
+        "note_body": "Study plan"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "memo notes -f \"Study\" | awk '/^[0-9]+\\./ { line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title != \"\") print title }' > \"$HOME/Desktop/study_notes.md\"",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_file_contains_all_titles_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Study",
+        "output_file": "$HOME/Desktop/study_notes.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

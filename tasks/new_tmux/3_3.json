@@ -1,0 +1,64 @@
+{
+  "id": "new_tmux_3_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Terminal, determine which tmux session references \"permission\", then export the findings as JSON to \"$HOME/Desktop/tmux_result_3_3.json\". The field \"keyword\" should be set to \"permission\", and \"matched_sessions\" should contain the names of the tmux sessions where it appears.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/tmux_result_3_3.json\"",
+          "tmux kill-session -t \"tmux-scan-a3\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-scan-b3\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-scan-c3\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-scan-a3\" \"printf '%s\\\\n' 'docs worker: healthy' 'TMUX_SCAN_MARKER_3A3'; tail -f /dev/null\"",
+          "tmux new-session -d -s \"tmux-scan-b3\" \"printf '%s\\\\n' 'permission required for release cut' 'TMUX_PERMISSION_MARKER_3B3'; tail -f /dev/null\"",
+          "tmux new-session -d -s \"tmux-scan-c3\" \"printf '%s\\\\n' 'feed sync: running' 'TMUX_SCAN_MARKER_3C3'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/tmux_result_3_3.json\"\nimport json\nimport subprocess\nsessions = ['tmux-scan-a3', 'tmux-scan-b3', 'tmux-scan-c3']\nmatched = []\nfor session in sessions:\n    out = subprocess.check_output(['tmux', 'capture-pane', '-t', session, '-p'], text=True)\n    if 'permission' in out:\n        matched.append(session)\nprint(json.dumps({'keyword': 'permission', 'matched_sessions': matched}))\nPY",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_json_key_value",
+      "new_tmux_check_json_list_exact"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tmux_result_3_3.json",
+        "key": "keyword",
+        "expected_value": "permission"
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_3_3.json",
+        "key": "matched_sessions",
+        "expected_list": [
+          "tmux-scan-b3"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

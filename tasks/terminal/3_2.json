@@ -1,0 +1,41 @@
+{
+  "id": "3_2",
+  "system_img": "default",
+  "instruction": "Place a hidden shell script in the ~/Desktop/ directory. Name the file so it includes the string hello_world. Have the script print 'Hello, World!' and exit. Set the file permission to 700 (owner has full access, no permissions for group or others). Ensure only one file in that directory matches the pattern. The script must be successfully executable via terminal.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_echo_macos_script"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "base_path": "/Users/pipiwu/Desktop",
+        "file_pattern": ".*hello_world*",
+        "permission": "700",
+        "expected_output": "Hello, World!"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

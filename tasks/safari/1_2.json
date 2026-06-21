@@ -1,0 +1,51 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Launch Safari, turn off the Favorites section in the default view, and go to the Bing search homepage.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "safari_get_url",
+      "safari_get_startpage_section_enabled"
+    ],
+    "conj": "and",
+    "parameters": [
+      {},
+      {
+        "section_id": "favoritesItemIdentifier"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str",
+          "parameters": [
+            "bing.com"
+          ]
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            "0"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "In the Notes app, make a folder called \"Class Notes\" and then create 5 notes inside that folder.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_count_notes_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Class Notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "compare_numbers",
+          "parameters": [
+            "==",
+            5
+          ]
+        }
+      }
+    ]
+  }
+}

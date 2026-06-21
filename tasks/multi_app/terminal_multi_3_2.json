@@ -1,0 +1,119 @@
+{
+  "id": "terminal_multi_3_2",
+  "system_img": "default",
+  "instruction": "Read path.txt, then remove any files in ~/Documents that do not appear in path.txt.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "echo -e \"~/Documents/file_a.txt\n~/Documents/file_b.txt\" > ~/Desktop/path.txt"
+        ]
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/file_a.txt ~/Documents/file_b.txt ~/Documents/file_c.txt"
+        ]
+      }
+    }
+  ],
+  "reference_command": "rm ~/Documents/file_c.txt",
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_files_in_directory",
+      "terminal_check_files_in_directory"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "file_a.txt",
+          "file_b.txt"
+        ]
+      },
+      {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "file_c.txt"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_false",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "kept_file_a",
+      "weight": 0.33,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "file_a.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "kept_file_b",
+      "weight": 0.33,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "file_b.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "deleted_file_c",
+      "weight": 0.34,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "file_c.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_false",
+        "parameters": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "new_gifgrep_2_2",
+  "system_img": "default",
+  "instruction": "Search Tenor for \"team celebration\", take the first GIF result, download it, and save it to \"$HOME/Desktop/gifgrep_download_2_2.gif\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "first_url=$(gifgrep \"team celebration\" --source tenor --format url | head -n 1)\nif [ -z \"$first_url\" ]; then\n  echo \"No GIF URL found for query: team celebration\"\n  exit 1\nfi\ncurl -L \"$first_url\" -o \"$HOME/Desktop/gifgrep_download_2_2.gif\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_download_matches_first_result"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_download_2_2.gif",
+        "query": "team celebration",
+        "source": "tenor"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "new_reminders_7_4",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, retrieve every reminder from \"Travel\" and save all of their titles to a file called \"travel_reminders.txt\" located on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Travel\" --create",
+          "remindctl add --title \"Travel Seed Reminder\" --list \"Travel\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Travel\" --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/travel_reminders.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_all_titles_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Travel",
+        "output_file": "$HOME/Desktop/travel_reminders.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

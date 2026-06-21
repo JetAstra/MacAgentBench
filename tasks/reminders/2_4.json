@@ -1,0 +1,41 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, make a new reminder list called 'Read', then create a reminder titled 'paper list' with a due date in the year 2030.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_due_year"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "paper list",
+        "list_name": "Read"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            2030
+          ]
+        }
+      }
+    ]
+  }
+}

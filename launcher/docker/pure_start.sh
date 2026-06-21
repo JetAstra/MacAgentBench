@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo docker run -itd \
-    --name "macos_arena_pure" \
+    --name "mac_agent_bench_pure" \
     --device /dev/kvm \
     -p 52272:10022 \
     -p 5902:5902 \

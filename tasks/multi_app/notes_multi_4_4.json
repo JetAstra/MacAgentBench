@@ -1,0 +1,144 @@
+{
+  "id": "notes_multi_4_4",
+  "system_img": "default",
+  "instruction": "Using the Safari app, look up the official Fudan University website and locate the fax number for its International Students Office. After that, open the Notes app, create a folder called \"Fudan University\", then create a note with the title \"Fax\" and type in only the fax number (digits and hyphens only, no country code).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "Fax",
+        "folder": "Fudan University"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "021-65117298"
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "folder_exists",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "notes_check_folder_exists",
+      "parameters": {
+        "folder_name": "Fudan University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "note_in_folder",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "new_apple_notes_check_note_exists_in_folder",
+      "parameters": {
+        "note_title": "Fax",
+        "folder_name": "Fudan University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Fudan University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_area_code",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Fudan University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "021"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_fax_format",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Fudan University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "021-"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "fax_exact",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Fudan University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "021-65117298"
+          ]
+        ]
+      }
+    }
+  ]
+}

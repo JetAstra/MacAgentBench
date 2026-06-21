@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_4_2",
+  "system_img": "default",
+  "instruction": "Open blogwatcher, display all discovered articles, and save all article titles to a file named \"articles_2.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"NYTimes Technology Feed\" \"https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml\" --feed-url \"https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "necessary": false,
+  "reference_command": "blogwatcher articles > \"$HOME/Desktop/articles_2.txt\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_article_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/articles_2.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "new_peekaboo_10_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Take whatever text is currently on the clipboard and save it to \"/tmp/peekaboo_clipboard_capture_3.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "printf 'notes copied from clipboard' | pbcopy",
+          "rm -f /tmp/peekaboo_clipboard_capture_3.txt",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "peekaboo clipboard --action get --json | jq -r '.data.textPreview' > /tmp/peekaboo_clipboard_capture_3.txt",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_file_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "/tmp/peekaboo_clipboard_capture_3.txt",
+        "expected_content": "notes copied from clipboard"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

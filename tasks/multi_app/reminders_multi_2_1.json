@@ -1,0 +1,136 @@
+{
+  "id": "reminders_multi_2_1",
+  "system_img": "default",
+  "instruction": "In the Calendar app, locate the event scheduled on June 10, 2050, then in the Reminders app, create a reminder with the same title that is due next week at 9:00 AM.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'",
+          "osascript -e 'tell application \"Calendar\"' -e 'if not (exists calendar \"Team Presentations\") then make new calendar with properties {name:\"Team Presentations\"}' -e 'tell calendar \"Team Presentations\"' -e 'make new event with properties {summary:\"Team Presentation\", start date:date \"June 10, 2050 at 10:00 AM\", end date:date \"June 10, 2050 at 11:00 AM\"}' -e 'end tell' -e 'end tell'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_work_due_next_week",
+      "reminders_check_due_time"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "Team Presentation"
+      },
+      {
+        "reminder_name": "Team Presentation",
+        "target_hour": 9,
+        "target_minute": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_due_date",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "has_due": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_next_week",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_check_work_due_next_week",
+      "parameters": {
+        "reminder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "due_hour",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hour": 9
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_minute",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minute": 0
+          }
+        ]
+      }
+    }
+  ]
+}

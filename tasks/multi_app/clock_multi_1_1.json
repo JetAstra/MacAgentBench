@@ -1,0 +1,119 @@
+{
+  "id": "clock_multi_1_1",
+  "system_img": "default",
+  "instruction": "In the Clock App, set an alarm for the local time when the Chelyabinsk meteor entered Earth's atmosphere (February 15, 2013) as recorded by Wikipedia, on everyday (Monday through Sunday) labeled 'Chelyabinsk', using the 'Timba' sound.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_list_alarms"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_dict",
+          "parameters": [
+            {
+              "time": "9:20AM",
+              "label": "Chelyabinsk",
+              "repeat": "Every day",
+              "sound": "Timba"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "alarm_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Chelyabinsk"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "label": "Chelyabinsk"
+          }
+        ]
+      }
+    },
+    {
+      "name": "time_correct",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Chelyabinsk"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "time": "9:20AM"
+          }
+        ]
+      }
+    },
+    {
+      "name": "repeat_every_day",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Chelyabinsk"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "repeat": "Every day"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sound_correct",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Chelyabinsk"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "sound": "Timba"
+          }
+        ]
+      }
+    }
+  ]
+}

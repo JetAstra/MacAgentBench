@@ -1,0 +1,58 @@
+{
+  "id": "new_tmux_2_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Use Terminal to determine if the tmux session \"tmux-wait-check-b2\" is waiting for input. Save the result as JSON to \"$HOME/Desktop/tmux_result_2_2.json\". Set \"session\" to \"tmux-wait-check-b2\" and set \"waiting_for_input\" to true if it is waiting for input, false otherwise.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/tmux_result_2_2.json\"",
+          "tmux kill-session -t \"tmux-wait-check-b2\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-wait-check-b2\" \"printf '%s\\n' 'job finished successfully' 'No input needed' 'TMUX_IDLE_MARKER_2B'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/tmux_result_2_2.json\"\nimport json\nimport subprocess\nout = subprocess.check_output(['tmux', 'capture-pane', '-t', 'tmux-wait-check-b2', '-p'], text=True)\nwaiting = 'Type y to continue' in out or 'Waiting for confirmation' in out\nprint(json.dumps({'session': 'tmux-wait-check-b2', 'waiting_for_input': waiting}))\nPY",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_json_key_value",
+      "new_tmux_check_json_key_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tmux_result_2_2.json",
+        "key": "session",
+        "expected_value": "tmux-wait-check-b2"
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_2_2.json",
+        "key": "waiting_for_input",
+        "expected_value": false
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

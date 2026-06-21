@@ -1,0 +1,39 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Open the Terminal app on macOS, set up a new Conda environment called data_science, and install the pandas package into that environment.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_package_in_conda_env"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "env_name": "data_science",
+        "package_name": "pandas"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

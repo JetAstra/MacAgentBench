@@ -58,7 +58,7 @@ except Exception as e:
 """
 
     safe_code = shlex.quote(python_script.strip())
-    stdout, _ = env.run_command(f"python3 -c {safe_code}")
+    stdout, _ = env.run_command(f"/usr/bin/python3 -c {safe_code}")
     output = (
         stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
     )
@@ -98,7 +98,7 @@ except Exception as e:
 """
 
     safe_code = shlex.quote(remote_py.strip())
-    stdout, _ = env.run_command(f"python3 -c {safe_code}")
+    stdout, _ = env.run_command(f"/usr/bin/python3 -c {safe_code}")
     output = (
         stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
     )
@@ -139,7 +139,7 @@ except Exception as e:
     print("__ERROR__:" + str(e))
 """
     safe_code = shlex.quote(remote_py.strip())
-    stdout, _ = env.run_command(f"python3 -c {safe_code}")
+    stdout, _ = env.run_command(f"/usr/bin/python3 -c {safe_code}")
     output = (
         stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
     )
@@ -244,6 +244,38 @@ def notes_list_attachment_names_by_note_name(env, note_name: str) -> list[str]:
     else:
         logger.error(f"Attachment list error: {output}")
         return []
+
+
+# ====================================================================== #
+# Fine-grained checkpoint helper (added 2026-04-12).
+# ====================================================================== #
+
+
+def notes_check_folder_exists(env, folder_name: str) -> bool:
+    """
+    Check whether a folder with the given name exists in Notes.
+
+    Internally calls ``notes_count_notes_in_folder`` and returns True
+    if count >= 0 without error (meaning the folder was found).
+    An empty folder still returns True.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        folder_name (str): Folder name to look for
+
+    Returns:
+        bool: True if the folder exists in Notes.
+    """
+    env.connect_ssh()
+
+    stdout, _ = env.run_command("memo notes -fl")
+    output = (
+        stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
+    )
+    logger.info(f"[notes_check_folder_exists] {folder_name!r}: {output}")
+    # memo outputs folder names one per line after a header line
+    folder_lines = [line.strip() for line in output.splitlines() if line.strip()]
+    return folder_name in folder_lines
 
 
 if __name__ == "__main__":

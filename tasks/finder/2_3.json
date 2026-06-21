@@ -1,0 +1,43 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "Open Finder and go to the folder at /Users/Shared/example_test. After that, apply the \"Green\" tag to any files whose size exceeds 100KB.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Finder'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_tagged_files_strict"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "directory": "/Users/Shared/example_test",
+        "expected_tagged_files": [
+          "file_b.dat",
+          "file_d.dat"
+        ],
+        "target_tag": "Green"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

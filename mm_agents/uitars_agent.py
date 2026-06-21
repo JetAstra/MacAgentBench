@@ -614,6 +614,10 @@ class UITARSAgent:
         self.model = model
         self.url = url
         if self.url is not None:
+            if model == "UI-TARS-72B-DPO":
+                self.model_type = "qwen2vl"
+            else:
+                self.model_type = "qwen25vl"
             self.vlm = OpenAI(
                 base_url=self.url,
                 api_key="empty",
@@ -622,14 +626,14 @@ class UITARSAgent:
             if model == "uitars72bdpo":
                 self.model_type = "qwen2vl"
                 self.vlm = OpenAI(
-                    base_url="http://10.140.66.5:8003/v1",
+                    base_url="http://YOUR_SERVER:8003/v1",
                     api_key="empty",
                 )
                 # should replace with your UI-TARS server api
             elif model == "ui_tars_15_7b":
                 self.model_type = "qwen25vl"
                 self.vlm = OpenAI(
-                    base_url="http://10.140.66.134:8000/v1",
+                    base_url="http://YOUR_SERVER:8000/v1",
                     api_key="empty",
                 )
             else:
@@ -913,7 +917,13 @@ class UITARSAgent:
                 )
                 print(response.choices[0].message.content)
                 prediction = response.choices[0].message.content.strip()
-                # prediction = response[0]["prediction"].strip()
+                # Token tracking
+                usage = response.usage
+                self.step_input_tokens = getattr(usage, 'prompt_tokens', 0) or 0
+                self.step_output_tokens = getattr(usage, 'completion_tokens', 0) or 0
+                self.step_total_tokens = getattr(usage, 'total_tokens', 0) or 0
+                self.step_cache_read = 0
+                self.step_cache_write = 0
             except Exception as e:
                 print(
                     f"Error when fetching response from client, with response: {response}"
@@ -1027,7 +1037,7 @@ class UITARSAgent:
         interval=30,
         max_tries=10,
     )
-    def reset(self, runtime_logger):
+    def reset(self, runtime_logger=None):
         self.thoughts = []
         self.actions = []
         self.observations = []

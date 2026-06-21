@@ -1,0 +1,49 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "Within the VScode workspace found at ~/Library/example_code3, substitute every tab character (\\t) across all files with exactly four spaces. Leave all other content untouched. Ignore any potential syntax errors or formatting issues in the files.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p ~/Library/example_code3",
+          "printf '#!/bin/bash\\nfor f in *.txt; do\\n\\techo \"Processing $f\"\\n\\tcat \"$f\" | while read line; do\\n\\t\\techo \"\\t$line\"\\n\\tdone\\ndone\\n' > ~/Library/example_code3/run.sh",
+          "printf 'key1\\tvalue1\\nkey2\\tvalue2\\nkey3\\tvalue3\\n\\t\\textra\\tdata\\n' > ~/Library/example_code3/config.txt",
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_tab_to_4space_replacement"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder": "~/Library/example_code3",
+        "files": [
+          "run.sh",
+          "config.txt"
+        ],
+        "original_contents": {
+          "run.sh": "#!/bin/bash\nfor f in *.txt; do\n\techo \"Processing $f\"\n\tcat \"$f\" | while read line; do\n\t\techo \"\t$line\"\n\tdone\ndone\n",
+          "config.txt": "key1\tvalue1\nkey2\tvalue2\nkey3\tvalue3\n\t\textra\tdata\n"
+        }
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

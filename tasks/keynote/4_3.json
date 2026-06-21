@@ -1,0 +1,42 @@
+{
+  "id": "keynote_4_3",
+  "system_img": "default",
+  "instruction": "Using the Keynote app, complete the following steps:\n1. Start by creating a new document'.\n2. From the Desktop, insert an image named 'pic'.\n3. Adjust its size to 100×100 and set its position to (100,10).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_image_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "width": 100,
+        "height": 100,
+        "rotation": 0,
+        "posx": 100,
+        "posy": 10
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

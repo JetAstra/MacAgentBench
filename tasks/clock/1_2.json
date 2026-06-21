@@ -1,0 +1,44 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Open the Clock App and create an alarm at 7:00 PM for weekends (Saturday through Sunday) with the label 'Dinner time' and the 'Duck' sound. Enable this alarm.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_list_alarms"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_dict",
+          "parameters": [
+            {
+              "time": "7:00PM",
+              "label": "Dinner time",
+              "repeat": "Weekends",
+              "sound": "Duck",
+              "enabled": true
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

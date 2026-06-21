@@ -1,0 +1,41 @@
+{
+  "id": "new_peekaboo_3_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Navigate to \"https://www.iana.org/domains/example\" using Safari.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset",
+    "safari"
+  ],
+  "reference_command": "peekaboo open \"https://www.iana.org/domains/example\" --app \"Safari\" --wait-until-ready && peekaboo sleep 2",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_safari_front_url"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_url": "https://www.iana.org/help/example-domains"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

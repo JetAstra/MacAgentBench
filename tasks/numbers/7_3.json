@@ -1,0 +1,45 @@
+{
+  "id": "numbers_7_3",
+  "system_img": "default",
+  "instruction": "Working within the Numbers app, locate every cell in the currently selected table whose value is larger than 10 but smaller than 20, and paint each of those cells red.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 5,
+        "cols": 5
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_change_bgcolor"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 5,
+        "is_larger": true,
+        "min": 10,
+        "is_smaller": true,
+        "max": 20,
+        "is_equal": false
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

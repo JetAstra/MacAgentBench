@@ -1,0 +1,115 @@
+{
+  "id": "terminal_multi_4_3",
+  "system_img": "default",
+  "instruction": "After locating every file within ~/Documents/, each one should be inserted as a file attachment into a note named 'data_files' in the macOS Notes app — creating the note first if it doesn't already exist.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/data_a.txt ~/Documents/data_b.txt ~/Documents/data_c.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_attachment_names_by_note_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_name": "data_files"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "contains_all_elements",
+          "parameters": [
+            [
+              "data_a.txt",
+              "data_b.txt",
+              "data_c.txt"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "note_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_find_note_by_title",
+      "parameters": {
+        "title": "data_files"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_data_a",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "data_files"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "data_a.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_data_b",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "data_files"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "data_b.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_data_c",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "data_files"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "data_c.txt"
+          ]
+        ]
+      }
+    }
+  ]
+}

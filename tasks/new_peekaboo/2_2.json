@@ -1,0 +1,45 @@
+{
+  "id": "new_peekaboo_2_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open TextEdit and type the following text exactly, preserving line breaks:\nStudio checklist\n- Replace interview lights\n- Confirm guest mic levels",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'TextEdit'",
+          "open -a 'Terminal'",
+          "osascript -e 'tell application \"TextEdit\" to activate'",
+          "osascript -e 'tell application \"TextEdit\" to if (count of documents) = 0 then make new document'",
+          "osascript -e 'tell application \"TextEdit\" to set text of document 1 to \"\"'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset",
+    "textedit"
+  ],
+  "reference_command": "peekaboo app launch \"TextEdit\" && peekaboo type 'Studio checklist\n- Replace interview lights\n- Confirm guest mic levels'",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_textedit_document_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_content": "Studio checklist\n- Replace interview lights\n- Confirm guest mic levels"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

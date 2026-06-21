@@ -1,0 +1,51 @@
+{
+  "id": "1_4",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, make a new reminder with the name 'physics homework', assign it a due time of 2:29 PM, and configure its due date as 'Next Week'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_work_due_next_week",
+      "reminders_check_due_time"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "physics homework"
+      },
+      {
+        "reminder_name": "physics homework",
+        "target_hour": 14,
+        "target_minute": 29
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

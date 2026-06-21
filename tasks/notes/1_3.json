@@ -1,0 +1,38 @@
+{
+  "id": "1_3",
+  "system_img": "default",
+  "instruction": "In the Notes app, go ahead and create a new note with the title \"Notes\", after which you should lock it using the password '1234'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_locked_note_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "contains_element",
+          "parameters": [
+            "Notes"
+          ]
+        }
+      }
+    ]
+  }
+}

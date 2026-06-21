@@ -1,0 +1,39 @@
+{
+  "id": "new_reminders_3_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and create a new list called \"Reading Queue\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Reading Queue\" --create",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_list_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Reading Queue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "In the World Clock, add Seattle, and afterwards move it by dragging to the top place of the current list.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock_no_kill"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_get_world_clock_top_item"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            "Seattle"
+          ]
+        }
+      }
+    ]
+  }
+}

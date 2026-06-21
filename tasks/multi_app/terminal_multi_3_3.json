@@ -1,0 +1,119 @@
+{
+  "id": "terminal_multi_3_3",
+  "system_img": "default",
+  "instruction": "After reviewing what path.txt contains, remove any files in the ~/Documents directory that path.txt does not list.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "echo -e \"~/Documents/doc1.txt\n~/Documents/doc2.txt\" > ~/Desktop/path.txt"
+        ]
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/doc1.txt ~/Documents/doc2.txt ~/Documents/doc3.txt ~/Documents/doc4.txt"
+        ]
+      }
+    }
+  ],
+  "reference_command": "rm ~/Documents/doc3.txt ~/Documents/doc4.txt",
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_files_in_directory",
+      "terminal_check_files_in_directory"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "doc1.txt",
+          "doc2.txt"
+        ]
+      },
+      {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "doc3.txt"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_false",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "kept_doc1",
+      "weight": 0.33,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "doc1.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "kept_doc2",
+      "weight": 0.33,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "doc2.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "deleted_doc3",
+      "weight": 0.34,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "doc3.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_false",
+        "parameters": []
+      }
+    }
+  ]
+}

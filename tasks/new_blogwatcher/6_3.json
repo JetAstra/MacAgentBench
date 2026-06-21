@@ -1,0 +1,41 @@
+{
+  "id": "new_blogwatcher_6_3",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, go ahead and mark all unread articles from \"Stack Overflow Blog Feed\" as read.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Stack Overflow Blog Feed\" \"https://stackoverflow.blog/feed/\" --feed-url \"https://stackoverflow.blog/feed/\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher read-all --blog \"Stack Overflow Blog Feed\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_has_no_unread_articles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "Stack Overflow Blog Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

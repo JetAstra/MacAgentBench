@@ -1,0 +1,45 @@
+{
+  "id": "numbers_7_4",
+  "system_img": "default",
+  "instruction": "Using the Numbers app, find every cell in the currently selected table whose value is equal to 20 and change its color to red.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 5,
+        "cols": 5
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_change_bgcolor"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 5,
+        "is_larger": true,
+        "min": 20,
+        "is_smaller": true,
+        "max": 20,
+        "is_equal": true
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

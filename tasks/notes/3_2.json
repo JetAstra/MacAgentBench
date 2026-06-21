@@ -1,0 +1,41 @@
+{
+  "id": "3_2",
+  "system_img": "default",
+  "instruction": "In the Notes app, create a folder called \"Class notes\". Inside it, create a note titled \"math\" with this content: (1) a + b = c\n(2) a + c = 1\n(3) b = 2\n(a, b, c) = ?",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "math",
+        "folder": "Class notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "math\n(1) a + b = c\n(2) a + c = 1\n(3) b = 2\n(a, b, c) = ?"
+          ]
+        }
+      }
+    ]
+  }
+}

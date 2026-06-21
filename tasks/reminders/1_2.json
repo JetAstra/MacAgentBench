@@ -1,0 +1,51 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app. Create a reminder titled 'chemistry homework', set the due time to 8:59 AM, and set the due date to 'Next Week'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_work_due_next_week",
+      "reminders_check_due_time"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "chemistry homework"
+      },
+      {
+        "reminder_name": "chemistry homework",
+        "target_hour": 8,
+        "target_minute": 59
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

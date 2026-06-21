@@ -1,0 +1,128 @@
+{
+  "id": "safari_multi_1_2",
+  "system_img": "default",
+  "instruction": "In Safari, look up the abstract submission deadline for the ICML 2025 main conference. Next, open the Reminders app and create a reminder titled \"ICML abs ddl\" with its due date set to that deadline.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a Safari"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari",
+    "reminder"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_on_date"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "ICML abs ddl",
+        "date_str": "20250123"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "ICML abs ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_due_date",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "ICML abs ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "has_due": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_year",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "ICML abs ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "year": 2025
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_month",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "ICML abs ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "month": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_day",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "ICML abs ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "day": 23
+          }
+        ]
+      }
+    }
+  ]
+}

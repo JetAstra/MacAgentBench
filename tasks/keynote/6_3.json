@@ -1,0 +1,41 @@
+{
+  "id": "keynote_6_3",
+  "system_img": "default",
+  "instruction": "Using the Keynote app, carry out the following steps:\n1. Start by creating a new document'.\n2. Add a text box and type 'strstr' inside it, applying the font 'HelveticaNeue', the color 'red', and a font size of '60'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_text_box_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "red",
+        "content": "strstr",
+        "font_size": 60,
+        "font": "HelveticaNeue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

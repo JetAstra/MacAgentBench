@@ -1,0 +1,41 @@
+{
+  "id": "new_blogwatcher_6_2",
+  "system_img": "default",
+  "instruction": "Open blogwatcher and mark all unread articles from \"JetBrains Blog Feed\" as read.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"JetBrains Blog Feed\" \"https://blog.jetbrains.com/feed/\" --feed-url \"https://blog.jetbrains.com/feed/\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher read-all --blog \"JetBrains Blog Feed\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_has_no_unread_articles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "JetBrains Blog Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

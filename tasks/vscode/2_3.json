@@ -1,0 +1,46 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "Within the VScode workspace found at ~/Library/example_code2, each tab character (\\t) across all files should be replaced with exactly four spaces. No other content may be altered, and any syntax errors or formatting issues present in the files should be left alone.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p ~/Library/example_code2",
+          "printf 'function greet() {\\n\\tconsole.log(\"hi\");\\n\\tif (true) {\\n\\t\\treturn 1;\\n\\t}\\n}\\n' > ~/Library/example_code2/app.js",
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_tab_to_4space_replacement"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder": "~/Library/example_code2",
+        "files": [
+          "app.js"
+        ],
+        "original_contents": {
+          "app.js": "function greet() {\n\tconsole.log(\"hi\");\n\tif (true) {\n\t\treturn 1;\n\t}\n}\n"
+        }
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "id": "new_peekaboo_6_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Take a PNG screenshot of the Notes window and save it to \"$HOME/Desktop/peekaboo_front_window_2.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/peekaboo_front_window_2.png\"",
+          "open -a 'Terminal'",
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "sleep 2 && peekaboo see --app \"Notes\" --path \"$HOME/Desktop/peekaboo_front_window_2.png\"",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_image_exists_nonempty"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/peekaboo_front_window_2.png",
+        "min_size_bytes": 4096
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

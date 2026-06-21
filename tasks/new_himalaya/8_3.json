@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_8_3",
+  "system_img": "default",
+  "instruction": "Search through all pages of the Inbox for emails from senders matching \"calendar@example.com\", and then save the results as JSON to \"$HOME/Desktop/mail_sender_8_3.json\". Output JSON only (no extra text). Required keys: folder (string), sender_pattern (string), subjects (array of strings). Do not include extra keys.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then jq -n --arg f \"Inbox\" --arg p \"calendar@example.com\" '{folder:$f,sender_pattern:$p,subjects:[]}' > \"$HOME/Desktop/mail_sender_8_3.json\"; else printf '%s\\n' \"$all\" | jq -s --arg f \"Inbox\" --arg p \"calendar@example.com\" 'add | {folder:$f,sender_pattern:$p,subjects:([ .[] | select((.from.addr // \"\") | test($p;\"i\")) | (.subject // \"\") ] | map(select(length>0)))}' > \"$HOME/Desktop/mail_sender_8_3.json\"; fi",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_json_equals_live"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_sender_8_3.json",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then jq -n --arg f \"Inbox\" --arg p \"calendar@example.com\" '{folder:$f,sender_pattern:$p,subjects:[]}'; else printf '%s\\n' \"$all\" | jq -s --arg f \"Inbox\" --arg p \"calendar@example.com\" 'add | {folder:$f,sender_pattern:$p,subjects:([ .[] | select((.from.addr // \"\") | test($p;\"i\")) | (.subject // \"\") ] | map(select(length>0)))}'; fi"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

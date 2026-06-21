@@ -1,0 +1,44 @@
+{
+  "id": "1_4",
+  "system_img": "default",
+  "instruction": "Using the Clock App, create a daily alarm set to 12:00 AM with the label 'Time for lunch' and the 'Beacon' sound. After that, enable this alarm.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_list_alarms"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_dict",
+          "parameters": [
+            {
+              "time": "12:00AM",
+              "label": "Time for lunch",
+              "repeat": "Every day",
+              "sound": "Beacon",
+              "enabled": true
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

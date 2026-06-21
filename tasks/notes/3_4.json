@@ -1,0 +1,41 @@
+{
+  "id": "3_4",
+  "system_img": "default",
+  "instruction": "In the Notes app, make a new folder called \"Class notes\". After that, within this folder, create a note with the title \"chemistry\" and enter the following text as its content: (1) Kw \\approx 10^{-14}\n(2) H_2O = H^+ + OH^-",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "chemistry",
+        "folder": "Class notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "chemistry\n(1) Kw \\approx 10^{-14}\n(2) H_2O = H^+ + OH^-"
+          ]
+        }
+      }
+    ]
+  }
+}

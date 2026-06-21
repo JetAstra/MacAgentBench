@@ -1,0 +1,42 @@
+{
+  "id": "keynote_5_3",
+  "system_img": "default",
+  "instruction": "Using the Keynote app, carry out these steps:\n1. Start by creating a new document'.\n2. Add a table that has 3 rows and 5 columns.\n3. Enter 'strstr' into cell C3 (row 3, column 3).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_table_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 3,
+        "cols": 5,
+        "row": 3,
+        "col": 3,
+        "content": "strstr"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

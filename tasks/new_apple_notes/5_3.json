@@ -1,0 +1,46 @@
+{
+  "id": "new_apple_notes_5_3",
+  "system_img": "default",
+  "instruction": "Using Apple Notes, go ahead and create a new note with the title \"Packing List\", placing it inside the \"Travel\" folder.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder",
+      "parameters": {
+        "folder_name": "Travel"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "cat > /tmp/memo_auto_add.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nPacking List\n\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_add.sh\nEDITOR=/tmp/memo_auto_add.sh memo notes --folder \"Travel\" --add",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Packing List",
+        "folder_name": "Travel"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

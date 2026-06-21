@@ -1,0 +1,47 @@
+{
+  "id": "new_obsidian_1_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, gather all notes found within the \"Reading/Research\" folder, then write their paths to \"$HOME/Desktop/obsidian_reading_list_3.txt\", one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_reading_list_3.txt\"",
+          "obsidian-cli delete \"Reading/Research/AI Notes.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Reading/Research/Workflow Summary.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# AI Notes\\n\\n- small tools win when they reduce friction\\n'); obsidian-cli create \"Reading/Research/AI Notes.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Workflow Summary\\n\\n- benchmark tasks need stable evaluator inputs\\n'); obsidian-cli create \"Reading/Research/Workflow Summary.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli list \"Reading/Research\" --vault \"Benchmark\" | sed -E 's/^[[:space:]]*• //' | sed '/\\/$/d' | sed '/^$/d' | awk '{print \"Reading/Research/\" $0}' | sort > \"$HOME/Desktop/obsidian_reading_list_3.txt\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_note_paths_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "folder_path": "Reading/Research",
+        "output_file": "$HOME/Desktop/obsidian_reading_list_3.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

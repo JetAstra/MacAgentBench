@@ -1,0 +1,44 @@
+{
+  "id": "1_3",
+  "system_img": "default",
+  "instruction": "Using the Clock App, create an alarm scheduled for 8:30 AM on Monday and Tuesday with the label 'Paper reading' and the 'Storytime' sound selected. After that, disable this alarm.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_list_alarms"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_dict",
+          "parameters": [
+            {
+              "time": "8:30 AM",
+              "label": "Paper reading",
+              "repeat": "Mon and Tue",
+              "sound": "Storytime",
+              "enabled": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

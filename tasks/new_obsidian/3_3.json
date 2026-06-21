@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_3_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Obsidian, navigate to the note \"Reading/Tool Notes.md\" and transfer its entire contents into \"$HOME/Desktop/obsidian_note_copy_3.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_note_copy_3.md\"",
+          "obsidian-cli delete \"Reading/Tool Notes.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Tool Notes\\n\\nObsidian is easiest to automate when the vault is treated as plain files.\\n'); obsidian-cli create \"Reading/Tool Notes.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli print \"Reading/Tool Notes.md\" --vault \"Benchmark\" > \"$HOME/Desktop/obsidian_note_copy_3.md\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_equals_note_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Reading/Tool Notes.md",
+        "output_file": "$HOME/Desktop/obsidian_note_copy_3.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

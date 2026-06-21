@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_5_3",
+  "system_img": "default",
+  "instruction": "Within blogwatcher, locate the article titled \"Now Shipping: Accessible UX Research, A New Smashing Book By Michele Williams\" from \"Smashing Magazine Feed\" and mark it as read.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Smashing Magazine Feed\" \"https://www.smashingmagazine.com/feed/\" --feed-url \"https://www.smashingmagazine.com/feed/\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "target_id=$(blogwatcher articles --all | awk -v target_blog=\"Smashing Magazine Feed\" -v target_title=\"Now Shipping: Accessible UX Research, A New Smashing Book By Michele Williams\" '/^[[:space:]]*\\[[0-9]+\\][[:space:]]*\\[[^]]+\\][[:space:]]+/ { id=$1; gsub(/\\[|\\]/, \"\", id); line=$0; sub(/^[[:space:]]*\\[[0-9]+\\][[:space:]]*\\[[^]]+\\][[:space:]]+/, \"\", line); title=line; next } /^[[:space:]]*Blog:[[:space:]]*/ { blog=$0; sub(/^[[:space:]]*Blog:[[:space:]]*/, \"\", blog); if (blog == target_blog && title == target_title) { print id; exit } }')\nif [ -z \"$target_id\" ]; then\n  echo \"Article not found for blog/title: Smashing Magazine Feed / Now Shipping: Accessible UX Research, A New Smashing Book By Michele Williams\"\n  exit 1\nfi\nblogwatcher read \"$target_id\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_article_title_is_read"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "Smashing Magazine Feed",
+        "article_title": "Now Shipping: Accessible UX Research, A New Smashing Book By Michele Williams"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

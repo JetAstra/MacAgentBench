@@ -1,0 +1,47 @@
+{
+  "id": "new_apple_notes_7_4",
+  "system_img": "default",
+  "instruction": "Remove the note with the title \"Reading Temp\" from Apple Notes.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Reading Temp",
+        "note_body": "Temporary reading notes."
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "note_index=$(memo notes | awk '/^[0-9]+\\./ { idx=$1; sub(/\\./, \"\", idx); line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title == \"Reading Temp\") { print idx; exit } }')\nif [ -z \"$note_index\" ]; then\n  echo \"Note not found: Reading Temp\"\n  exit 1\nfi\nprintf '%s\\n' \"$note_index\" | memo notes --delete",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Reading Temp"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

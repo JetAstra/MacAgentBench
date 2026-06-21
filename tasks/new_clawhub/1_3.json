@@ -1,0 +1,41 @@
+{
+  "id": "new_clawhub_1_3",
+  "system_img": "default",
+  "instruction": "Using ClawHub, get \"release-coordination-toolkit\" version \"1.2.0\" installed into \"$HOME/Desktop/clawhub_skills_1_3\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p \"$HOME/Desktop/clawhub_skills_1_3\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "# Note: This step may fail intermittently due to ClawHub rate limits. If it fails, retry a few times.\nclawhub install release-coordination-toolkit --version 1.2.0 --dir \"$HOME/Desktop/clawhub_skills_1_3\"",
+  "evaluator": {
+    "func": [
+      "new_clawhub_check_skill_installed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "install_dir": "$HOME/Desktop/clawhub_skills_1_3",
+        "skill_slug": "release-coordination-toolkit"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_4_3",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, pull up all discovered articles and save all article titles to a file named \"articles_3.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"ZDNet News Feed\" \"https://www.zdnet.com/news/rss.xml\" --feed-url \"https://www.zdnet.com/news/rss.xml\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "necessary": false,
+  "reference_command": "blogwatcher articles > \"$HOME/Desktop/articles_3.txt\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_article_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/articles_3.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

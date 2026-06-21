@@ -1,0 +1,41 @@
+{
+  "id": "keynote_6_2",
+  "system_img": "default",
+  "instruction": "Open Keynote and perform these steps:\n1. Create a new document.\n2. Insert a text box and type 'Not a number!' inside it, setting the font to 'HelveticaNeue', color to 'red', and font size to '32'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_text_box_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "red",
+        "content": "Not a number!",
+        "font_size": 32,
+        "font": "HelveticaNeue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

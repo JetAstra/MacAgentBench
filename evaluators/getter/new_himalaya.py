@@ -137,38 +137,59 @@ def new_himalaya_check_json_equals_live(
         expected_json = json.loads(expected_text)
     except Exception:
         return False
-    # Normalize emails list order when present.
-    def _normalize(value):
-        if isinstance(value, dict):
-            out = {}
-            for k, v in value.items():
-                if k == "emails" and isinstance(v, list):
-                    norm_items = []
-                    for item in v:
-                        if isinstance(item, dict):
-                            norm_item = {
-                                kk: (
-                                    " ".join(str(vv).strip().split())
-                                    if isinstance(vv, str)
-                                    else vv
-                                )
-                                for kk, vv in item.items()
-                            }
-                            norm_items.append(norm_item)
-                        else:
-                            norm_items.append(item)
-                    norm_items.sort(
-                        key=lambda x: json.dumps(x, sort_keys=True, ensure_ascii=False)
-                    )
-                    out[k] = norm_items
-                else:
-                    out[k] = _normalize(v)
-            return out
-        if isinstance(value, list):
-            return [_normalize(v) for v in value]
-        return value
+    def _norm_str(value):
+        return " ".join(str(value).strip().split()) if isinstance(value, str) else value
 
-    return _normalize(output_json) == _normalize(expected_json)
+    def _compare_email_item(output_item, expected_item):
+        if not isinstance(output_item, dict) or not isinstance(expected_item, dict):
+            return output_item == expected_item
+
+        output_keys = set(output_item.keys())
+        expected_keys = set(expected_item.keys())
+        if output_keys != expected_keys:
+            return False
+
+        for key in expected_keys:
+            out_v = _norm_str(output_item.get(key))
+            exp_v = _norm_str(expected_item.get(key))
+            if key == "sender" and isinstance(out_v, str) and isinstance(exp_v, str):
+                if exp_v not in out_v:
+                    return False
+            elif out_v != exp_v:
+                return False
+        return True
+
+    def _compare(output_value, expected_value):
+        if isinstance(output_value, dict) and isinstance(expected_value, dict):
+            if set(output_value.keys()) != set(expected_value.keys()):
+                return False
+            for key in expected_value:
+                out_v = output_value[key]
+                exp_v = expected_value[key]
+                if key == "emails" and isinstance(out_v, list) and isinstance(exp_v, list):
+                    if len(out_v) != len(exp_v):
+                        return False
+                    out_sorted = sorted(
+                        out_v,
+                        key=lambda x: json.dumps(x, sort_keys=True, ensure_ascii=False),
+                    )
+                    exp_sorted = sorted(
+                        exp_v,
+                        key=lambda x: json.dumps(x, sort_keys=True, ensure_ascii=False),
+                    )
+                    for out_item, exp_item in zip(out_sorted, exp_sorted):
+                        if not _compare_email_item(out_item, exp_item):
+                            return False
+                elif not _compare(out_v, exp_v):
+                    return False
+            return True
+        if isinstance(output_value, list) and isinstance(expected_value, list):
+            if len(output_value) != len(expected_value):
+                return False
+            return all(_compare(o, e) for o, e in zip(output_value, expected_value))
+        return _norm_str(output_value) == _norm_str(expected_value)
+
+    return _compare(output_json, expected_json)
 
 
 def new_himalaya_check_keyword_moved(

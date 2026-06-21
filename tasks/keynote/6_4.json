@@ -1,0 +1,41 @@
+{
+  "id": "keynote_6_4",
+  "system_img": "default",
+  "instruction": "Using the Keynote app, perform the following steps:\n1. Open a new document'.\n2. Add a text box and type 'TODO' inside it, setting the font to 'HelveticaNeue', the color to 'red', and the font size to '24'",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_text_box_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "red",
+        "content": "TODO",
+        "font_size": 24,
+        "font": "HelveticaNeue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

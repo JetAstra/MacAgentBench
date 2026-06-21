@@ -1,0 +1,90 @@
+{
+  "id": "finder_multi_1_3",
+  "system_img": "default",
+  "instruction": "Go ahead and open a Finder window, then navigate to /Users/Shared/1/11/11/1, create an empty file called \"data.txt\" if it doesn't already exist, and apply the \"Green\" tag to it.",
+  "config": [],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_file_tag"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/Shared/1/11/11/1/data.txt",
+        "target_tag": "Green"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "dir_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_folder_exists",
+      "parameters": {
+        "folder_path": "/Users/Shared/1/11/11/1"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "file_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/data.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "tag_attempted",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "finder_check_file_has_tag_xattr",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/data.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "tag_correct",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "finder_check_file_tag",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/data.txt",
+        "target_tag": "Green"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

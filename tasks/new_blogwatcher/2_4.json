@@ -1,0 +1,40 @@
+{
+  "id": "new_blogwatcher_2_4",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, display all tracked blogs and save all blog names to a file named \"tracked_blogs_4.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Engadget Feed\" \"https://www.engadget.com/rss.xml\" --feed-url \"https://www.engadget.com/rss.xml\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher blogs > \"$HOME/Desktop/tracked_blogs_4.txt\" 2>&1",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_blog_names"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tracked_blogs_4.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "id": "notes_multi_4_2",
+  "system_img": "default",
+  "instruction": "Open Safari, search for Peking University's official website, and locate the fax number of its main administrative office (Office of the President). Next, open Notes, create a folder called \"Peking University\", add a note titled \"Fax\", and enter the fax number only (digits and hyphens, no country code).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "Fax",
+        "folder": "Peking University"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "010-62751233"
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "folder_exists",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "notes_check_folder_exists",
+      "parameters": {
+        "folder_name": "Peking University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "note_in_folder",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "new_apple_notes_check_note_exists_in_folder",
+      "parameters": {
+        "note_title": "Fax",
+        "folder_name": "Peking University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Peking University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_area_code",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Peking University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "010"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_fax_format",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Peking University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "010-"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "fax_exact",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Peking University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "010-62751233"
+          ]
+        ]
+      }
+    }
+  ]
+}

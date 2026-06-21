@@ -1,0 +1,102 @@
+{
+  "id": "clock_multi_2_4",
+  "system_img": "default",
+  "instruction": "Open the Clock App and create a timer set to 'the winning time of the men's 400m hurdles champion at the 2019 World Athletics Championships in Doha (using only seconds)'. After that, start the timer and then cancel it. To finish, clear out the Recents section within the Timers view.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_check_clock_timer_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "seconds": 47
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "timer_minutes_zero",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minutes": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_seconds",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "seconds": 47
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_hours_zero",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hours": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "recents_cleared",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_check_timer_recents_empty",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

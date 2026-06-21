@@ -1,0 +1,39 @@
+{
+  "id": "3_3",
+  "system_img": "default",
+  "instruction": "Using the Clock app, configure a timer for 30 seconds and start it, after which you should cancel the timer. To finish, clear the Recents section within the Timers view.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_check_clock_timer_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "minutes": 0,
+        "seconds": 30
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

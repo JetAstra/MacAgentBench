@@ -1,0 +1,39 @@
+{
+  "id": "3_4",
+  "system_img": "default",
+  "instruction": "Using the Clock app, configure a timer with a duration of 5 minutes and 21 seconds, begin running the timer, and then cancel it. After that, remove all entries from the Recents section within the Timers view.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_check_clock_timer_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "minutes": 5,
+        "seconds": 21
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

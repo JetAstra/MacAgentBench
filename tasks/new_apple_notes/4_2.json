@@ -1,0 +1,40 @@
+{
+  "id": "new_apple_notes_4_2",
+  "system_img": "default",
+  "instruction": "Open Apple Notes and create a note with the title \"Daily Reminder\". Set the body to \"Remember to review the plan tonight.\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "cat > /tmp/memo_auto_add.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nDaily Reminder\n\nRemember to review the plan tonight.\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_add.sh\nEDITOR=/tmp/memo_auto_add.sh memo notes --folder \"Work\" --add",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_with_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Daily Reminder",
+        "note_content": "Remember to review the plan tonight."
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "id": "calendar_multi_3_3",
+  "system_img": "default",
+  "instruction": "Using the Calendar App, set up a weekly recurring event named 'Friday' that repeats on the same day of the week corresponding to the date the world's first SMS text message was sent (December 3, 1992), starting at 3:30PM and ending at 5:15PM.\nHint: The recurrence must be set using the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_weekly_event_advanced"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "event_name": "Friday",
+        "weekday": "Thursday",
+        "start_hour": 15,
+        "start_minute": 30,
+        "end_hour": 17,
+        "end_minute": 15
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "create_event",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_exists",
+      "parameters": {
+        "event_name": "Friday"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "is_recurring_weekly",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_is_recurring",
+      "parameters": {
+        "event_name": "Friday",
+        "frequency": "WEEKLY"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "on_thursday",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "calendar_check_event_weekday",
+      "parameters": {
+        "event_name": "Friday",
+        "weekday": "Thursday"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "start_at_1530",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_start_time",
+      "parameters": {
+        "event_name": "Friday",
+        "hour": 15,
+        "minute": 30
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "end_at_1715",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_end_time",
+      "parameters": {
+        "event_name": "Friday",
+        "hour": 17,
+        "minute": 15
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

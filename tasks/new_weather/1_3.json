@@ -1,0 +1,40 @@
+{
+  "id": "new_weather_1_3",
+  "system_img": "default",
+  "instruction": "I'd like you to look up the current weather in \"Tokyo\" and then save the result to \"$HOME/Desktop/weather_now_1_3.txt\" using exactly this 4-line format:\ntemperature: <value>C\nwind: <value>km/h\nhumidity: <value>%\nprecipitation: <value>mm",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "curl -s 'wttr.in/Tokyo?m&format=temperature:%t%20wind:%w%20humidity:%h%20precipitation:%p' > \"$HOME/Desktop/weather_now_1_3.txt\"",
+  "evaluator": {
+    "func": [
+      "new_weather_check_contains_live_current_values"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/weather_now_1_3.txt",
+        "expected_command": "curl -s 'wttr.in/Tokyo?m&format=temperature:%t%20wind:%w%20humidity:%h%20precipitation:%p'"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

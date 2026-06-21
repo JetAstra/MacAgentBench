@@ -1,0 +1,51 @@
+{
+  "id": "new_reminders_2_3",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, you should create a new reminder with the title \"Pay internet bill\" and set its due date to \"2026-06-01 18:45\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl add --title \"Pay internet bill\" --due \"2026-06-01 18:45\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists",
+      "new_reminders_check_reminder_due_datetime"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Pay internet bill"
+      },
+      {
+        "title": "Pay internet bill",
+        "due_datetime": "2026-06-01 18:45"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

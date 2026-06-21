@@ -1,0 +1,42 @@
+{
+  "id": "keynote_5_2",
+  "system_img": "default",
+  "instruction": "Open Keynote and perform these steps:\n1. Create a new document.\n2. Insert a table containing 6 rows and 4 columns.\n3. Enter 'Not a number!' in cell B2 (row 2, column 2).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_table_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 6,
+        "cols": 4,
+        "row": 2,
+        "col": 2,
+        "content": "Not a number!"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

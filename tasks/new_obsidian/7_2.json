@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_7_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Delete the note \"Projects/Discarded Outline.md\" in Obsidian.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Projects/Discarded Outline.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Discarded Outline\\n\\nAn older structure that is no longer needed.\\n'); obsidian-cli create \"Projects/Discarded Outline.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli delete \"Projects/Discarded Outline.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Projects/Discarded Outline.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "Within the /tmp directory, you need to create a .tar.gz archive called archive_YYYYMMDD.tar.gz (where YYYYMMDD is today's date). This archive must include at least ten files. The archive's permissions should be configured so that the owner has read and write permissions, the group has read-only permission, and others have no permissions.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_archive_validity_count_name_mod"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "base_path": "/tmp",
+        "min_files": 10,
+        "permission": "640"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

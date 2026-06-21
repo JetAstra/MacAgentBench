@@ -1,0 +1,58 @@
+{
+  "id": "new_tmux_1_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Terminal, inspect the current activity of tmux session \"tmux-shared-read-a2\", and save the result as JSON to \"$HOME/Desktop/tmux_result_1_2.json\". Set \"session\" to \"tmux-shared-read-a2\" and set \"latest_output\" to the most recent output from that tmux session.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/tmux_result_1_2.json\"",
+          "tmux kill-session -t \"tmux-shared-read-a2\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-shared-read-a2\" \"printf '%s\\\\n' 'sync worker: ready' 'last task: cache warmup' 'TMUX_SHARED_MARKER_1B'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/tmux_result_1_2.json\"\nimport json\nimport subprocess\nout = subprocess.check_output(['tmux', 'capture-pane', '-t', 'tmux-shared-read-a2', '-p'], text=True)\nlines = [line for line in out.splitlines() if line.strip()]\nlatest_output = '\\n'.join(lines[-20:])\nprint(json.dumps({'session': 'tmux-shared-read-a2', 'latest_output': latest_output}))\nPY",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_json_key_value",
+      "new_tmux_check_json_key_contains_text"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tmux_result_1_2.json",
+        "key": "session",
+        "expected_value": "tmux-shared-read-a2"
+      },
+      {
+        "output_file": "$HOME/Desktop/tmux_result_1_2.json",
+        "key": "latest_output",
+        "expected_text": "TMUX_SHARED_MARKER_1B"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

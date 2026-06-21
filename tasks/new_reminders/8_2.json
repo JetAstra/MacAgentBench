@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_8_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and mark the reminder titled \"Review PR #128\" as completed.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Review PR #128\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Review PR #128\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Review PR #128\"\n  exit 1\nfi\nremindctl complete \"$reminder_id\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_completed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Review PR #128"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

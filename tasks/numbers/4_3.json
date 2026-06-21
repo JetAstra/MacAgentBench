@@ -1,0 +1,42 @@
+{
+  "id": "numbers_4_3",
+  "system_img": "default",
+  "instruction": "Within the Numbers app, navigate to the currently selected table and use Find and Replace so that every occurrence of '20' is replaced with '30'.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 6,
+        "cols": 6
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_value_replacement"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 6,
+        "cols": 6,
+        "target_value": 20,
+        "replace_value": 30
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "In the Notes app, go ahead and set up a new folder called \"Class Notes\", then populate it with at least two notes.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_count_notes_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Class Notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "compare_numbers",
+          "parameters": [
+            ">=",
+            2
+          ]
+        }
+      }
+    ]
+  }
+}

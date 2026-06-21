@@ -1,0 +1,103 @@
+{
+  "id": "clock_multi_4_3",
+  "system_img": "default",
+  "instruction": "Using the Clock App, configure a timer where the minutes correspond to 'Serbia's total score in the 2023 FIBA Basketball World Cup final against Germany', go ahead and start that timer, then cancel it. To finish, clear the Recents section in the Timers view.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_check_clock_timer_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "hours": 1,
+        "minutes": 17
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "timer_hours",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hours": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_minutes",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minutes": 17
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_seconds_zero",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "seconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "recents_cleared",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_check_timer_recents_empty",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

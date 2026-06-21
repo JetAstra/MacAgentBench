@@ -1,0 +1,42 @@
+{
+  "id": "4_3",
+  "system_img": "default",
+  "instruction": "Within the Notes app, you should create a new note with the title \"Class Notes\", making sure it contains an attachment called \"physics.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_attachment_names_by_note_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_name": "Class Notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "physics.txt"
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

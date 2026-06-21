@@ -1,0 +1,128 @@
+{
+  "id": "safari_multi_1_3",
+  "system_img": "default",
+  "instruction": "In Safari, look up the main conference paper submission deadline for CVPR 2025. Once you have the date, open the Reminders app and add a new reminder titled \"CVPR paper ddl\", setting its due date to match that deadline.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a Safari"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari",
+    "reminder"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_on_date"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "CVPR paper ddl",
+        "date_str": "20241114"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "CVPR paper ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_due_date",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "CVPR paper ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "has_due": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_year",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "CVPR paper ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "year": 2024
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_month",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "CVPR paper ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "month": 11
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_day",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_date",
+      "parameters": {
+        "reminder_name": "CVPR paper ddl"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "day": 14
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "pages_7_2",
+  "system_img": "default",
+  "instruction": "Open Pages, insert a rectangle shape into the front document, then set its position to (1, 1), its width to 3 inches, and its height to 1.5 inches.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_shape_pos_and_size"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "pos": "1, 1",
+        "width": 3,
+        "height": 1.5
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

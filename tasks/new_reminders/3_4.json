@@ -1,0 +1,39 @@
+{
+  "id": "new_reminders_3_4",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and make a new list with the name \"Road Trip\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Road Trip\" --create",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_list_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Road Trip"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

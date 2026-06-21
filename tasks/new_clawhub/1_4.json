@@ -1,0 +1,41 @@
+{
+  "id": "new_clawhub_1_4",
+  "system_img": "default",
+  "instruction": "Using ClawHub, install \"data-quality-operations\" into \"$HOME/Desktop/clawhub_skills_1_4\" without providing any specific version.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p \"$HOME/Desktop/clawhub_skills_1_4\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "# Note: This step may fail intermittently due to ClawHub rate limits. If it fails, retry a few times.\nclawhub install data-quality-operations --dir \"$HOME/Desktop/clawhub_skills_1_4\"",
+  "evaluator": {
+    "func": [
+      "new_clawhub_check_skill_installed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "install_dir": "$HOME/Desktop/clawhub_skills_1_4",
+        "skill_slug": "data-quality-operations"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

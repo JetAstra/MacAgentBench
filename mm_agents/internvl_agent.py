@@ -241,7 +241,7 @@ class InternvlAgent:
         platform: str = "macos",
         model: str = "gui_v91",
         url: str = None,
-        # base_url: str = "http://10.140.60.36:10017/v1",
+        # base_url: str = "http://YOUR_SERVER:10017/v1",
         api_key: str = "empty",
         max_tokens: int = 1500,
         temperature: float = 0.5,
@@ -256,15 +256,15 @@ class InternvlAgent:
             self.base_url = self.url
         else:
             if self.model == "gui_v91":
-                self.base_url = "http://10.140.60.93:10017/v1"
+                self.base_url = "http://YOUR_SERVER:10017/v1"
             elif self.model == "gui_v99":
-                self.base_url = "http://10.140.60.23:10019/v1"
+                self.base_url = "http://YOUR_SERVER:10019/v1"
             elif self.model == "gui_v108":
-                self.base_url = "http://10.140.60.107:10025/v1"
+                self.base_url = "http://YOUR_SERVER:10025/v1"
             elif self.model == "gui_v113":
-                self.base_url = "http://10.140.60.116:10029/v1"
+                self.base_url = "http://YOUR_SERVER:10029/v1"
             elif self.model == "gui_v126":
-                self.base_url = "http://10.140.66.139:10025/v1"
+                self.base_url = "http://YOUR_SERVER:10025/v1"
             elif self.model == "ScaleCUA":
                 self.base_url = "http://127.0.0.1:10028/v1"
             else:
@@ -416,7 +416,7 @@ class InternvlAgent:
                 x = f"{float(x) * SCREEN_WITDH:.4f}"
             if y is not None:
                 y = f"{float(y) * SCREEN_HEIGHT:.4f}"
-            if self.model != "gui_v91" and x is not None and y is not None:
+            if self.model not in ("gui_v91", "InternVL3_5-8B", "InternVL3_5-14B") and x is not None and y is not None:
                 x = str(float(x) / smart_w)
                 y = str(float(y) / smart_h)
             clicks = get_arg("clicks", 2, 1)
@@ -433,7 +433,7 @@ class InternvlAgent:
                 x = f"{float(x) * SCREEN_WITDH:.4f}"
             if y is not None:
                 y = f"{float(y) * SCREEN_HEIGHT:.4f}"
-            if self.model != "gui_v91" and x and y:
+            if self.model not in ("gui_v91", "InternVL3_5-8B", "InternVL3_5-14B") and x and y:
                 x = str(float(x) / smart_w)
                 y = str(float(y) / smart_h)
             return (
@@ -449,7 +449,7 @@ class InternvlAgent:
                 x = f"{float(x) * SCREEN_WITDH:.4f}"
             if y is not None:
                 y = f"{float(y) * SCREEN_HEIGHT:.4f}"
-            if self.model != "gui_v91" and x and y:
+            if self.model not in ("gui_v91", "InternVL3_5-8B", "InternVL3_5-14B") and x and y:
                 x = str(float(x) / smart_w)
                 y = str(float(y) / smart_h)
             return (
@@ -469,7 +469,7 @@ class InternvlAgent:
             if x is not None and y is not None:
                 x = f"{float(x) * SCREEN_WITDH:.4f}"
                 y = f"{float(y) * SCREEN_HEIGHT:.4f}"
-                if self.model != "gui_v91":
+                if self.model not in ("gui_v91", "InternVL3_5-8B", "InternVL3_5-14B"):
                     x = str(float(x) / smart_w)
                     y = str(float(y) / smart_h)
                 return f"pyautogui.moveTo({x}, {y})"
@@ -483,7 +483,7 @@ class InternvlAgent:
             if x is not None and y is not None:
                 x = f"{float(x) * SCREEN_WITDH:.4f}"
                 y = f"{float(y) * SCREEN_HEIGHT:.4f}"
-                if self.model != "gui_v91":
+                if self.model not in ("gui_v91", "InternVL3_5-8B", "InternVL3_5-14B"):
                     x = str(float(x) / smart_w)
                     y = str(float(y) / smart_h)
                 return (
@@ -576,6 +576,13 @@ class InternvlAgent:
             max_tokens=self.max_tokens,
             temperature=self.temperature,
         )
+
+        usage = resp.usage
+        self.step_input_tokens = getattr(usage, 'prompt_tokens', 0) or 0
+        self.step_output_tokens = getattr(usage, 'completion_tokens', 0) or 0
+        self.step_total_tokens = getattr(usage, 'total_tokens', 0) or 0
+        self.step_cache_read = 0
+        self.step_cache_write = 0
 
         content = resp.choices[0].message.content
         print(content)

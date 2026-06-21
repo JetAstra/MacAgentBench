@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_6_4",
+  "system_img": "default",
+  "instruction": "Open the note called \"Reading Queue\" in Apple Notes and add \"Finish the first chapter this week.\" as a new line at the end.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Reading Queue",
+        "note_body": "Books to read"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "note_index=$(memo notes | awk '/^[0-9]+\\./ { idx=$1; sub(/\\./, \"\", idx); line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title == \"Reading Queue\") { print idx; exit } }')\nif [ -z \"$note_index\" ]; then\n  echo \"Note not found: Reading Queue\"\n  exit 1\nfi\ncat > /tmp/memo_auto_edit.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nReading Queue\n\nBooks to read\nFinish the first chapter this week.\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_edit.sh\nprintf '%s\\n' \"$note_index\" | env EDITOR=/tmp/memo_auto_edit.sh memo notes --edit",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_with_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Reading Queue",
+        "note_content": "Finish the first chapter this week."
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

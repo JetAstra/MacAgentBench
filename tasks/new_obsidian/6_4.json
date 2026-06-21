@@ -1,0 +1,63 @@
+{
+  "id": "new_obsidian_6_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, relocate the note \"Meetings/Relocate Agenda.md\" so that it resides at \"Projects/Meeting Prep/Relocate Agenda.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Obsidian'",
+          "sleep 5",
+          "obsidian-cli delete \"Meetings/Relocate Agenda.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Projects/Meeting Prep/Relocate Agenda.md\" --vault \"Benchmark\" || true",
+          "mkdir -p \"/Users/pipiwu/Documents/Benchmark/Benchmark/Projects/Meeting Prep\"",
+          "content=$(printf '%b' '# Relocate Agenda\\n\\nmarker: meeting-prep\\n'); obsidian-cli create \"Meetings/Relocate Agenda.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Agenda Reference\\n\\nWiki link: [[Meetings/Relocate Agenda]]\\nMarkdown link: [source](Meetings/Relocate%20Agenda.md)\\n'); obsidian-cli create \"Meetings/Agenda Reference.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli move \"Meetings/Relocate Agenda.md\" \"Projects/Meeting Prep/Relocate Agenda.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_moved",
+      "new_obsidian_check_links_updated_after_move"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "source_note_path": "Meetings/Relocate Agenda.md",
+        "target_note_path": "Projects/Meeting Prep/Relocate Agenda.md",
+        "expected_text": "meeting-prep"
+      },
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "referrer_note_path": "Meetings/Agenda Reference.md",
+        "old_link_text": "Meetings/Relocate Agenda",
+        "new_link_text": "Projects/Meeting Prep/Relocate Agenda"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

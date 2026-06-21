@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_10_4",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and remove the list called \"Travel Preparation\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Travel Preparation\" --create",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Travel Preparation\" --delete",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_list_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Travel Preparation"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

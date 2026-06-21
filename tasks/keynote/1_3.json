@@ -1,0 +1,39 @@
+{
+  "id": "keynote_1_3",
+  "system_img": "default",
+  "instruction": "Working within the Keynote app, complete the following steps:\n1. Set up a new document based on the 'Basic White' template, giving it the name 'keynote_t1_test_1'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_doc_creation"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "template_name": "Basic White",
+        "doc_name": "keynote_t1_test_1"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

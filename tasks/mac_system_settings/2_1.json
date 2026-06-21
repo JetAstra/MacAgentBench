@@ -1,0 +1,39 @@
+{
+  "id": "2_1",
+  "system_img": "default",
+  "instruction": "In the System Settings, set the accent color to purple and turn off the option 'Tint window background with wallpaper color'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'System Settings'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "mac_system_settings"
+  ],
+  "evaluator": {
+    "func": [
+      "settings_check_color_and_tinting_status"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "5",
+        "status": "false"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

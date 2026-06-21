@@ -1,0 +1,39 @@
+{
+  "id": "1_3",
+  "system_img": "default",
+  "instruction": "Using the Terminal app on macOS, set up a fresh Conda environment called web_dev, then install the flask package inside that environment.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_package_in_conda_env"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "env_name": "web_dev",
+        "package_name": "flask"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

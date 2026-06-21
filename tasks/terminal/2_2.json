@@ -1,0 +1,40 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "Create a .tar.gz archive named archive_YYYYMMDD.tar.gz (where YYYYMMDD is today's date) in the ~/Desktop directory. Include at least three files in the archive. Set its permissions so only the current user has read, write, and execute permissions, granting no permissions to group or others.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_archive_validity_count_name_mod"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "base_path": "/Users/pipiwu/Desktop",
+        "min_files": 3,
+        "permission": "700"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

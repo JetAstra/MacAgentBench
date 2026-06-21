@@ -1,0 +1,38 @@
+{
+  "id": "keynote_2_3",
+  "system_img": "default",
+  "instruction": "Working within the Keynote app, carry out the following steps:\n1. Start by creating a new document.\n2. Insert a new slide, then remove every text box that appears on it.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_item_delection"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "del_cnt": 3
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

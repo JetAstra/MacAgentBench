@@ -1,0 +1,45 @@
+{
+  "id": "pages_7_4",
+  "system_img": "default",
+  "instruction": "Using the Pages app, insert a rounded rectangle shape into the front document. After that, set its position to (4, 0), adjust its width to 2 inches, and modify its height to 0.5 inches.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_shape_pos_and_size"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "pos": "4, 0",
+        "width": 2,
+        "height": 0.5
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

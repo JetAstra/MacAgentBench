@@ -411,22 +411,24 @@ class PromptAgent:
     )
     def call_llm(self, payload):
 
-        if self.model.startswith("gpt"):
+        if self.model.startswith("gpt") or self.model.startswith("gemini"):
             headers = {
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
             }
-            logger.logger.info("Generating content with GPT model: %s", self.model)
+            logger.logger.info("Generating content with model: %s", self.model)
 
+            openai_base_url = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com")
+            api_url = f"{openai_base_url.rstrip('/')}/v1/chat/completions"
             response = requests.post(
-                # "https://api.lqqq.cc/v1/chat/completions",
-                "https://api.openai.com/v1/chat/completions",
+                api_url,
                 headers=headers,
                 json=payload,
+                timeout=120,
             )
 
             if response.status_code != 200:
-                if response.json()["error"]["code"] == "context_length_exceeded":
+                if response.json().get("error", {}).get("code") == "context_length_exceeded":
                     logger.logger.error(
                         "Context length exceeded. Retrying with a smaller context."
                     )
@@ -434,9 +436,10 @@ class PromptAgent:
                         "messages"
                     ][-1:]
                     retry_response = requests.post(
-                        "https://api.openai.com/v1/chat/completions",
+                        api_url,
                         headers=headers,
                         json=payload,
+                        timeout=120,
                     )
                     if retry_response.status_code != 200:
                         logger.logger.error(
@@ -446,10 +449,21 @@ class PromptAgent:
                         return ""
 
                 logger.logger.error("Failed to call LLM: " + response.text)
+                self.step_input_tokens = 0
+                self.step_output_tokens = 0
+                self.step_cache_read = 0
+                self.step_cache_write = 0
                 time.sleep(5)
                 return ""
             else:
-                return response.json()["choices"][0]["message"]["content"]
+                resp_json = response.json()
+                usage = resp_json.get("usage", {})
+                self.step_input_tokens = (usage.get("prompt_tokens", 0) or 0)
+                self.step_output_tokens = (usage.get("completion_tokens", 0) or 0)
+                self.step_total_tokens = (usage.get("total_tokens", 0) or 0)
+                self.step_cache_read = (usage.get("prompt_tokens_details", {}) or {}).get("cached_tokens", 0) or 0
+                self.step_cache_write = 0
+                return resp_json["choices"][0]["message"]["content"]
 
         elif self.model.startswith("claude"):
             messages = payload["messages"]
@@ -507,19 +521,31 @@ class PromptAgent:
                 "top_p": top_p,
             }
 
+            anthropic_base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
             response = requests.post(
-                "https://api.anthropic.com/v1/messages",
+                f"{anthropic_base_url.rstrip('/')}/v1/messages",
                 headers=headers,
                 json=payload,
+                timeout=120,
             )
 
             if response.status_code != 200:
 
                 logger.logger.error("Failed to call LLM: " + response.text)
+                self.step_input_tokens = 0
+                self.step_output_tokens = 0
+                self.step_cache_read = 0
+                self.step_cache_write = 0
                 time.sleep(5)
                 return ""
             else:
-                return response.json()["content"][0]["text"]
+                resp_json = response.json()
+                usage = resp_json.get("usage", {})
+                self.step_input_tokens = usage.get("input_tokens", 0) or 0
+                self.step_output_tokens = usage.get("output_tokens", 0) or 0
+                self.step_cache_read = usage.get("cache_read_input_tokens", 0) or 0
+                self.step_cache_write = usage.get("cache_creation_input_tokens", 0) or 0
+                return resp_json["content"][0]["text"]
 
         elif self.model.startswith("mistral"):
             messages = payload["messages"]

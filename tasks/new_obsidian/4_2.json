@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_4_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Obsidian and create a note named \"Projects/Customer Interview Summary.md\". Set its content to exactly:\n\n# Customer Interview Summary\n\nThe team from Portland wants a simpler onboarding checklist.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Projects/Customer Interview Summary.md\" --vault \"Benchmark\" || true",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "content=$(printf '%b' '# Customer Interview Summary\\n\\nThe team from Portland wants a simpler onboarding checklist.\\n'); obsidian-cli create \"Projects/Customer Interview Summary.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_exists_with_exact_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Projects/Customer Interview Summary.md",
+        "expected_content": "# Customer Interview Summary\n\nThe team from Portland wants a simpler onboarding checklist.\n"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

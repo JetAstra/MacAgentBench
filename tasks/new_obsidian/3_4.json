@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_3_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, navigate to the note \"Meetings/Product Retro.md\" and duplicate its entire contents to the file \"$HOME/Desktop/obsidian_note_copy_4.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_note_copy_4.md\"",
+          "obsidian-cli delete \"Meetings/Product Retro.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Product Retro\\n\\nWins:\\n- realistic seed data\\n- stable evaluator targets\\n'); obsidian-cli create \"Meetings/Product Retro.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli print \"Meetings/Product Retro.md\" --vault \"Benchmark\" > \"$HOME/Desktop/obsidian_note_copy_4.md\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_equals_note_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Meetings/Product Retro.md",
+        "output_file": "$HOME/Desktop/obsidian_note_copy_4.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

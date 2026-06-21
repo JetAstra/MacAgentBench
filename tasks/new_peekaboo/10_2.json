@@ -1,0 +1,41 @@
+{
+  "id": "new_peekaboo_10_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Copy this text to the clipboard exactly, preserving line breaks:\nSprint recap\n- Fix login bug\n- Ship billing patch",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "pbcopy < /dev/null || true",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "peekaboo clipboard --action set --text \"Sprint recap\n- Fix login bug\n- Ship billing patch\" --verify --json",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_clipboard_text_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_text": "Sprint recap\n- Fix login bug\n- Ship billing patch"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

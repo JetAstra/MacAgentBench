@@ -1,0 +1,41 @@
+{
+  "id": "3_4",
+  "system_img": "default",
+  "instruction": "In the ~/Documents/ directory, create a hidden shell script whose file name contains the string run_task. The script should output 'Task executed successfully' and then exit. Set its file permission to 500 (read and execute for the owner, no permissions for anyone else). Make sure that only one file in that directory matches the pattern. The script must be able to run successfully when executed from the terminal.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_echo_macos_script"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "base_path": "/Users/pipiwu/Documents",
+        "file_pattern": ".*run_task*",
+        "permission": "500",
+        "expected_output": "Task executed successfully"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

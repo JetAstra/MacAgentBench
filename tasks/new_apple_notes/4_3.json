@@ -1,0 +1,40 @@
+{
+  "id": "new_apple_notes_4_3",
+  "system_img": "default",
+  "instruction": "Within Apple Notes, you should create a new note with the title \"Travel Memo\", then set its content to \"Pack passport and charger.\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "cat > /tmp/memo_auto_add.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nTravel Memo\n\nPack passport and charger.\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_add.sh\nEDITOR=/tmp/memo_auto_add.sh memo notes --folder \"Work\" --add",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_with_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Travel Memo",
+        "note_content": "Pack passport and charger."
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

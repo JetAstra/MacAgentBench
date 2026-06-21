@@ -1,0 +1,43 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "Open Finder and go to /Users/Shared/example_test. Tag all files larger than 100KB with the \"Blue\" tag.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Finder'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_tagged_files_strict"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "directory": "/Users/Shared/example_test",
+        "expected_tagged_files": [
+          "file_b.dat",
+          "file_d.dat"
+        ],
+        "target_tag": "Blue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

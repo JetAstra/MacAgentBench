@@ -1,0 +1,41 @@
+{
+  "id": "keynote_7_2",
+  "system_img": "default",
+  "instruction": "Open Keynote and perform these steps:\n1. Create a new document'.\n2. Insert an oval shape, then set its size to 192×108 and its position to (0,0).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_shape_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "width": 192,
+        "height": 108,
+        "posx": 0,
+        "posy": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

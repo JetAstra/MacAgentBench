@@ -1,0 +1,40 @@
+{
+  "id": "new_github_1_2",
+  "system_img": "default",
+  "instruction": "Retrieve the full_name, description, license_name, homepage_url, and main_language of the \"kubernetes/kubernetes\" repository. Save these details to \"$HOME/Desktop/gh_repo_info_1_2.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh api repos/kubernetes/kubernetes --jq '\"full_name: \\(.full_name)\\ndescription: \\(.description // \"\")\\nlicense_name: \\(.license.name // \"NO LICENSE\")\\nhomepage_url: \\(.homepage // \"\")\\nmain_language: \\(.language // \"\")\"' > \"$HOME/Desktop/gh_repo_info_1_2.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_repo_info_matches"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_repo_info_1_2.txt",
+        "repo": "kubernetes/kubernetes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

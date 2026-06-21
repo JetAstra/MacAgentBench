@@ -1,0 +1,45 @@
+{
+  "id": "new_songsee_3_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Terminal and run songsee to create a spectrogram of \"$HOME/Desktop/Ode to Joy.mp3\" with a start time of 30.5 seconds and a duration of 7.5 seconds, saving the output to \"$HOME/Desktop/songsee_slice_4.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_slice_4.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --start 30.5 --duration 7.5 -o \"$HOME/Desktop/songsee_slice_4.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_slice_4.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "start_seconds": "30.5",
+        "duration_seconds": "7.5"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -31,6 +31,102 @@ def finder_check_file_exists(env, file_path: str) -> bool:
     return output == "Exists"
 
 
+def finder_check_file_has_tag_xattr(env, file_path: str) -> bool:
+    """
+    Check whether a file has the ``_kMDItemUserTags`` extended attribute,
+    regardless of whether its content is a valid Finder tag.
+
+    Returns True if the agent attempted ANY tag operation on the file
+    (``xattr -w``, ``osxmetadata``, AppleScript NSURL, etc.), even if
+    the tag format was wrong and ``finder_check_file_tag`` returns False.
+
+    Use this as a "did the agent at least TRY to tag this file?"
+    checkpoint, giving partial credit for the attempt.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        file_path (str): Path to the file to check
+
+    Returns:
+        bool: True if the ``_kMDItemUserTags`` xattr exists on the file.
+    """
+    env.connect_ssh()
+
+    file_path = file_path.replace("~", "$HOME")
+    cmd = f'xattr -p com.apple.metadata:_kMDItemUserTags "{file_path}" >/dev/null 2>&1 && echo YES || echo NO'
+    stdout, _ = env.run_command(cmd)
+    output = (
+        stdout.read().decode().strip()
+        if hasattr(stdout, "read")
+        else stdout.strip()
+    )
+    result = output == "YES"
+    logger.info(
+        f"[finder_check_file_has_tag_xattr] {file_path}: {result}"
+    )
+    return result
+
+
+def finder_check_file_exists_normalized(env, file_path: str) -> bool:
+    """
+    Accent-insensitive file existence check.
+
+    Lists files in the parent directory of *file_path*, strips Unicode
+    accents from both the expected filename and each actual filename,
+    then checks for a match. This handles the common case where the
+    agent creates ``Schröder.txt`` (correct spelling) but the task
+    expected ``Schroder.txt`` (ASCII transliteration), or vice versa.
+
+    Falls back to exact path check if the parent directory doesn't exist.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        file_path (str): Expected file path (may or may not have accents)
+
+    Returns:
+        bool: True if a matching file (accent-insensitive) exists.
+    """
+    from evaluators.metrics.common import strip_accents
+
+    env.connect_ssh()
+
+    file_path = file_path.replace("~", "$HOME")
+    # Get parent dir and expected filename
+    parent_cmd = f'dirname "{file_path}"'
+    stdout, _ = env.run_command(parent_cmd)
+    parent = (stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip())
+
+    basename_cmd = f'basename "{file_path}"'
+    stdout, _ = env.run_command(basename_cmd)
+    expected_name = (stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip())
+
+    # List files in parent directory
+    ls_cmd = f'ls -1 "{parent}" 2>/dev/null'
+    stdout, _ = env.run_command(ls_cmd)
+    raw = (stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip())
+
+    if not raw:
+        logger.warning(f"[finder_check_file_exists_normalized] parent dir empty or not found: {parent}")
+        return False
+
+    actual_files = raw.splitlines()
+    expected_norm = strip_accents(expected_name)
+
+    for actual in actual_files:
+        if strip_accents(actual.strip()) == expected_norm:
+            logger.info(
+                f"[finder_check_file_exists_normalized] matched: "
+                f"expected={expected_name!r} actual={actual.strip()!r} (normalized={expected_norm!r})"
+            )
+            return True
+
+    logger.info(
+        f"[finder_check_file_exists_normalized] no match for {expected_name!r} "
+        f"(normalized={expected_norm!r}) in {actual_files}"
+    )
+    return False
+
+
 def finder_check_folder_exists(env, folder_path: str) -> bool:
     """
     Check if a directory exists at the given path on macOS via SSH.
@@ -111,7 +207,7 @@ except Exception as e:
             f.write(remote_py)
 
         # Run the script
-        stdout, stderr = env.run_command(f"python3 {remote_tmp_path}")
+        stdout, stderr = env.run_command(f"/usr/bin/python3 {remote_tmp_path}")
         # logger.info(stdout)
         # logger.info(stderr)
         output = (
@@ -119,6 +215,8 @@ except Exception as e:
             if hasattr(stdout, "read")
             else stdout.strip()
         )
+        
+        print(output)
 
         if "__NOT_FOUND__" in output:
             return False
@@ -134,6 +232,89 @@ except Exception as e:
 
     except Exception as e:
         logger.error(f"Failed to check file tag: {e}")
+        return False
+
+
+def finder_check_no_unexpected_tags(
+    env, directory: str, allowed_files: list[str], target_tag: str = "Red"
+) -> bool:
+    """
+    Check that NO file in *directory*, OTHER than those in *allowed_files*,
+    has the given Finder tag.
+
+    This is a pure "integrity / negative" check: it does NOT verify that
+    allowed_files actually have the tag (that's done by separate
+    ``finder_check_file_tag`` components). It only checks that the agent
+    didn't accidentally tag files that shouldn't be tagged.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        directory (str): Path to the directory to scan
+        allowed_files (list[str]): Filenames that ARE allowed to have the tag
+        target_tag (str): The tag to check for (default "Red")
+
+    Returns:
+        bool: True if no unexpected file has the tag. False if any
+              non-allowed file was tagged.
+    """
+    env.connect_ssh()
+
+    tag_str = target_tag.lower()
+    allowed_set_str = repr(set(allowed_files))
+    directory_str = str(directory)
+
+    remote_py = textwrap.dedent(
+        f"""
+    from pathlib import Path
+    from osxmetadata import OSXMetaData
+
+    target_tag = "{tag_str}"
+    allowed = {allowed_set_str}
+    dir_path = Path("{directory_str}").expanduser().resolve()
+
+    if not dir_path.is_dir():
+        print("__NOT_FOUND__")
+    else:
+        issues = []
+        for file in dir_path.iterdir():
+            if not file.is_file():
+                continue
+            if file.name in allowed:
+                continue
+            try:
+                md = OSXMetaData(str(file))
+                tags = [str(t.name).lower() for t in (md.tags or [])]
+                if target_tag in tags:
+                    issues.append(file.name)
+            except Exception:
+                pass
+
+        if not issues:
+            print("__ALL_OK__")
+        else:
+            print("__UNEXPECTED__:" + ",".join(issues))
+    """
+    )
+
+    safe_code = shlex.quote(remote_py)
+    try:
+        stdout, _ = env.run_command(f"/usr/bin/python3 -c {safe_code}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[finder_check_no_unexpected_tags] {directory_str}: {output}"
+        )
+        if "__ALL_OK__" in output:
+            return True
+        if "__NOT_FOUND__" in output:
+            logger.warning(f"[finder_check_no_unexpected_tags] dir not found: {directory_str}")
+            return False
+        return False
+    except Exception as e:
+        logger.error(f"finder_check_no_unexpected_tags failed: {e}")
         return False
 
 
@@ -196,7 +377,7 @@ def finder_check_tagged_files_strict(
 
     # Safely quote and run
     safe_code = shlex.quote(remote_py)
-    stdout, _ = env.run_command(f"python3 -c {safe_code}")
+    stdout, _ = env.run_command(f"/usr/bin/python3 -c {safe_code}")
     output = (
         stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
     )
@@ -285,6 +466,64 @@ def finder_check_smart_folder_filters_pdf_in_seven_days(env, name: str) -> bool:
     else:
         logger.error(f"Unexpected output: {output}")
     return False
+
+
+# ====================================================================== #
+# Fine-grained checkpoint helper (added 2026-04-12).
+# ====================================================================== #
+
+
+def finder_check_any_file_with_ext_in_dir(env, dir_path: str, ext: str = ".txt") -> bool:
+    """
+    Check whether *any* file with the given extension exists in the directory.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        dir_path (str): Absolute directory path to search
+        ext (str): File extension including dot (e.g. ".jpg", ".txt")
+
+    Returns:
+        bool: True if at least one matching file exists.
+    """
+    env.connect_ssh()
+    cmd = f'ls "{dir_path}"/*{ext} 2>/dev/null | head -1'
+    stdout, _ = env.run_command(cmd)
+    output = (
+        stdout.read().decode().strip()
+        if hasattr(stdout, "read")
+        else stdout.strip()
+    )
+    found = len(output) > 0
+    logger.info(f"[finder_check_any_file_with_ext_in_dir] {dir_path}/*{ext}: {found} ({output[:80]})")
+    return found
+
+
+def finder_check_any_txt_in_dir(env, dir_path: str) -> bool:
+    """
+    Check whether *any* .txt file exists in the given directory.
+
+    Used as a coarse checkpoint for tasks where the agent should create
+    a .txt file with a specific name — this catches the case where the
+    agent created a file but got the name wrong.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        dir_path (str): Absolute directory path to search
+
+    Returns:
+        bool: True if at least one .txt file exists in the directory.
+    """
+    env.connect_ssh()
+    cmd = f'ls "{dir_path}"/*.txt 2>/dev/null | head -1'
+    stdout, _ = env.run_command(cmd)
+    output = (
+        stdout.read().decode().strip()
+        if hasattr(stdout, "read")
+        else stdout.strip()
+    )
+    found = len(output) > 0
+    logger.info(f"[finder_check_any_txt_in_dir] {dir_path}: {found} ({output[:80]})")
+    return found
 
 
 if __name__ == "__main__":

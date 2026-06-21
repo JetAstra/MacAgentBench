@@ -1,0 +1,46 @@
+{
+  "id": "numbers_5_2",
+  "system_img": "default",
+  "instruction": "Open Numbers, select the cell range A1:B2 in the currently selected table, and merge those cells.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 5,
+        "cols": 5
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_cell_merge"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 5,
+        "merged_cell": [
+          1,
+          1,
+          2,
+          2
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "id": "reminders_multi_5_4",
+  "system_img": "default",
+  "instruction": "Using the Terminal app, determine which Git version is currently installed on this Mac. Next, in the Safari app, search for the release year of that particular Git version. Finally, open the Reminders app, create a new list called \"Apple Systems\", and add a reminder with the title \"Git {major.minor version} Release\", setting its due date to the release year you found.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_due_year"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "Git 2.50 Release",
+        "list_name": "Apple Systems"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            2025
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "list_exists",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "new_reminders_check_list_exists",
+      "parameters": {
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_keyword",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Git"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_release",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Release"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "reminder_exact",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "new_reminders_check_reminder_exists_in_list",
+      "parameters": {
+        "title": "Git 2.50 Release",
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "due_year_exact",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "reminders_get_due_year",
+      "parameters": {
+        "reminder_name": "Git 2.50 Release",
+        "list_name": "Apple Systems"
+      },
+      "rule": {
+        "type": "common",
+        "func": "exact_match",
+        "parameters": [
+          2025
+        ]
+      }
+    }
+  ]
+}

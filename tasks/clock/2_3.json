@@ -1,0 +1,39 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "After adding Denver to the World Clock, move it by dragging so that it occupies the last position in the current list.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock_no_kill"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_get_world_clock_order"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "check_element_at_index",
+          "parameters": [
+            -1,
+            "Denver"
+          ]
+        }
+      }
+    ]
+  }
+}

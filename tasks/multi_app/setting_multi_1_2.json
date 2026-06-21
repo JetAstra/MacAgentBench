@@ -1,0 +1,66 @@
+{
+  "id": "setting_multi_1_2",
+  "system_img": "default",
+  "instruction": "Turn on Siri in System Settings and change Siri's voice to 'Irish (Voice 2)'.",
+  "config": [],
+  "related_apps": [
+    "mac_system_settings"
+  ],
+  "evaluator": {
+    "func": [
+      "setting_get_siri_status_and_voice"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "dict_equal",
+          "parameters": [
+            {
+              "enabled": true,
+              "voice": "Irish (Voice 2)"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "siri_enabled",
+      "weight": 0.5,
+      "capability": "system_config",
+      "func": "setting_get_siri_status_and_voice",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "voice_correct",
+      "weight": 0.5,
+      "capability": "system_config",
+      "func": "setting_get_siri_status_and_voice",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "voice": "Irish (Voice 2)"
+          }
+        ]
+      }
+    }
+  ]
+}

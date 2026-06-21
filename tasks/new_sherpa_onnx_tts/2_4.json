@@ -1,0 +1,44 @@
+{
+  "id": "new_sherpa_onnx_tts_2_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Terminal, generate an audio spoken reminder with the message \"Take your medication after breakfast.\", then save the output as a WAV file at the path \"$HOME/Desktop/sherpa_tts_2_4.wav\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/sherpa_tts_2_4.wav\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "SHERPA_ONNX_RUNTIME_DIR=\"$HOME/.openclaw/tools/sherpa-onnx-tts/runtime\" SHERPA_ONNX_MODEL_DIR=\"$HOME/.openclaw/tools/sherpa-onnx-tts/models/vits-piper-en_US-lessac-high\" node \"$HOME/Desktop/sherpa-onnx-tts.cjs\" -o \"$HOME/Desktop/sherpa_tts_2_4.wav\" \"Take your medication after breakfast.\"",
+  "evaluator": {
+    "func": [
+      "new_sherpa_onnx_tts_check_wav_properties"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/sherpa_tts_2_4.wav",
+        "min_duration_seconds": 1.2,
+        "max_duration_seconds": 7.0,
+        "min_size_bytes": 50000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

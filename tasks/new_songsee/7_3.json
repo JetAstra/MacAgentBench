@@ -1,0 +1,45 @@
+{
+  "id": "new_songsee_7_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Terminal, run songsee to create a spectrogram of \"$HOME/Desktop/Ode to Joy.mp3\" that only displays the frequency range from 60 Hz to 10000 Hz, then save the result to \"$HOME/Desktop/songsee_freq_3.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_freq_3.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --min-freq 60 --max-freq 10000 -o \"$HOME/Desktop/songsee_freq_3.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_freq_3.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "min_freq": 60,
+        "max_freq": 10000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "id": "terminal_multi_6_3",
+  "system_img": "default",
+  "instruction": "From the file 'task.txt' found at Desktop, retrieve its content and set it as the note body of a reminder titled 'task note terminal_multi_6_2' within the macOS Reminders app—creating the reminder first if one with that title doesn't already exist.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "echo 'review paper' > ~/Desktop/task.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "reminder"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_body_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "task note terminal_multi_6_2"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": "review paper"
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.34,
+      "capability": "app_state",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "task note terminal_multi_6_2"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_body",
+      "weight": 0.33,
+      "capability": "content_match",
+      "func": "reminders_get_body_by_name",
+      "parameters": {
+        "reminder_name": "task note terminal_multi_6_2"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "body_correct",
+      "weight": 0.33,
+      "capability": "research",
+      "func": "reminders_get_body_by_name",
+      "parameters": {
+        "reminder_name": "task note terminal_multi_6_2"
+      },
+      "rule": {
+        "type": "common",
+        "func": "exact_match",
+        "parameters": [
+          "review paper"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "new_obsidian_2_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, search for every note containing \"mint-rollup\" and write the absolute paths of all matching notes to \"$HOME/Desktop/obsidian_search_4.txt\", listing each path on its own line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_search_4.txt\"",
+          "obsidian-cli delete \"Reading/Mint Notes.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Inbox/Mint Ideas.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Projects/Q2 Notes.md\" --vault \"Benchmark\" || true",
+          "open -a 'Obsidian'",
+          "sleep 5",
+          "content=$(printf '%b' '# Mint Notes\\n\\nThe mint-rollup should include the weekly summary and open questions.\\n'); obsidian-cli create \"Reading/Mint Notes.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Mint Ideas\\n\\nMaybe the mint-rollup becomes a Friday checklist.\\n'); obsidian-cli create \"Inbox/Mint Ideas.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Q2 Notes\\n\\nStill shaping the release checklist.\\n'); obsidian-cli create \"Projects/Q2 Notes.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "python3 - <<'PY' > \"$HOME/Desktop/obsidian_search_4.txt\"\nimport subprocess\nfrom pathlib import Path\nvault = Path(r'''/Users/pipiwu/Documents/Benchmark/Benchmark''')\nquery = r'''mint-rollup'''\nfor path in sorted(vault.rglob('*.md')):\n    rel = str(path.relative_to(vault))\n    out = subprocess.run(['obsidian-cli', 'print', rel, '--vault', 'Benchmark'], capture_output=True, text=True)\n    if out.returncode == 0 and query in out.stdout:\n        print(path)\nPY",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_search_matches"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "query": "mint-rollup",
+        "output_file": "$HOME/Desktop/obsidian_search_4.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

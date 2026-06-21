@@ -1,0 +1,66 @@
+{
+  "id": "setting_multi_1_3",
+  "system_img": "default",
+  "instruction": "In System Settings, go ahead and turn on Siri, then change Siri's voice to 'South African (Voice 1)'.",
+  "config": [],
+  "related_apps": [
+    "mac_system_settings"
+  ],
+  "evaluator": {
+    "func": [
+      "setting_get_siri_status_and_voice"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "dict_equal",
+          "parameters": [
+            {
+              "enabled": true,
+              "voice": "South African (Voice 1)"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "siri_enabled",
+      "weight": 0.5,
+      "capability": "system_config",
+      "func": "setting_get_siri_status_and_voice",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "voice_correct",
+      "weight": 0.5,
+      "capability": "system_config",
+      "func": "setting_get_siri_status_and_voice",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "voice": "South African (Voice 1)"
+          }
+        ]
+      }
+    }
+  ]
+}

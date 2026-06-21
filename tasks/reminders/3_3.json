@@ -1,0 +1,39 @@
+{
+  "id": "3_3",
+  "system_img": "default",
+  "instruction": "Within the Reminders app, ensure that every reminder found in the \"Groceries\" list is marked as uncompleted.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_all_completed_with_expected_items"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Groceries",
+        "preset_items": []
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

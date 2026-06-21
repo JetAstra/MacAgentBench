@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_8_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Obsidian, update the frontmatter field \"reviewed\" in \"Journal/2026-03-18.md\" so that its value is \"2026-03-18\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Journal/2026-03-18.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '---\\nreviewed: 2026-03-10\\nmood: steady\\n---\\n\\n# 2026-03-18\\n\\nCalendar is lighter than expected.\\n'); obsidian-cli create \"Journal/2026-03-18.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli frontmatter \"Journal/2026-03-18.md\" --edit --key \"reviewed\" --value \"2026-03-18\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_frontmatter_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Journal/2026-03-18.md",
+        "key": "reviewed",
+        "expected_value": "2026-03-18"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

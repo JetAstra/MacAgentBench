@@ -1,0 +1,144 @@
+{
+  "id": "notes_multi_4_1",
+  "system_img": "default",
+  "instruction": "In the Safari app, search for the official website of Shanghai Jiao Tong University and find the fax number of its main administrative office; then in the Notes app, create a folder named \"Shanghai Jiao Tong University\", add a note titled \"Fax\", and enter only the fax number (digits and hyphens only, no country code).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "Fax",
+        "folder": "Shanghai Jiao Tong University"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "021-34206820"
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "folder_exists",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "notes_check_folder_exists",
+      "parameters": {
+        "folder_name": "Shanghai Jiao Tong University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "note_in_folder",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "new_apple_notes_check_note_exists_in_folder",
+      "parameters": {
+        "note_title": "Fax",
+        "folder_name": "Shanghai Jiao Tong University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Shanghai Jiao Tong University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_area_code",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Shanghai Jiao Tong University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "021"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_fax_format",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Shanghai Jiao Tong University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "021-"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "fax_exact",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Fax",
+        "folder": "Shanghai Jiao Tong University"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "021-34206820"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -84,17 +84,60 @@ def safari_get_default_property(env: MacOSEnv, property_name: str) -> str:
         return None
 
 
-def safari_get_all_bookmark_folders(env: MacOSEnv) -> list[str]:
+def safari_get_startpage_section_enabled(env: MacOSEnv, section_id: str) -> str:
     """
-    Get all Safari bookmark folder names from Bookmarks.plist without writing intermediate files.
+    Check whether a specific Start Page section is enabled in Safari.
+    Reads the StartPageSections binary plist from com.apple.Safari and
+    returns "1" if enabled, "0" if disabled.
+
+    :param env: MacOSEnv instance for SSH access
+    :param section_id: Section identifier, e.g. "favoritesItemIdentifier"
+    :return: "1" if enabled, "0" if disabled, or None on error
     """
     env.connect_ssh()
     try:
-        command = (
-            "plutil -convert json -o - ~/Library/Safari/Bookmarks.plist | "
-            "/opt/anaconda3/bin/jq -r '.Children[] |"
-            "select(.Children != null) | .Title'"
-        )
+        script = f'''python3 -c "
+import plistlib, subprocess
+result = subprocess.run(['defaults', 'export', 'com.apple.Safari', '-'], capture_output=True)
+plist = plistlib.loads(result.stdout)
+sections = plist.get('StartPageSections')
+if sections and isinstance(sections, bytes):
+    inner = plistlib.loads(sections)
+    objects = inner.get('\\$objects', [])
+    for i, obj in enumerate(objects):
+        if obj == '{section_id}' and i > 0:
+            prev = objects[i-1]
+            if isinstance(prev, dict):
+                print('1' if prev.get('IsEnabled', False) else '0')
+                exit()
+print('0')
+"'''
+        stdout, stderr = env.run_command(script)
+        if isinstance(stdout, str):
+            return stdout.strip()
+        return stdout.read().decode().strip()
+    except Exception as e:
+        logger.error(f"Failed to read StartPageSections for '{section_id}': {e}")
+        return None
+
+
+def safari_get_all_bookmark_folders(env: MacOSEnv) -> list[str]:
+    """
+    Get all Safari bookmark folder names from Bookmarks.plist.
+    Uses plistlib to parse the binary plist directly, avoiding plutil JSON
+    conversion issues with date fields in newer macOS versions.
+    """
+    env.connect_ssh()
+    try:
+        command = '''python3 -c "
+import plistlib, os
+path = os.path.expanduser('~/Library/Safari/Bookmarks.plist')
+with open(path, 'rb') as f:
+    plist = plistlib.load(f)
+for child in plist.get('Children', []):
+    if child.get('Children') is not None and child.get('Title'):
+        print(child['Title'])
+"'''
         stdout, _ = env.run_command(command)
         if isinstance(stdout, str):
             output = stdout.strip()
@@ -108,21 +151,30 @@ def safari_get_all_bookmark_folders(env: MacOSEnv) -> list[str]:
 
 def safari_get_bookmarks_in_folder(env: MacOSEnv, folder_name: str) -> list[str]:
     """
-    Get all bookmark URLs inside a specific Safari bookmark folder without intermediate files.
+    Get all bookmark URLs inside a specific Safari bookmark folder.
+    Uses plistlib to parse the binary plist directly, avoiding plutil JSON
+    conversion issues with date fields in newer macOS versions.
     """
     env.connect_ssh()
     try:
-        command = (
-            f"plutil -convert json -o - ~/Library/Safari/Bookmarks.plist | "
-            f"/opt/anaconda3/bin/jq -r '.Children[] |"
-            f'select(.Title=="{folder_name}") | .Children[] | .URLString\''
-        )
+        command = f'''python3 -c "
+import plistlib, os
+path = os.path.expanduser('~/Library/Safari/Bookmarks.plist')
+with open(path, 'rb') as f:
+    plist = plistlib.load(f)
+for child in plist.get('Children', []):
+    if child.get('Title') == '{folder_name}' and child.get('WebBookmarkType') == 'WebBookmarkTypeList':
+        for item in child.get('Children', []):
+            url = item.get('URLString', '')
+            if url:
+                print(url)
+        break
+"'''
         stdout, _ = env.run_command(command)
         if isinstance(stdout, str):
             output = stdout.strip()
         else:
             output = stdout.read().decode().strip()
-        # logger.info(output)
         return output.splitlines() if output else []
     except Exception as e:
         logger.error(f"Failed to get bookmarks in folder '{folder_name}': {e}")
@@ -210,10 +262,14 @@ def safari_get_bookmarks_in_folder(env: MacOSEnv, folder_name: str) -> list[str]
 #         return []
 
 
-def safari_check_steam_cart_contains_all_top3_items(env) -> bool:
+def safari_check_steam_cart_contains_top_items(env, count: int = 3) -> bool:
     """
-    Check whether ALL top 3 Steam top-seller games appear in the Safari cart,
-    by inspecting only 'Panel Focusable' div blocks in the cart page.
+    Check whether the top N purchasable (non-free) Steam top-seller games
+    appear in the Safari cart.
+
+    :param env: MacOSEnv instance
+    :param count: Number of top purchasable games to check (default 3)
+    :return: True if all top N purchasable games are in the cart
     """
     env.connect_ssh()
 
@@ -235,22 +291,29 @@ def safari_check_steam_cart_contains_all_top3_items(env) -> bool:
     )
     time.sleep(4)
 
-    # Step 2: Parse top seller titles
+    # Step 2: Parse top seller titles, skipping free games
     html_top = get_page_html()
     soup_top = BeautifulSoup(html_top, "html.parser")
     games = soup_top.select("a.search_result_row")
     top_titles = []
-    for game in games[:3]:
+    for game in games:
+        if len(top_titles) >= count:
+            break
         try:
             title = game.find("span", class_="title").text.strip()
-            if title:
-                top_titles.append(title)
+            price_elem = game.find("div", class_="discount_final_price")
+            price_text = price_elem.text.strip() if price_elem else ""
+            if not title:
+                continue
+            if price_text.lower() in ("free", "free to play", ""):
+                continue
+            top_titles.append(title)
         except:
             continue
 
-    logger.info(f"Top 3 titles: {top_titles}")
-    if len(top_titles) < 3:
-        env.logger.warning("Could not extract 3 valid top seller titles.")
+    logger.info(f"Top {count} purchasable titles: {top_titles}")
+    if len(top_titles) < count:
+        logger.warning(f"Could not extract {count} valid purchasable top seller titles.")
         return False
 
     # Step 3: Navigate to cart
@@ -269,7 +332,7 @@ def safari_check_steam_cart_contains_all_top3_items(env) -> bool:
         [block.get_text(separator=" ", strip=True) for block in cart_blocks]
     )
     found_all = all(title in cart_text for title in top_titles)
-    logger.info(f"Cart contains all top 3 titles: {found_all}")
+    logger.info(f"Cart contains all top {count} titles: {found_all}")
     return found_all
 
 

@@ -1,0 +1,40 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "In the ~/Documents directory, produce a .tar.gz archive called archive_YYYYMMDD.tar.gz (with YYYYMMDD replaced by today's date). This archive must include a minimum of seven files. Configure the archive's permissions so that the owner is granted read and execute permissions, the group is given read-only permission, and others receive no permissions.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_archive_validity_count_name_mod"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "base_path": "/Users/pipiwu/Documents",
+        "min_files": 7,
+        "permission": "540"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

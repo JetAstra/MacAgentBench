@@ -1,0 +1,42 @@
+{
+  "id": "new_reminders_7_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app, retrieve every reminder from \"Personal\", and save all reminder titles to a file called \"personal_reminders.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Personal\" --create",
+          "remindctl add --title \"Personal Seed Reminder\" --list \"Personal\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Personal\" --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/personal_reminders.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_all_titles_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Personal",
+        "output_file": "$HOME/Desktop/personal_reminders.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

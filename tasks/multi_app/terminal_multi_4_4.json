@@ -1,0 +1,115 @@
+{
+  "id": "terminal_multi_4_4",
+  "system_img": "default",
+  "instruction": "Locate every file within ~/Documents/ and add each one as a file attachment to a note titled 'memos' in the macOS Notes app. If the note doesn't already exist, create it first.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/memo1.txt ~/Documents/memo2.txt ~/Documents/memo3.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_attachment_names_by_note_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_name": "memos"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "contains_all_elements",
+          "parameters": [
+            [
+              "memo1.txt",
+              "memo2.txt",
+              "memo3.txt"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "note_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_find_note_by_title",
+      "parameters": {
+        "title": "memos"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_memo1",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "memos"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "memo1.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_memo2",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "memos"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "memo2.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_memo3",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "memos"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "memo3.txt"
+          ]
+        ]
+      }
+    }
+  ]
+}

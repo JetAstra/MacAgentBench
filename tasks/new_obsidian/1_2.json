@@ -1,0 +1,47 @@
+{
+  "id": "new_obsidian_1_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Obsidian, list all notes in the \"Meetings/Weekly\" folder, and write the note paths to \"$HOME/Desktop/obsidian_meetings_list_2.txt\", one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_meetings_list_2.txt\"",
+          "obsidian-cli delete \"Meetings/Weekly/2026-03-04 Staff Sync.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Meetings/Weekly/2026-03-11 Staff Sync.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# 2026-03-04 Staff Sync\\n\\n- reviewed staffing changes\\n- discussed release timing\\n'); obsidian-cli create \"Meetings/Weekly/2026-03-04 Staff Sync.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# 2026-03-11 Staff Sync\\n\\n- agreed to seed the Obsidian vault\\n- kept task wording concrete\\n'); obsidian-cli create \"Meetings/Weekly/2026-03-11 Staff Sync.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli list \"Meetings/Weekly\" --vault \"Benchmark\" | sed -E 's/^[[:space:]]*• //' | sed '/\\/$/d' | sed '/^$/d' | awk '{print \"Meetings/Weekly/\" $0}' | sort > \"$HOME/Desktop/obsidian_meetings_list_2.txt\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_note_paths_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "folder_path": "Meetings/Weekly",
+        "output_file": "$HOME/Desktop/obsidian_meetings_list_2.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -2,6 +2,10 @@ import shlex
 import re
 
 from controllers.env import MacOSEnv
+from utils.logger import ProjectLogger
+
+
+logger = ProjectLogger().get()
 
 
 def _run_command(env: MacOSEnv, command: str) -> str:
@@ -60,23 +64,41 @@ def new_github_check_repo_info_matches(
 
     endpoint = shlex.quote(f"repos/{repo}")
     jq_expr = shlex.quote(
-        '[.full_name, (.description // ""), (.license.name // "NO LICENSE"), (.homepage // ""), (.language // "")] | @tsv'
+        '{full_name: .full_name, description: (.description // ""), license_name: (.license.name // "NO LICENSE"), license_spdx: (.license.spdx_id // ""), homepage_url: (.homepage // ""), main_language: (.language // "")}'
     )
     cmd = f"gh api {endpoint} --jq {jq_expr}"
-    expected_tsv = _run_command(env, cmd)
-    if not expected_tsv:
+    expected_json = _run_command(env, cmd)
+    if not expected_json:
         return False
 
-    expected_values = [v.strip() for v in expected_tsv.split("\t")]
-    if len(expected_values) != 5:
+    try:
+        import json
+
+        expected = json.loads(expected_json)
+    except Exception:
         return False
 
-    # Only enforce non-empty expected values.
-    non_empty_values = [v for v in expected_values if v]
+    required_values = [
+        expected.get("full_name", "").strip(),
+        expected.get("description", "").strip(),
+        expected.get("homepage_url", "").strip(),
+        expected.get("main_language", "").strip(),
+    ]
+    non_empty_values = [v for v in required_values if v]
     if not non_empty_values:
         return False
 
-    return all(v in output_text for v in non_empty_values)
+    license_candidates = [
+        expected.get("license_name", "").strip(),
+        expected.get("license_spdx", "").strip(),
+    ]
+    license_candidates = [v for v in license_candidates if v]
+    if not license_candidates:
+        license_candidates = ["NO LICENSE"]
+
+    return all(v in output_text for v in non_empty_values) and any(
+        license in output_text for license in license_candidates
+    )
 
 
 def new_github_check_file_contains_live_lines(
@@ -120,6 +142,9 @@ def new_github_check_top_issue_values_present(
     """
     output_text = _read_remote_file(env, output_file)
     if output_text is None:
+        logger.error(
+            f"[new_github_top_issue] output file missing or unreadable: {output_file}"
+        )
         return False
 
     endpoint = shlex.quote(repo)
@@ -133,14 +158,45 @@ def new_github_check_top_issue_values_present(
     expected_tsv = _run_command(env, cmd)
     if not expected_tsv:
         # No open issues now: expect empty output file.
+        logger.info(
+            f"[new_github_top_issue] no live open issue found for repo={repo}; "
+            f"nonempty_output_lines={len(_nonempty_unique_lines(output_text))}"
+        )
         return len(_nonempty_unique_lines(output_text)) == 0
 
-    expected_values = [v.strip() for v in expected_tsv.split("\t")]
+    expected_values = [_normalize_live_line(v) for v in expected_tsv.split("\t")]
     if len(expected_values) != 5:
+        logger.error(
+            f"[new_github_top_issue] unexpected expected_tsv shape for repo={repo}: "
+            f"{expected_tsv!r}"
+        )
         return False
 
     non_empty_values = [v for v in expected_values if v]
     if not non_empty_values:
+        logger.error(
+            f"[new_github_top_issue] all expected values empty for repo={repo}: "
+            f"{expected_tsv!r}"
+        )
         return False
 
-    return all(v in output_text for v in non_empty_values)
+    normalized_output = _normalize_live_line(output_text)
+    missing_values = [v for v in non_empty_values if v not in normalized_output]
+
+    logger.info(
+        f"[new_github_top_issue] repo={repo} output_file={output_file} "
+        f"expected_values={expected_values!r}"
+    )
+    logger.info(
+        f"[new_github_top_issue] normalized_output={normalized_output!r}"
+    )
+
+    if missing_values:
+        logger.warning(
+            f"[new_github_top_issue] missing_values={missing_values!r} "
+            f"for repo={repo}"
+        )
+        return False
+
+    logger.info(f"[new_github_top_issue] all expected values matched for repo={repo}")
+    return True

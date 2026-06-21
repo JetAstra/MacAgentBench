@@ -1,0 +1,119 @@
+{
+  "id": "clock_multi_1_3",
+  "system_img": "default",
+  "instruction": "Using the Clock App, create an alarm that corresponds to the local time of the 2012 Costa Rica earthquake (magnitude 7.6, Nicoya Peninsula) as documented on Wikipedia, scheduling it for everyday (Monday through Sunday) with the label 'CostaRica' and the 'Chimes' sound.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_list_alarms"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_dict",
+          "parameters": [
+            {
+              "time": "8:42AM",
+              "label": "CostaRica",
+              "repeat": "Every day",
+              "sound": "Chimes"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "alarm_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "CostaRica"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "label": "CostaRica"
+          }
+        ]
+      }
+    },
+    {
+      "name": "time_correct",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "CostaRica"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "time": "8:42AM"
+          }
+        ]
+      }
+    },
+    {
+      "name": "repeat_every_day",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "CostaRica"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "repeat": "Every day"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sound_correct",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "CostaRica"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "sound": "Chimes"
+          }
+        ]
+      }
+    }
+  ]
+}

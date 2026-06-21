@@ -1,0 +1,38 @@
+{
+  "id": "keynote_2_2",
+  "system_img": "default",
+  "instruction": "Perform these steps in the Keynote app:\n1. Create a new document.\n2. Insert a new slide and delete 2 text boxes from it.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_item_delection"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "del_cnt": 2
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

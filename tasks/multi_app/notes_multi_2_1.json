@@ -1,0 +1,92 @@
+{
+  "id": "notes_multi_2_1",
+  "system_img": "default",
+  "instruction": "In the Calendar app, locate the event scheduled on June 10, 2050; then in the Notes app, create a folder named after that event's title and add at least two notes inside it.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'",
+          "osascript -e 'tell application \"Calendar\"' -e 'if not (exists calendar \"Team Presentations\") then make new calendar with properties {name:\"Team Presentations\"}' -e 'tell calendar \"Team Presentations\"' -e 'make new event with properties {summary:\"Team Presentation\", start date:date \"June 10, 2050 at 10:00 AM\", end date:date \"June 10, 2050 at 11:00 AM\"}' -e 'end tell' -e 'end tell'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_count_notes_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Team Presentation"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "compare_numbers",
+          "parameters": [
+            ">=",
+            2
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "folder_exists",
+      "weight": 0.34,
+      "capability": "research",
+      "func": "notes_check_folder_exists",
+      "parameters": {
+        "folder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_notes",
+      "weight": 0.33,
+      "capability": "app_state",
+      "func": "notes_count_notes_in_folder",
+      "parameters": {
+        "folder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "compare_numbers",
+        "parameters": [
+          ">=",
+          1
+        ]
+      }
+    },
+    {
+      "name": "has_two_notes",
+      "weight": 0.33,
+      "capability": "app_state",
+      "func": "notes_count_notes_in_folder",
+      "parameters": {
+        "folder_name": "Team Presentation"
+      },
+      "rule": {
+        "type": "common",
+        "func": "compare_numbers",
+        "parameters": [
+          ">=",
+          2
+        ]
+      }
+    }
+  ]
+}

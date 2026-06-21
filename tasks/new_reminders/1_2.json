@@ -1,0 +1,39 @@
+{
+  "id": "new_reminders_1_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and add a reminder with the title \"Call mom\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl add --title \"Call mom\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Call mom"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

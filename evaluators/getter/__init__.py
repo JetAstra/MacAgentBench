@@ -1,27 +1,47 @@
 from .calendar import (
-    calendar_check_calendar_with_at_least_3_events,
+    calendar_check_calendar_with_at_least_n_events,
     calendar_check_weekly_event,
     calendar_check_weekly_event_advanced,
     calendar_check_calendar_contains_events,
+    # Fine-grained checkpoint helpers (see FINE_GRAINED_EVAL_DESIGN.md §6.1)
+    calendar_check_calendar_exists,
+    calendar_check_event_in_calendar,
+    calendar_check_event_exists,
+    calendar_check_event_is_recurring,
+    calendar_check_event_weekday,
+    calendar_check_event_start_time,
+    calendar_check_event_end_time,
 )
 from .clock import (
     clock_get_world_clock_order,
     clock_list_alarms,
     clock_reset_window_status,
-    clock_check_korea_alarm,
+    clock_check_timezone_alarm,
     clock_check_clock_timer_value,
     clock_get_world_clock_top_item,
+    # Fine-grained checkpoint helpers (see FINE_GRAINED_EVAL_DESIGN.md §6.1)
+    clock_check_city_in_world_clocks,
+    clock_count_alarms,
+    clock_get_alarm_by_label,
+    clock_get_timer_value,
+    clock_check_timer_recents_empty,
 )
 from .finder import (
     finder_check_file_exists,
+    finder_check_file_has_tag_xattr,
+    finder_check_file_exists_normalized,
     finder_check_file_tag,
+    finder_check_no_unexpected_tags,
     finder_check_tagged_files_strict,
     finder_read_file_contents,
     finder_check_folder_exists,
+    finder_check_any_file_with_ext_in_dir,
+    finder_check_any_txt_in_dir,
     finder_check_smart_folder_filters_pdf_in_seven_days,
 )
 from .notes import (
     notes_count_notes_in_folder,
+    notes_check_folder_exists,
     notes_find_note_by_title,
     notes_get_note_plaintext_by_name,
     notes_list_locked_note_titles,
@@ -119,6 +139,7 @@ from .new_reminders import (
     new_reminders_check_file_contains_overdue_titles,
     new_reminders_check_file_contains_today_titles,
     new_reminders_check_list_absent,
+    reminders_get_titles_in_list,
     new_reminders_check_list_exists,
     new_reminders_check_reminder_absent,
     new_reminders_check_reminder_completed,
@@ -146,16 +167,19 @@ from .new_tmux import (
 from .reminders import (
     reminders_check_all_completed_with_expected_items,
     reminders_check_due_time,
+    reminders_get_due_time,
+    reminders_get_due_date,
     reminders_check_work_due_next_week,
     reminders_get_due_year,
     reminders_check_on_date,
     reminders_get_body_by_name,
 )
 from .safari import (
-    safari_check_steam_cart_contains_all_top3_items,
+    safari_check_steam_cart_contains_top_items,
     safari_get_all_bookmark_folders,
     safari_get_bookmarks_in_folder,
     safari_get_default_property,
+    safari_get_startpage_section_enabled,
     safari_get_url,
     safari_get_window_count,
 )
@@ -163,9 +187,10 @@ from .mac_system_settings import (
     setting_dump_siri_panel,
     setting_get_siri_status_and_voice,
     settings_reset_window_status,
-    settings_check_purple_and_tinting_off,
+    settings_check_color_and_tinting_status,
     settings_set_desktop_wallpaper,
     settings_check_dnd_repeated_calls_enabled,
+    check_app_is_running,
 )
 from .terminal import (
     terminal_check_archive_validity_count_name_mod,
@@ -174,12 +199,13 @@ from .terminal import (
     terminal_check_command_in_history,
     terminal_reset_window_status,
     terminal_check_files_in_directory,
+    terminal_check_output_matches_command,
 )
 from .vscode import (
     vscode_check_extension_installed,
     vscode_check_tab_to_4space_replacement,
     vscode_check_workspace_folders,
-    vscode_check_python_extension_and_conda_path,
+    vscode_check_extension_and_setting,
 )
 
 from .common import (
@@ -205,6 +231,7 @@ from .pages import (
     pages_test_insert_table,
     pages_test_find_and_replace,
     pages_create_new_doc,
+    pages_init_content,
     pages_test_shape_pos_and_size,
     pages_check_body_text
 )

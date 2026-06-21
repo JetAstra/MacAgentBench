@@ -1,0 +1,137 @@
+{
+  "id": "reminders_multi_3_3",
+  "system_img": "default",
+  "instruction": "Using the Finder app, find the PDF file located at ~/Documents, and then switch to the Reminders app to set up a new reminder whose name matches that PDF's filename (excluding the \".pdf\" extension), with a due date of next week at 2:00 PM.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'",
+          "echo 'This is Notes C' > ~/Documents/notes_444.txt",
+          "cupsfilter ~/Documents/notes_444.txt > ~/Documents/notes_444.pdf 2>/dev/null"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_work_due_next_week",
+      "reminders_check_due_time"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "notes_444"
+      },
+      {
+        "reminder_name": "notes_444",
+        "target_hour": 14,
+        "target_minute": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "notes_444"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_due_date",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "notes_444"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "has_due": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_next_week",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_check_work_due_next_week",
+      "parameters": {
+        "reminder_name": "notes_444"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "due_hour",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "notes_444"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hour": 14
+          }
+        ]
+      }
+    },
+    {
+      "name": "due_minute",
+      "weight": 0.2,
+      "capability": "content_match",
+      "func": "reminders_get_due_time",
+      "parameters": {
+        "reminder_name": "notes_444"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minute": 0
+          }
+        ]
+      }
+    }
+  ]
+}

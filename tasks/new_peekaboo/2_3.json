@@ -1,0 +1,45 @@
+{
+  "id": "new_peekaboo_2_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within TextEdit, type out the text below exactly, making sure to preserve line breaks:\nLaunch prep\n- Freeze release branch\n- Publish customer notes",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'TextEdit'",
+          "open -a 'Terminal'",
+          "osascript -e 'tell application \"TextEdit\" to activate'",
+          "osascript -e 'tell application \"TextEdit\" to if (count of documents) = 0 then make new document'",
+          "osascript -e 'tell application \"TextEdit\" to set text of document 1 to \"\"'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset",
+    "textedit"
+  ],
+  "reference_command": "peekaboo app launch \"TextEdit\" && peekaboo type 'Launch prep\n- Freeze release branch\n- Publish customer notes'",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_textedit_document_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_content": "Launch prep\n- Freeze release branch\n- Publish customer notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

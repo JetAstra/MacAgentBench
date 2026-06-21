@@ -1,0 +1,41 @@
+{
+  "id": "keynote_7_4",
+  "system_img": "default",
+  "instruction": "Using the Keynote app, perform the following actions:\n1. Open a new document'.\n2. Add an oval shape, then adjust its dimensions to 100×100 and set its position to (200,20)",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_shape_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "width": 100,
+        "height": 100,
+        "posx": 200,
+        "posy": 20
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

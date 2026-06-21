@@ -95,16 +95,90 @@ def terminal_check_command_in_history(env, target_command: str) -> bool:
     return target_command in output
 
 
-def terminal_check_archive_validity_count_name_mod(
-    env, base_path="/Users/Shared"
+def terminal_check_output_matches_command(
+    env, file_path: str, reference_command: str
 ) -> bool:
     """
-    Check in whether a tar.gz archive with today's container date exists in the given directory,
-    contains at least 5 files, and has permission 100 (execute-only for user).
+    Run *reference_command* on the macOS host and compare its stdout
+    with the content of *file_path* (written by the agent).
+
+    Comparison extracts the "path" column from each line of ``du``-style
+    output (tab-separated: ``<size>\\t<path>``), then checks whether the
+    two path lists are identical. This makes the comparison robust to
+    minor size changes between the agent's run and the evaluator's run.
+
+    Falls back to exact string comparison if the output doesn't look
+    like tab-separated ``du`` output.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        file_path (str): Path to the file the agent wrote (e.g. ~/Desktop/output.txt)
+        reference_command (str): The command to run as ground truth
+
+    Returns:
+        bool: True if the agent's output matches the reference.
+    """
+    env.connect_ssh()
+
+    def _read(cmd):
+        stdout, _ = env.run_command(cmd)
+        raw = stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
+        return raw
+
+    def _extract_paths(text):
+        """Extract the path column from du-style tab-separated output."""
+        paths = []
+        for line in text.strip().splitlines():
+            parts = line.split("\t", 1)
+            if len(parts) == 2:
+                paths.append(parts[1].strip())
+            else:
+                paths.append(line.strip())
+        return paths
+
+    try:
+        # Run the reference command
+        ref_output = _read(reference_command)
+
+        # Read agent's file
+        safe_path = file_path.replace("~", "$HOME")
+        agent_output = _read(f'cat "{safe_path}"')
+
+        if not ref_output or not agent_output:
+            logger.warning(
+                f"[terminal_check_output_matches_command] "
+                f"empty output: ref={len(ref_output)} chars, agent={len(agent_output)} chars"
+            )
+            return False
+
+        # Compare path columns (robust to size changes)
+        ref_paths = _extract_paths(ref_output)
+        agent_paths = _extract_paths(agent_output)
+
+        matched = ref_paths == agent_paths
+        logger.info(
+            f"[terminal_check_output_matches_command] "
+            f"ref_paths={ref_paths}, agent_paths={agent_paths}, match={matched}"
+        )
+        return matched
+
+    except Exception as e:
+        logger.error(f"terminal_check_output_matches_command failed: {e}")
+        return False
+
+
+def terminal_check_archive_validity_count_name_mod(
+    env, base_path="/Users/Shared", min_files: int = 5, permission: str = "100"
+) -> bool:
+    """
+    Check whether a tar.gz archive with today's date exists in the given directory,
+    contains at least min_files files, and has the expected permission.
 
     :param env: MacOSEnv instance
     :param base_path: Directory to search for archive
-    :return: True if valid archive found and permissions match, else False
+    :param min_files: Minimum number of files required in the archive
+    :param permission: Expected permission suffix (e.g. "100", "700", "755")
+    :return: True if valid archive found and all checks pass, else False
     """
     env.connect_ssh()
 
@@ -141,41 +215,53 @@ def terminal_check_archive_validity_count_name_mod(
             else stdout.strip()
         )
         logger.info(count)
-        if count < 5:
+        if count < min_files:
             logger.info(count)
-            logger.info("Archive does not contain enough files.")
+            logger.info(f"Archive does not contain enough files (need {min_files}).")
             return False
     except Exception as e:
         logger.error(f"Failed to count files in archive: {e}")
         return False
 
-    # 4. Check permission: user execute-only = 100
+    # 4. Check permission
     perm_cmd = f'sudo stat -f "%p" "{archive_path}"'
     stdout, _ = env.run_command(perm_cmd)
     raw_perm = (
         stdout.read().decode().strip() if hasattr(stdout, "read") else stdout.strip()
     )
-    if not raw_perm.endswith("100"):
-        logger.info(f"Incorrect permissions: {raw_perm}")
+    if not raw_perm.endswith(permission):
+        logger.info(f"Incorrect permissions: {raw_perm} (expected ending with {permission})")
         return False
 
     return True
 
 
-def terminal_check_echo_macos_script(env, base_path="/Users/Shared") -> bool:
+def terminal_check_echo_macos_script(
+    env,
+    base_path="/Users/Shared",
+    file_pattern=".*echo_macos*",
+    permission: str = "",
+    expected_output: str = "macOS task complete",
+) -> bool:
     """
-    Check for a valid hidden shell script matching 'echo_macos' in /Users/Shared/.
+    Check for a valid hidden shell script in the given directory.
     Conditions:
-    - File name contains 'echo_macos' and starts with a dot
+    - File name matches the given pattern
     - Only one such file exists
-    - File has only user execute permission (no group/other read/write/execute)
-    - Script outputs the correct message on execution
+    - File has user execute permission (no group/other permissions)
+    - Script outputs the expected message on execution
+
+    :param env: MacOSEnv instance
+    :param base_path: Directory to search in
+    :param file_pattern: Glob pattern for matching files (e.g. ".*echo_macos*")
+    :param permission: Expected permission (e.g. "100", "700"). If empty, accepts any user-execute-only permission.
+    :param expected_output: Expected stdout when running the script
     """
     env.connect_ssh()
 
     try:
-        # 1. List matching hidden files
-        cmd_list = f'sudo find {base_path} -maxdepth 1 -name ".*echo_macos*" -type f'
+        # 1. List matching files
+        cmd_list = f'sudo find {base_path} -maxdepth 1 -name "{file_pattern}" -type f'
         stdout, _ = env.run_command(cmd_list)
         logger.info(stdout)
         logger.info(_)
@@ -194,7 +280,7 @@ def terminal_check_echo_macos_script(env, base_path="/Users/Shared") -> bool:
 
         filepath = matches[0]
 
-        # 3. Check permission: only user execute
+        # 3. Check permission
         cmd_perm = f'stat -f "%A" "{filepath}"'
         stdout, _ = env.run_command(cmd_perm)
         perms = (
@@ -203,13 +289,15 @@ def terminal_check_echo_macos_script(env, base_path="/Users/Shared") -> bool:
             else stdout.strip()
         )
         logger.info(f"[Check] Permissions: {perms}")
-        valid_perms = {"100", "300", "500", "700"}
-        if perms not in valid_perms:
-            logger.error(f"Error permissions: {perms}.")
-            return False
-        # if not perms.isdigit() or not int(perms) & 0o100:
-        #     logger.error("User does not have execute permission.")
-        #     return False
+        if permission:
+            if perms != permission:
+                logger.error(f"Expected permission {permission}, got {perms}.")
+                return False
+        else:
+            valid_perms = {"500", "700"}
+            if perms not in valid_perms:
+                logger.error(f"Error permissions: {perms}.")
+                return False
 
         # 4. Execute and check output
         cmd_exec = f'bash "{filepath}"'
@@ -220,7 +308,7 @@ def terminal_check_echo_macos_script(env, base_path="/Users/Shared") -> bool:
             else stdout.strip()
         )
         logger.info(f"[Check] Script output: {output}")
-        return output == "macOS task complete"
+        return output == expected_output
 
     except Exception as e:
         logger.error(f"Script validation failed: {e}")

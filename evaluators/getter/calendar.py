@@ -15,7 +15,7 @@ logger = ProjectLogger(log_dir=script_dir / "logs")
 
 
 def calendar_check_weekly_event(
-    env, event_name: str, start_hour: int = 10, start_minute: int = 0
+    env, event_name: str, start_hour: int = 10, start_minute: int = 0, day: str = "Monday"
 ) -> bool:
     """
     Check if a Calendar event with the given name exists,
@@ -37,10 +37,11 @@ def calendar_check_weekly_event(
                 set startTime to start date of e
                 set start_hour to hours of startTime
                 set start_min to minutes of startTime
+                set start_day to weekday of startTime
                 set recur to recurrence of e
 
                 -- Check time = 10:00 AM and recurrence contains "weekly"
-                if start_hour = {start_hour} and start_min = {start_minute} and recur contains "FREQ=WEEKLY" and recur contains "BYDAY=MO" then
+                if start_hour = {start_hour} and start_min = {start_minute} and start_day = {day} and recur contains "FREQ=WEEKLY" then
                     set matched to true
                     set debug_output to debug_output & "✓ Matching event found: " & summary of e & return
                 end if
@@ -62,6 +63,7 @@ def calendar_check_weekly_event(
             if hasattr(stdout, "read")
             else stdout.strip()
         )
+        print(output)
         return output.startswith("true__")
     except Exception as e:
         logger.error(f"Failed to check calendar event: {e}")
@@ -71,7 +73,7 @@ def calendar_check_weekly_event(
 def calendar_check_weekly_event_advanced(
     env,
     event_name: str,
-    weekday: str = "MO",
+    weekday: str = "Monday",
     start_hour: int = None,
     start_minute: int = None,
     end_hour: int = None,
@@ -84,7 +86,7 @@ def calendar_check_weekly_event_advanced(
     Args:
         env (MacOSEnv): Remote macOS automation environment
         event_name (str): The calendar event title to search
-        weekday (str): iCalendar day code (e.g., "MO", "TU", "WE", ...)
+        weekday (str): day code (e.g., "Monday", "Tuesday", "WE", ...)
         start_hour (int | None): Optional start hour
         start_minute (int | None): Optional start minute
         end_hour (int | None): Optional end hour
@@ -112,13 +114,14 @@ def calendar_check_weekly_event_advanced(
                 set endTime to end date of e
                 set start_hour to hours of startTime
                 set start_min to minutes of startTime
+                set start_day to weekday of startTime
                 set end_hour to hours of endTime
                 set end_min to minutes of endTime
                 set recur to recurrence of e
 
                 set check_start to (("{sh}" = "null") or (start_hour = {sh} and start_min = {sm}))
                 set check_end to (("{eh}" = "null") or (end_hour = {eh} and end_min = {em}))
-                set check_recur to (recur contains "FREQ=WEEKLY" and recur contains "BYDAY={weekday}")
+                set check_recur to (recur contains "FREQ=WEEKLY" and start_day={weekday})
                 
                 if check_start and check_end and check_recur then
                     set matched to true
@@ -201,7 +204,7 @@ def calendar_debug(
 # id:2A7C6C19-3DF7-41D2-A363-D006497BB934, recurrence:missing value, stamp date:date Thursday, May 15, 2025 at 3:36:55 AM, class:event, url:1111, end date:date Monday, May 12, 2025 at 7:15:00 AM, excluded dates:, description:hahaha, summary:test_note, location:missing value, allday event:false, start date:date Monday, May 12, 2025 at 6:15:00 AM, sequence:0, status:none
 
 
-def calendar_check_calendar_with_at_least_3_events(env, calendar_name: str) -> bool:
+def calendar_check_calendar_with_at_least_n_events(env, calendar_name: str, event_cnt: int) -> bool:
     """
     Check if a calendar with the given name exists and has at least three events.
 
@@ -219,16 +222,9 @@ def calendar_check_calendar_with_at_least_3_events(env, calendar_name: str) -> b
             set theCal to calendar "{calendar_name}"
             set theEvents to every event of theCal
             set event_count to count of theEvents
-            if event_count ≥ 3 then
-                set matched to true
-            end if
+            return event_count
         end if
     end tell
-    if matched then
-        return "true__DEBUG__event_count=" & event_count
-    else
-        return "false__DEBUG__event_count=" & event_count
-    end if
     """
 
     try:
@@ -240,7 +236,8 @@ def calendar_check_calendar_with_at_least_3_events(env, calendar_name: str) -> b
             if hasattr(stdout, "read")
             else stdout.strip()
         )
-        return output.startswith("true__")
+        
+        return int(output) >= event_cnt
     except Exception as e:
         logger.error(f"Calendar check failed: {e}")
         return False
@@ -324,6 +321,427 @@ def calendar_check_calendar_contains_events(
         return output.startswith("true__")
     except Exception as e:
         logger.error(f"Calendar event list check failed: {e}")
+        return False
+
+
+# ====================================================================== #
+# Fine-grained checkpoint helpers (added 2026-04-11).
+#
+# These are NEW functions intentionally added alongside the existing
+# `calendar_check_calendar_contains_events`, NOT modifications to it.
+# See FINE_GRAINED_EVAL_DESIGN.md §6.1 for the "only-add-never-modify"
+# rule.
+# ====================================================================== #
+
+
+def calendar_check_calendar_exists(env, calendar_name: str) -> bool:
+    """
+    Check whether a Calendar with the given name exists.
+
+    Single-purpose helper used as one fine-grained checkpoint
+    ("did the agent create the right calendar?"). Independent of
+    whether any specific events are inside it.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        calendar_name (str): Exact calendar name to look for
+
+    Returns:
+        bool: True iff a calendar with this exact name exists.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        if exists calendar "{calendar_name}" then
+            set matched to true
+        end if
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[calendar_check_calendar_exists] {calendar_name!r}: {output}"
+        )
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_calendar_exists failed: {e}")
+        return False
+
+
+def calendar_check_event_in_calendar(
+    env, calendar_name: str, event_name: str
+) -> bool:
+    """
+    Check whether a specific event exists in a specific calendar.
+
+    Single-event variant of ``calendar_check_calendar_contains_events``.
+    Use one of these per expected event so each one becomes its own
+    fine-grained checkpoint with its own weight and capability tag.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        calendar_name (str): Calendar to look in
+        event_name (str): Exact event title to look for
+
+    Returns:
+        bool: True iff the calendar exists AND contains at least one
+              event with the exact title ``event_name``.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        if exists calendar "{calendar_name}" then
+            set theCal to calendar "{calendar_name}"
+            set theEvents to every event of theCal whose summary is "{event_name}"
+            if (count of theEvents) > 0 then
+                set matched to true
+            end if
+        end if
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[calendar_check_event_in_calendar] "
+            f"{calendar_name!r}/{event_name!r}: {output}"
+        )
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_event_in_calendar failed: {e}")
+        return False
+
+
+# ---------------------------------------------------------------------- #
+# Per-attribute event checkers (added 2026-04-11).
+#
+# These split `calendar_check_weekly_event_advanced` into four
+# single-purpose checks so each aspect of a recurring-event task
+# (existence / recurrence / weekday / start time) becomes its own
+# fine-grained checkpoint with its own weight and capability tag.
+#
+# All four iterate every calendar looking for events whose summary
+# matches `event_name`, mirroring the existing `*_advanced` getter.
+# `calendar_check_weekly_event_advanced` is left untouched per the
+# "only-add-never-modify" rule.
+# ---------------------------------------------------------------------- #
+
+
+def calendar_check_event_exists(env, event_name: str) -> bool:
+    """
+    Check whether ANY calendar contains an event with the given title.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        event_name (str): Exact event title to look for
+
+    Returns:
+        bool: True iff at least one event with that title exists in any
+              calendar.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        repeat with c in calendars
+            try
+                set theEvents to every event of c whose summary is "{event_name}"
+                if (count of theEvents) > 0 then
+                    set matched to true
+                end if
+            end try
+        end repeat
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(f"[calendar_check_event_exists] {event_name!r}: {output}")
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_event_exists failed: {e}")
+        return False
+
+
+def calendar_check_event_is_recurring(
+    env, event_name: str, frequency: str = "WEEKLY"
+) -> bool:
+    """
+    Check whether an event with the given title has a recurrence rule
+    of the specified frequency.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        event_name (str): Exact event title
+        frequency (str): One of WEEKLY, DAILY, MONTHLY, YEARLY (default WEEKLY)
+
+    Returns:
+        bool: True iff at least one matching event has a recurrence
+              string containing ``FREQ={frequency}``.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        repeat with c in calendars
+            try
+                set theEvents to every event of c whose summary is "{event_name}"
+                repeat with e in theEvents
+                    try
+                        set recur to recurrence of e
+                        if recur contains "FREQ={frequency}" then
+                            set matched to true
+                        end if
+                    end try
+                end repeat
+            end try
+        end repeat
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[calendar_check_event_is_recurring] "
+            f"{event_name!r}/{frequency}: {output}"
+        )
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_event_is_recurring failed: {e}")
+        return False
+
+
+def calendar_check_event_weekday(
+    env, event_name: str, weekday: str = "Monday"
+) -> bool:
+    """
+    Check whether an event with the given title starts on the specified
+    weekday.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        event_name (str): Exact event title
+        weekday (str): AppleScript weekday constant name, e.g. "Monday"
+
+    Returns:
+        bool: True iff at least one matching event has its start date
+              falling on the specified weekday.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        repeat with c in calendars
+            try
+                set theEvents to every event of c whose summary is "{event_name}"
+                repeat with e in theEvents
+                    try
+                        set startTime to start date of e
+                        set startDay to weekday of startTime
+                        if startDay is {weekday} then
+                            set matched to true
+                        end if
+                    end try
+                end repeat
+            end try
+        end repeat
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[calendar_check_event_weekday] {event_name!r}/{weekday}: {output}"
+        )
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_event_weekday failed: {e}")
+        return False
+
+
+def calendar_check_event_start_time(
+    env, event_name: str, hour: int, minute: int = 0
+) -> bool:
+    """
+    Check whether an event with the given title starts at the specified
+    hour and minute.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        event_name (str): Exact event title
+        hour (int): Expected hour of the day (0-23)
+        minute (int): Expected minute (0-59), default 0
+
+    Returns:
+        bool: True iff at least one matching event has start hour and
+              minute equal to the given values.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        repeat with c in calendars
+            try
+                set theEvents to every event of c whose summary is "{event_name}"
+                repeat with e in theEvents
+                    try
+                        set startTime to start date of e
+                        set eHour to hours of startTime
+                        set eMin to minutes of startTime
+                        if eHour = {int(hour)} and eMin = {int(minute)} then
+                            set matched to true
+                        end if
+                    end try
+                end repeat
+            end try
+        end repeat
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[calendar_check_event_start_time] "
+            f"{event_name!r}/{hour}:{minute:02d}: {output}"
+        )
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_event_start_time failed: {e}")
+        return False
+
+
+def calendar_check_event_end_time(
+    env, event_name: str, hour: int, minute: int = 0
+) -> bool:
+    """
+    Check whether an event with the given title ends at the specified
+    hour and minute.
+
+    Mirror of :func:`calendar_check_event_start_time` but reads
+    ``end date`` instead of ``start date``. Used by tasks that
+    constrain both ends of the event window (e.g. calendar_multi_3_1).
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        event_name (str): Exact event title
+        hour (int): Expected hour of the day (0-23)
+        minute (int): Expected minute (0-59), default 0
+
+    Returns:
+        bool: True iff at least one matching event has end hour and
+              minute equal to the given values.
+    """
+    env.connect_ssh()
+
+    apple_script = f"""
+    set matched to false
+    tell application "Calendar"
+        repeat with c in calendars
+            try
+                set theEvents to every event of c whose summary is "{event_name}"
+                repeat with e in theEvents
+                    try
+                        set endTime to end date of e
+                        set eHour to hours of endTime
+                        set eMin to minutes of endTime
+                        if eHour = {int(hour)} and eMin = {int(minute)} then
+                            set matched to true
+                        end if
+                    end try
+                end repeat
+            end try
+        end repeat
+    end tell
+    if matched then
+        return "true__"
+    else
+        return "false__"
+    end if
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script)}")
+        output = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(
+            f"[calendar_check_event_end_time] "
+            f"{event_name!r}/{hour}:{minute:02d}: {output}"
+        )
+        return output.startswith("true__")
+    except Exception as e:
+        logger.error(f"calendar_check_event_end_time failed: {e}")
         return False
 
 

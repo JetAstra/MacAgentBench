@@ -1,0 +1,103 @@
+{
+  "id": "clock_multi_4_4",
+  "system_img": "default",
+  "instruction": "Using the Clock App, create a timer where the minutes are set to 'Ronnie O'Sullivan's highest break in the 2022 World Snooker Championship final', then start that timer and afterwards cancel it. To finish, clear out the Recents section within the Timers view.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_check_clock_timer_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "hours": 2,
+        "minutes": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "timer_hours",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hours": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_minutes_zero",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minutes": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_seconds_zero",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "seconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "recents_cleared",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_check_timer_recents_empty",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

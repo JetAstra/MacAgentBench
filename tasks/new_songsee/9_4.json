@@ -1,0 +1,53 @@
+{
+  "id": "new_songsee_9_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Terminal and run songsee to create a multi-panel visualization of \"$HOME/Desktop/Ode to Joy.mp3\" featuring the panels spectrogram,mel,hpss,selfsim. Configure it to begin at 35 seconds with a duration of 10 seconds, apply the gray style, set dimensions to 1920 wide by 1080 tall, use a window size of 4096 and hop length of 768, and restrict the frequency range between 120 Hz and 6000 Hz. Save the output as a PNG file to \"$HOME/Desktop/songsee_combo_4.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_combo_4.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --viz spectrogram,mel,hpss,selfsim --start 35 --duration 10 --style gray --width 1920 --height 1080 --window 4096 --hop 768 --min-freq 120 --max-freq 6000 --format png -o \"$HOME/Desktop/songsee_combo_4.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_combo_4.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "viz_list": "spectrogram,mel,hpss,selfsim",
+        "start_seconds": "35",
+        "duration_seconds": "10",
+        "style": "gray",
+        "width": 1920,
+        "height": 1080,
+        "window": 4096,
+        "hop": 768,
+        "min_freq": 120,
+        "max_freq": 6000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

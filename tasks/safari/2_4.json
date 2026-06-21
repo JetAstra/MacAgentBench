@@ -1,0 +1,50 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "At the top level of Safari's bookmarks (not inside the Bookmarks Bar), set up a new folder called 'daily reading'. After that, add a minimum of five webpages into this folder, ensuring that 'https://www.wikipedia.org/' is included among them.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Google Chrome'"
+        ]
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "safari_get_bookmarks_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "daily reading"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "check_list_length_and_contains_element",
+          "parameters": [
+            ">=",
+            5,
+            "https://www.wikipedia.org/"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "keynote_4_4",
+  "system_img": "default",
+  "instruction": "Using the Keynote app, perform the following steps:\n1. Create a new document'.\n2. Insert an image from Desktop which is named 'pic'.\n3. Set its size to 100×100, adjust its position to (200,20), and apply a 30 degree rotation",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Keynote'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "keynote"
+  ],
+  "evaluator": {
+    "func": [
+      "keynote_test_image_insertion"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "width": 100,
+        "height": 100,
+        "rotation": 30,
+        "posx": 200,
+        "posy": 20
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": "3_3",
+  "system_img": "default",
+  "instruction": "Using the Calendar app, set up a new calendar called \"Classes\", and then schedule two weekly recurring events titled \"Math\" and \"Physics\" on the \"Classes\" calendar for every Monday.\nHint: The recurrence must be set using the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced",
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "Classes",
+        "event_names": [
+          "Math"
+        ]
+      },
+      {
+        "event_name": "Math"
+      },
+      {
+        "calendar_name": "Classes",
+        "event_names": [
+          "Physics"
+        ]
+      },
+      {
+        "event_name": "Physics"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

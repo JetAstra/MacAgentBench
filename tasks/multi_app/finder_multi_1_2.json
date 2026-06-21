@@ -1,0 +1,90 @@
+{
+  "id": "finder_multi_1_2",
+  "system_img": "default",
+  "instruction": "Open a Finder window and navigate to /Users/Shared/1/11/11/1. If a file named \"report.txt\" does not already exist there, create it as an empty file. Tag the file with the \"Blue\" tag.",
+  "config": [],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_file_tag"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/Shared/1/11/11/1/report.txt",
+        "target_tag": "Blue"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "dir_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_folder_exists",
+      "parameters": {
+        "folder_path": "/Users/Shared/1/11/11/1"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "file_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/report.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "tag_attempted",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "finder_check_file_has_tag_xattr",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/report.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "tag_correct",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "finder_check_file_tag",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/report.txt",
+        "target_tag": "Blue"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "new_clawhub_1_2",
+  "system_img": "default",
+  "instruction": "Install \"support-queue-operations\" version \"1.1.0\" from ClawHub to \"$HOME/Desktop/clawhub_skills_1_2\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p \"$HOME/Desktop/clawhub_skills_1_2\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "# Note: This step may fail intermittently due to ClawHub rate limits. If it fails, retry a few times.\nclawhub install support-queue-operations --version 1.1.0 --dir \"$HOME/Desktop/clawhub_skills_1_2\"",
+  "evaluator": {
+    "func": [
+      "new_clawhub_check_skill_installed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "install_dir": "$HOME/Desktop/clawhub_skills_1_2",
+        "skill_slug": "support-queue-operations"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

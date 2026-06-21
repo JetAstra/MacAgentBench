@@ -1,0 +1,41 @@
+{
+  "id": "1_3",
+  "system_img": "default",
+  "instruction": "Navigate to System Settings, then turn on 'Ask Siri' and configure Siri's voice to 'Indian (Voice 1)'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'System Settings'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "mac_system_settings_no_kill"
+  ],
+  "evaluator": {
+    "func": [
+      "setting_get_siri_status_and_voice"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "dict_equal",
+          "parameters": [
+            {
+              "enabled": true,
+              "voice": "Indian (Voice 1)"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

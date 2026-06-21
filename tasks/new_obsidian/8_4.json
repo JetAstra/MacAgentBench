@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_8_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, update the frontmatter property \"owner\" within the file \"Meetings/Stakeholder Prep.md\" so that its value is \"maria\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Meetings/Stakeholder Prep.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '---\\nowner: alex\\nstatus: prep\\n---\\n\\n# Stakeholder Prep\\n\\nNeed a clearer summary for the meeting.\\n'); obsidian-cli create \"Meetings/Stakeholder Prep.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli frontmatter \"Meetings/Stakeholder Prep.md\" --edit --key \"owner\" --value \"maria\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_frontmatter_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Meetings/Stakeholder Prep.md",
+        "key": "owner",
+        "expected_value": "maria"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

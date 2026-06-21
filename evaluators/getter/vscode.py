@@ -201,7 +201,8 @@ def vscode_check_extension_installed(
     env, extension_id: str = "ms-python.python"
 ) -> bool:
     """
-    Checks if a specific VS Code extension is installed in the remote environment.
+    Checks if a specific VS Code extension is installed by looking for its
+    directory in ~/.vscode/extensions/.
 
     :param env: MacOSEnv instance
     :param extension_id: The ID of the VS Code extension (e.g., 'ms-python.python')
@@ -210,39 +211,47 @@ def vscode_check_extension_installed(
     env.connect_ssh()
 
     try:
-        stdout, _ = env.run_command(f"/usr/local/bin/code --list-extensions")
-        # logger.info(stdout)
-        # logger.info(_)
+        cmd = f'ls "$HOME/.vscode/extensions/" 2>/dev/null | grep -i "^{extension_id}"'
+        stdout, _ = env.run_command(cmd)
         output = (
             stdout.read().decode().strip()
             if hasattr(stdout, "read")
             else stdout.strip()
         )
-        return extension_id in output
+        return bool(output)
     except Exception as e:
         logger.error(f"Failed to check VS Code extension: {e}")
         return False
 
 
-def vscode_check_python_extension_and_conda_path(env) -> bool:
+def vscode_check_extension_and_setting(
+    env,
+    extension_id: str = "ms-python.python",
+    setting_key: str = "python.condaPath",
+    setting_value: str = "/opt/anaconda3/bin/conda",
+) -> bool:
     """
-    Check if 'ms-python.python' is installed and if user-level conda path is set to /opt/anaconda3/bin/conda.
+    Check if a VS Code extension is installed and if a specific user-level setting is configured.
 
     :param env: MacOSEnv instance
+    :param extension_id: The extension ID to check (e.g., 'ms-python.python')
+    :param setting_key: The settings.json key to check (e.g., 'python.condaPath')
+    :param setting_value: The expected value for the setting key
     :return: True if both checks pass
     """
     env.connect_ssh()
 
     try:
-        # Check extension
-        stdout, _ = env.run_command("/usr/local/bin/code --list-extensions")
+        # Check extension by looking in ~/.vscode/extensions/
+        cmd = f'ls "$HOME/.vscode/extensions/" 2>/dev/null | grep -i "^{extension_id}"'
+        stdout, _ = env.run_command(cmd)
         ext_output = (
             stdout.read().decode().strip()
             if hasattr(stdout, "read")
             else stdout.strip()
         )
-        if "ms-python.python" not in ext_output:
-            logger.warning("VS Code Python extension not installed.")
+        if not ext_output:
+            logger.warning(f"VS Code extension '{extension_id}' not installed.")
             return False
 
         # Check user settings
@@ -256,14 +265,14 @@ def vscode_check_python_extension_and_conda_path(env) -> bool:
             else stdout.strip()
         )
 
-        if '"python.condaPath"' in settings and "/opt/anaconda3/bin/conda" in settings:
+        if f'"{setting_key}"' in settings and setting_value in settings:
             return True
         else:
-            logger.warning("python.condaPath not correctly set.")
+            logger.warning(f"Setting '{setting_key}' not correctly set to '{setting_value}'.")
             return False
 
     except Exception as e:
-        logger.error(f"Failed to check settings: {e}")
+        logger.error(f"Failed to check extension/settings: {e}")
         return False
 
 

@@ -1,0 +1,47 @@
+{
+  "id": "new_obsidian_1_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, enumerate all notes found within the \"Recipes/Dinners\" folder and write their note paths to \"$HOME/Desktop/obsidian_recipes_list_4.txt\", one per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_recipes_list_4.txt\"",
+          "obsidian-cli delete \"Recipes/Dinners/Lemon Pasta.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Recipes/Dinners/Sheet Pan Tofu.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Lemon Pasta\\n\\n- pasta\\n- lemon zest\\n- butter\\n'); obsidian-cli create \"Recipes/Dinners/Lemon Pasta.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Sheet Pan Tofu\\n\\n- tofu\\n- broccoli\\n- chili crisp\\n'); obsidian-cli create \"Recipes/Dinners/Sheet Pan Tofu.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli list \"Recipes/Dinners\" --vault \"Benchmark\" | sed -E 's/^[[:space:]]*• //' | sed '/\\/$/d' | sed '/^$/d' | awk '{print \"Recipes/Dinners/\" $0}' | sort > \"$HOME/Desktop/obsidian_recipes_list_4.txt\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_contains_all_note_paths_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "folder_path": "Recipes/Dinners",
+        "output_file": "$HOME/Desktop/obsidian_recipes_list_4.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

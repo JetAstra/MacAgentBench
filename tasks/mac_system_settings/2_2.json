@@ -1,0 +1,39 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "Open System Settings, change the accent color to pink, and disable 'Tint window background with wallpaper color'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'System Settings'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "mac_system_settings"
+  ],
+  "evaluator": {
+    "func": [
+      "settings_check_color_and_tinting_status"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "6",
+        "status": "false"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

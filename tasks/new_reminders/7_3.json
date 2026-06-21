@@ -1,0 +1,42 @@
+{
+  "id": "new_reminders_7_3",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, retrieve every reminder found in \"Errands\" and save all of their titles to a file called \"errands_reminders.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Errands\" --create",
+          "remindctl add --title \"Errands Seed Reminder\" --list \"Errands\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Errands\" --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/errands_reminders.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_all_titles_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Errands",
+        "output_file": "$HOME/Desktop/errands_reminders.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "3_4",
+  "system_img": "default",
+  "instruction": "Open Safari, go to the Steam Top Sellers page, and add the top 5 purchasable (non-free) products listed on the page to your shopping cart.",
+  "config": [],
+  "related_apps": [
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "safari_check_steam_cart_contains_top_items"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "count": 5
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

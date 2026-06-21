@@ -1,0 +1,64 @@
+{
+  "id": "setting_multi_3_3",
+  "system_img": "default",
+  "instruction": "Start by opening the Contacts app to verify whether a contact named Charlie exists. After that, navigate to System Settings and turn on the \"Allow repeated calls\" option within the Do Not Disturb Focus mode.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'System Settings'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "mac_system_settings"
+  ],
+  "evaluator": {
+    "func": [
+      "settings_check_dnd_repeated_calls_enabled"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "contacts_opened",
+      "weight": 0.5,
+      "capability": "app_state",
+      "func": "check_app_is_running",
+      "parameters": {
+        "app_name": "Contacts"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "dnd_enabled",
+      "weight": 0.5,
+      "capability": "system_config",
+      "func": "settings_check_dnd_repeated_calls_enabled",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

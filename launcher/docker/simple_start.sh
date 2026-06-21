@@ -1,9 +1,7 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 sudo docker run -itd \
-    --name "macos_arena2" \
+    --name "mac_agent_bench2" \
     --device /dev/kvm \
     -p 52271:10022 \
     -p 5901:5901 \
@@ -13,9 +11,8 @@ sudo docker run -itd \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e CPU='Haswell-noTSX' \
     -e CPUID_FLAGS='kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on' \
-    -v "/home/fuyikun/Documents/ckpt/all4/mac_hdd_ng.img:/home/arch/OSX-KVM/mac_hdd_ng_src.img" \
+    -v "/home/fuyikun/Documents/ckpt/all6/mac_hdd_ng.img:/home/arch/OSX-KVM/mac_hdd_ng_src.img" \
     -v "/home/fuyikun/Documents/BaseSystem.img:/home/arch/OSX-KVM/BaseSystem_src.img" \
-    -v "${SCRIPT_DIR}/custom_entrypoint.sh:/home/arch/OSX-KVM/entrypoint.sh" \
     -e SHORTNAME=sonoma \
     -e USERNAME=pipiwu \
     -e PASSWORD='1234' \

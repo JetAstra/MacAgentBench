@@ -1,0 +1,43 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Launch VSCode and add exactly two folders to the current workspace: /Users/Shared/project1 and /Users/Shared/project2. Ensure no other folders exist in the workspace. Save the workspace as a .code-workspace file in the /Users/Shared directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p /Users/Shared/project1",
+          "mkdir -p /Users/Shared/project2",
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_workspace_folders"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_folder_list": [
+          "project1",
+          "project2"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "new_peekaboo_10_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Write the text currently on the clipboard into \"/tmp/peekaboo_clipboard_before_4.txt\", then temporarily empty the clipboard, put back the original copied text, and finally save the restored clipboard content to \"/tmp/peekaboo_clipboard_after_4.txt\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "printf 'restore this clipboard text' | pbcopy",
+          "rm -f /tmp/peekaboo_clipboard_before_4.txt /tmp/peekaboo_clipboard_after_4.txt",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "peekaboo clipboard --action get --json | jq -r '.data.textPreview' > /tmp/peekaboo_clipboard_before_4.txt && peekaboo clipboard --action save --slot peekaboo_restore_10_4 --json && peekaboo clipboard --action clear --json && peekaboo clipboard --action restore --slot peekaboo_restore_10_4 --json && peekaboo clipboard --action get --json | jq -r '.data.textPreview' > /tmp/peekaboo_clipboard_after_4.txt",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_file_equals",
+      "new_peekaboo_check_file_equals",
+      "new_peekaboo_check_clipboard_text_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "/tmp/peekaboo_clipboard_before_4.txt",
+        "expected_content": "restore this clipboard text"
+      },
+      {
+        "output_file": "/tmp/peekaboo_clipboard_after_4.txt",
+        "expected_content": "restore this clipboard text"
+      },
+      {
+        "expected_text": "restore this clipboard text"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

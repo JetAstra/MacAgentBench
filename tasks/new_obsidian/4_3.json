@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_4_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, you should create a new note named \"Journal/2026-03-15.md\" and then set its content to exactly the following:\n\n# 2026-03-15\n\nQuiet afternoon. Cleared inbox notes and planned next week.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Journal/2026-03-15.md\" --vault \"Benchmark\" || true",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "content=$(printf '%b' '# 2026-03-15\\n\\nQuiet afternoon. Cleared inbox notes and planned next week.\\n'); obsidian-cli create \"Journal/2026-03-15.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_exists_with_exact_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Journal/2026-03-15.md",
+        "expected_content": "# 2026-03-15\n\nQuiet afternoon. Cleared inbox notes and planned next week.\n"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

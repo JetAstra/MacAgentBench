@@ -1,0 +1,15 @@
+#!/bin/bash
+# Agent-S Task Executor for OpenClaw
+# Usage: agent_s_task "task description"
+
+TASK="$1"
+
+if [ -z "$TASK" ]; then
+    echo "Error: Task description required"
+    echo "Usage: agent_s_task \"task description\""
+    exit 1
+fi
+
+# Execute the Python wrapper using relative path
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+exec "$SCRIPT_DIR/agent_s_wrapper.py" "$TASK"

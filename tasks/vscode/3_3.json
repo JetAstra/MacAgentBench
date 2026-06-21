@@ -1,0 +1,40 @@
+{
+  "id": "3_3",
+  "system_img": "default",
+  "instruction": "Using VS Code, go ahead and install the Prettier extension (esbenp.prettier-vscode), after which you should configure the user-level default formatter to 'esbenp.prettier-vscode'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_extension_and_setting"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "extension_id": "esbenp.prettier-vscode",
+        "setting_key": "editor.defaultFormatter",
+        "setting_value": "esbenp.prettier-vscode"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

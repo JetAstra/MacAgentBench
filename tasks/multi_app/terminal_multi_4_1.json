@@ -1,0 +1,115 @@
+{
+  "id": "terminal_multi_4_1",
+  "system_img": "default",
+  "instruction": "Find all files in ~/Documents/ and insert them as file attachments into a note called 'document' in the macOS Notes app. If the note does not exist, create it first.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/test1.txt ~/Documents/test2.txt ~/Documents/test3.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_attachment_names_by_note_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_name": "document"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "contains_all_elements",
+          "parameters": [
+            [
+              "test1.txt",
+              "test2.txt",
+              "test3.txt"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "note_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_find_note_by_title",
+      "parameters": {
+        "title": "document"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_test1",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "document"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "test1.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_test2",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "document"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "test2.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_test3",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "document"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "test3.txt"
+          ]
+        ]
+      }
+    }
+  ]
+}

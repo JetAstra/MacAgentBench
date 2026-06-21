@@ -1,0 +1,41 @@
+{
+  "id": "new_github_2_2",
+  "system_img": "default",
+  "instruction": "Look up the most recent open issue in \"kubernetes/kubernetes\" that has the label \"kind/bug\", then write it in the format \"#<number> | <labels> | <title>\" to \"$HOME/Desktop/gh_open_issues_2_2.txt\". If there is no matching issue, save an empty file.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh issue list --repo kubernetes/kubernetes --state open --search 'label:\"kind/bug\" sort:created-desc' --limit 1 --json number,title,labels --jq '.[] | \"#\\(.number) | \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end)) | \\(.title)\"' > \"$HOME/Desktop/gh_open_issues_2_2.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_file_contains_live_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_open_issues_2_2.txt",
+        "expected_command": "gh issue list --repo kubernetes/kubernetes --state open --search 'label:\"kind/bug\" sort:created-desc' --limit 1 --json number,title,labels --jq '.[] | \"#\\(.number) | \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end)) | \\(.title)\"'",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

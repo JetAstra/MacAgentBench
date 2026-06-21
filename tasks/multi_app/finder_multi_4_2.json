@@ -1,0 +1,69 @@
+{
+  "id": "finder_multi_4_2",
+  "system_img": "default",
+  "instruction": "Search in Safari for the 2023 ICC Cricket World Cup Player of the Tournament. Then create a .txt file in the \"/Users/Shared/\" directory, naming it after this person's last name.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Finder'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_file_exists_normalized"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/Shared/Kohli.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "file_in_shared",
+      "weight": 0.5,
+      "capability": "file_ops",
+      "func": "finder_check_any_txt_in_dir",
+      "parameters": {
+        "dir_path": "/Users/Shared"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "filename_correct",
+      "weight": 0.5,
+      "capability": "research",
+      "func": "finder_check_file_exists_normalized",
+      "parameters": {
+        "file_path": "/Users/Shared/Kohli.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "3_4",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, set every reminder in the \"Groceries\" list to uncompleted, and after that mark 'Milk', 'Apples' and 'Rice' as completed.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_check_all_completed_with_expected_items"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Groceries",
+        "preset_items": [
+          "Milk",
+          "Apples",
+          "Rice"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

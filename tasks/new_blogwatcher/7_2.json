@@ -1,0 +1,40 @@
+{
+  "id": "new_blogwatcher_7_2",
+  "system_img": "default",
+  "instruction": "Delete the blog called \"Martin Fowler Feed\" from blogwatcher.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Martin Fowler Feed\" \"https://martinfowler.com/feed.atom\" --feed-url \"https://martinfowler.com/feed.atom\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher remove \"Martin Fowler Feed\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "Martin Fowler Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

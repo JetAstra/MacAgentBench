@@ -10,6 +10,6 @@ groq>=0.24.0
 tiktoken
 astor
 numpy
-beautifulsoup4
-python-dateutil
+beautifulsoup4 (bs4)
+python-dateutil (dateutil)
 pytz

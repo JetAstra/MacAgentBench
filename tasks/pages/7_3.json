@@ -1,0 +1,45 @@
+{
+  "id": "pages_7_3",
+  "system_img": "default",
+  "instruction": "Using the Pages app, insert a triangle shape into the front document, then adjust its position to (2, 3), set the width to 1.5 inches, and set the height to 1.5 inches.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    },
+    {
+      "type": "pages_create_new_doc"
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_shape_pos_and_size"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "pos": "2, 3",
+        "width": 1.5,
+        "height": 1.5
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

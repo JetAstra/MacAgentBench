@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_5_2",
+  "system_img": "default",
+  "instruction": "Open blogwatcher and mark as read the article titled \"Kimwolf Botnet Swamps Anonymity Network I2P\" from \"Krebs on Security Feed\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Krebs on Security Feed\" \"https://krebsonsecurity.com/feed/\" --feed-url \"https://krebsonsecurity.com/feed/\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "target_id=$(blogwatcher articles --all | awk -v target_blog=\"Krebs on Security Feed\" -v target_title=\"Kimwolf Botnet Swamps Anonymity Network I2P\" '/^[[:space:]]*\\[[0-9]+\\][[:space:]]*\\[[^]]+\\][[:space:]]+/ { id=$1; gsub(/\\[|\\]/, \"\", id); line=$0; sub(/^[[:space:]]*\\[[0-9]+\\][[:space:]]*\\[[^]]+\\][[:space:]]+/, \"\", line); title=line; next } /^[[:space:]]*Blog:[[:space:]]*/ { blog=$0; sub(/^[[:space:]]*Blog:[[:space:]]*/, \"\", blog); if (blog == target_blog && title == target_title) { print id; exit } }')\nif [ -z \"$target_id\" ]; then\n  echo \"Article not found for blog/title: Krebs on Security Feed / Kimwolf Botnet Swamps Anonymity Network I2P\"\n  exit 1\nfi\nblogwatcher read \"$target_id\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_article_title_is_read"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "Krebs on Security Feed",
+        "article_title": "Kimwolf Botnet Swamps Anonymity Network I2P"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "id": "notes_multi_5_3",
+  "system_img": "default",
+  "instruction": "Using the Terminal, determine the hardware model identifier of this Mac; after that, in the Notes app, create a folder named \"Mac\", add a note titled \"Hardware Model\" inside it, and enter only the model identifier (no extra text).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_get_note_plaintext_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "Hardware Model",
+        "folder": "Mac"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            "iMacPro1,1"
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "folder_exists",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "notes_check_folder_exists",
+      "parameters": {
+        "folder_name": "Mac"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "note_in_folder",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "new_apple_notes_check_note_exists_in_folder",
+      "parameters": {
+        "note_title": "Hardware Model",
+        "folder_name": "Mac"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_any_content",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Hardware Model",
+        "folder": "Mac"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_prefix",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Hardware Model",
+        "folder": "Mac"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "iMac"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_mid",
+      "weight": 0.16,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Hardware Model",
+        "folder": "Mac"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "iMacPro"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "value_exact",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "notes_get_note_plaintext_by_name",
+      "parameters": {
+        "name": "Hardware Model",
+        "folder": "Mac"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "iMacPro1,1"
+          ]
+        ]
+      }
+    }
+  ]
+}

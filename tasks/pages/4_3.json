@@ -1,0 +1,42 @@
+{
+  "id": "pages_4_3",
+  "system_img": "default",
+  "instruction": "Working within the Pages app, carry out the following steps:\n1. Start by creating a new document.\n2. Add a table, then type Hi into the cell at column 1 row 1.",
+  "necessary": false,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_insert_table"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "col": 1,
+        "row": 1,
+        "target_val": "Hi"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

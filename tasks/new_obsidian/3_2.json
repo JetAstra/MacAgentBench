@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_3_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open the note \"Journal/2026-03-12.md\" in Obsidian and copy its full contents into \"$HOME/Desktop/obsidian_note_copy_2.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/obsidian_note_copy_2.md\"",
+          "obsidian-cli delete \"Journal/2026-03-12.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# 2026-03-12\\n\\nNeed a lighter day after wrapping the vault setup.\\n'); obsidian-cli create \"Journal/2026-03-12.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli print \"Journal/2026-03-12.md\" --vault \"Benchmark\" > \"$HOME/Desktop/obsidian_note_copy_2.md\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_file_equals_note_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Journal/2026-03-12.md",
+        "output_file": "$HOME/Desktop/obsidian_note_copy_2.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

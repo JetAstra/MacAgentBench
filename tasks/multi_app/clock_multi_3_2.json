@@ -1,0 +1,70 @@
+{
+  "id": "clock_multi_3_2",
+  "system_img": "default",
+  "instruction": "Open the Clock App, add a world clock for the capital of 'the country that hosted the 2023 World Table Tennis Championships', then drag it to the top of the current list.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock_no_kill",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_get_world_clock_top_item"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match_normalized",
+          "parameters": [
+            "Pretoria"
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "city_added",
+      "weight": 0.5,
+      "capability": "research",
+      "func": "clock_check_city_in_world_clocks",
+      "parameters": {
+        "city": "Pretoria"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "city_on_top",
+      "weight": 0.5,
+      "capability": "app_state",
+      "func": "clock_get_world_clock_top_item",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "exact_match_normalized",
+        "parameters": [
+          "Pretoria"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "terminal_multi_4_2",
+  "system_img": "default",
+  "instruction": "Locate every file in ~/Documents/ and attach each one to a note named 'reports' in the macOS Notes app. Create the note first if it doesn't already exist.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/report1.txt ~/Documents/report2.txt ~/Documents/report3.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_attachment_names_by_note_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_name": "reports"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "contains_all_elements",
+          "parameters": [
+            [
+              "report1.txt",
+              "report2.txt",
+              "report3.txt"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "note_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_find_note_by_title",
+      "parameters": {
+        "title": "reports"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_report1",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "reports"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "report1.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_report2",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "reports"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "report2.txt"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_report3",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "notes_list_attachment_names_by_note_name",
+      "parameters": {
+        "note_name": "reports"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "report3.txt"
+          ]
+        ]
+      }
+    }
+  ]
+}

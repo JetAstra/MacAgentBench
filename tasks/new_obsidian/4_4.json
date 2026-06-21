@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_4_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, make a new note with the name \"Reading/Podcast Takeaways.md\" and set its content to be exactly:\n\n# Podcast Takeaways\n\nGood reminder that most systems fail because upkeep is too heavy.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Reading/Podcast Takeaways.md\" --vault \"Benchmark\" || true",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "content=$(printf '%b' '# Podcast Takeaways\\n\\nGood reminder that most systems fail because upkeep is too heavy.\\n'); obsidian-cli create \"Reading/Podcast Takeaways.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_exists_with_exact_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Reading/Podcast Takeaways.md",
+        "expected_content": "# Podcast Takeaways\n\nGood reminder that most systems fail because upkeep is too heavy.\n"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

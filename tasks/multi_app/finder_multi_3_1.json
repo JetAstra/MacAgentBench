@@ -1,0 +1,142 @@
+{
+  "id": "finder_multi_3_1",
+  "system_img": "default",
+  "instruction": "I would like to find all PDF files that have been modified in the last 7 days. Please use the terminal to locate these PDFs and write their file paths into a text file named \"PDF_modified_in_last_7_days.txt\" in the ~/Library/Saved directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir ~/Library/Saved",
+          "echo 'This is Document A' > ~/Documents/docA.txt",
+          "echo 'This is Document B' > ~/Documents/docB.txt",
+          "echo 'This is Shared A' > /Users/Shared/sharedA.txt",
+          "echo 'This is Shared B' > /Users/Shared/sharedB.txt",
+          "cupsfilter ~/Documents/docA.txt > ~/Documents/docA.pdf 2>/dev/null",
+          "cupsfilter ~/Documents/docB.txt > ~/Documents/docB.pdf 2>/dev/null",
+          "cupsfilter /Users/Shared/sharedA.txt > /Users/Shared/sharedA.pdf 2>/dev/null",
+          "cupsfilter /Users/Shared/sharedB.txt > /Users/Shared/sharedB.pdf 2>/dev/null"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_read_file_contents"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/pipiwu/Library/Saved/PDF_modified_in_last_7_days.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "Documents/docA.pdf",
+              "Documents/docB.pdf",
+              "/Users/Shared/sharedA.pdf",
+              "/Users/Shared/sharedB.pdf"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "output_file_exists",
+      "weight": 0.2,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/PDF_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_docA",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/PDF_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/docA.pdf"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_docB",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/PDF_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/docB.pdf"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_sharedA",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/PDF_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/sharedA.pdf"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_sharedB",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/PDF_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/sharedB.pdf"
+          ]
+        ]
+      }
+    }
+  ]
+}

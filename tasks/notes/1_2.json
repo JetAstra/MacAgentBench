@@ -1,0 +1,38 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "In the Notes app, create a note with the title \"CookBook\", then lock it using the password '1234'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_locked_note_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "contains_element",
+          "parameters": [
+            "CookBook"
+          ]
+        }
+      }
+    ]
+  }
+}

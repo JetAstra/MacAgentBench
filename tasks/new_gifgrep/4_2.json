@@ -1,0 +1,42 @@
+{
+  "id": "new_gifgrep_4_2",
+  "system_img": "default",
+  "instruction": "Create a sprite sheet PNG from \"$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif\" with 8 frames and 4 columns. Save the result to \"$HOME/Desktop/gifgrep_sheet_4_2.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gifgrep sheet \"$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif\" --frames 8 --cols 4 -o \"$HOME/Desktop/gifgrep_sheet_4_2.png\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_sheet_matches_expected_hash"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_sheet_4_2.png",
+        "input_gif_path": "$HOME/Downloads/a_drawing_of_an_octopus_in_a_suit_with_a_chat_enabled_sign_above_him.gif",
+        "frames": 8,
+        "cols": 4
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

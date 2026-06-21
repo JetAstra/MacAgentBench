@@ -1,0 +1,39 @@
+{
+  "id": "2_2",
+  "system_img": "default",
+  "instruction": "Open the Calendar App and create a new calendar called 'Sports Schedule'. Add at least one event to this calendar.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_with_at_least_n_events"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "Sports Schedule",
+        "event_cnt": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

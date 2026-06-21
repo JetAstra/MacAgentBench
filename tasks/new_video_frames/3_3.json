@@ -1,0 +1,45 @@
+{
+  "id": "new_video_frames_3_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Terminal, pull a frame from \"$HOME/Desktop/benchmark_source.mp4\" at the 00:00:03 timestamp, stretch it directly to 512x288 without preserving aspect ratio, and write the result to \"$HOME/Desktop/vf_thumb_3.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/vf_thumb_3.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "ffmpeg -y -ss \"00:00:03\" -i \"$HOME/Desktop/benchmark_source.mp4\" -vf \"scale=512:288\" -frames:v 1 -update 1 \"$HOME/Desktop/vf_thumb_3.png\" >/dev/null 2>&1 && sleep 1",
+  "evaluator": {
+    "func": [
+      "new_video_frames_check_scaled_frame_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/vf_thumb_3.png",
+        "input_video": "$HOME/Desktop/benchmark_source.mp4",
+        "timestamp": "00:00:03",
+        "width": 512,
+        "height": 288
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

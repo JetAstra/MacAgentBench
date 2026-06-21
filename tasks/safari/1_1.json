@@ -1,0 +1,51 @@
+{
+  "id": "1_1",
+  "system_img": "default",
+  "instruction": "Open a Safari window, disable the Favorites section in the default view, and then navigate to the Google search homepage.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "safari_get_url",
+      "safari_get_startpage_section_enabled"
+    ],
+    "conj": "and",
+    "parameters": [
+      {},
+      {
+        "section_id": "favoritesItemIdentifier"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str",
+          "parameters": [
+            "google.com"
+          ]
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            "0"
+          ]
+        }
+      }
+    ]
+  }
+}

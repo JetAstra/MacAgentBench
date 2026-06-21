@@ -1,0 +1,53 @@
+{
+  "id": "new_songsee_9_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Terminal, you should invoke songsee to produce a multi-panel visualization of \"$HOME/Desktop/Ode to Joy.mp3\" featuring spectrogram,chroma,tempogram,flux — beginning at 22.5 seconds with a duration of 11.5 seconds, applying the viridis style, dimensions of width 1280 and height 720, a window of 8192, hop of 1024, and a frequency range spanning 60 Hz to 9000 Hz — and finally save the output as a PNG file to \"$HOME/Desktop/songsee_combo_3.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_combo_3.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --viz spectrogram,chroma,tempogram,flux --start 22.5 --duration 11.5 --style viridis --width 1280 --height 720 --window 8192 --hop 1024 --min-freq 60 --max-freq 9000 --format png -o \"$HOME/Desktop/songsee_combo_3.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_combo_3.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "viz_list": "spectrogram,chroma,tempogram,flux",
+        "start_seconds": "22.5",
+        "duration_seconds": "11.5",
+        "style": "viridis",
+        "width": 1280,
+        "height": 720,
+        "window": 8192,
+        "hop": 1024,
+        "min_freq": 60,
+        "max_freq": 9000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

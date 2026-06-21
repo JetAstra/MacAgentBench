@@ -1,0 +1,43 @@
+{
+  "id": "new_video_frames_2_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Terminal, pull a frame at 00:00:03 from \"$HOME/Desktop/benchmark_source.mp4\" and store it as \"$HOME/Desktop/vf_time_frame_3.jpg\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/vf_time_frame_3.jpg\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "ffmpeg -y -ss \"00:00:03\" -i \"$HOME/Desktop/benchmark_source.mp4\" -frames:v 1 -update 1 \"$HOME/Desktop/vf_time_frame_3.jpg\" >/dev/null 2>&1",
+  "evaluator": {
+    "func": [
+      "new_video_frames_check_timestamp_frame_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/vf_time_frame_3.jpg",
+        "input_video": "$HOME/Desktop/benchmark_source.mp4",
+        "timestamp": "00:00:03"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

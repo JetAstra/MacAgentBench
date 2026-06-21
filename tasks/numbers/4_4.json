@@ -1,0 +1,42 @@
+{
+  "id": "numbers_4_4",
+  "system_img": "default",
+  "instruction": "Within the Numbers app, on the table that is currently selected, utilize Find and Replace to swap every instance of '25' with '35'.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 6,
+        "cols": 6
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_value_replacement"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 6,
+        "cols": 6,
+        "target_value": 25,
+        "replace_value": 35
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

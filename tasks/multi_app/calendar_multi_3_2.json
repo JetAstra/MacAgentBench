@@ -1,0 +1,123 @@
+{
+  "id": "calendar_multi_3_2",
+  "system_img": "default",
+  "instruction": "Open the Calendar App and create a recurring event named 'Tuesday'. Set it to repeat every week on the same weekday as the date Costa Rica officially abolished its military (December 1, 1948). Use a start time of 7:15AM and an end time of 9:00AM.\nHint: Set the recurrence using the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_weekly_event_advanced"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "event_name": "Tuesday",
+        "weekday": "Wednesday",
+        "start_hour": 7,
+        "start_minute": 15,
+        "end_hour": 9,
+        "end_minute": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "create_event",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_exists",
+      "parameters": {
+        "event_name": "Tuesday"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "is_recurring_weekly",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_is_recurring",
+      "parameters": {
+        "event_name": "Tuesday",
+        "frequency": "WEEKLY"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "on_wednesday",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "calendar_check_event_weekday",
+      "parameters": {
+        "event_name": "Tuesday",
+        "weekday": "Wednesday"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "start_at_715",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_start_time",
+      "parameters": {
+        "event_name": "Tuesday",
+        "hour": 7,
+        "minute": 15
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "end_at_900",
+      "weight": 0.2,
+      "capability": "app_state",
+      "func": "calendar_check_event_end_time",
+      "parameters": {
+        "event_name": "Tuesday",
+        "hour": 9,
+        "minute": 0
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

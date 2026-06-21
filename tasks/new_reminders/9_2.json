@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_9_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and delete the reminder titled \"Outdated trip plan\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Outdated trip plan\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Outdated trip plan\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Outdated trip plan\"\n  exit 1\nfi\nremindctl delete \"$reminder_id\" --force",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Outdated trip plan"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

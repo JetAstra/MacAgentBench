@@ -1,0 +1,103 @@
+{
+  "id": "3_4",
+  "system_img": "default",
+  "instruction": "Using the Calendar app, set up three new calendars with the names \"Research\", \"Group meeting\", and \"Classes\". After that, create the following weekly recurring events: one called \"Paper Reading\" on the \"Research\" calendar repeating every Monday, one called \"Group Meeting\" on the \"Group meeting\" calendar repeating every Monday, and one called \"Math\" on the \"Classes\" calendar repeating every Tuesday.\nHint: The recurrence must be set using the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced",
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced",
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "Research",
+        "event_names": [
+          "Paper Reading"
+        ]
+      },
+      {
+        "event_name": "Paper Reading"
+      },
+      {
+        "calendar_name": "Group meeting",
+        "event_names": [
+          "Group Meeting"
+        ]
+      },
+      {
+        "event_name": "Group Meeting"
+      },
+      {
+        "calendar_name": "Classes",
+        "event_names": [
+          "Math"
+        ]
+      },
+      {
+        "event_name": "Math"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

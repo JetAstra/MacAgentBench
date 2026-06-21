@@ -1,0 +1,49 @@
+{
+  "id": "new_obsidian_5_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Obsidian, append the line \"- ask whether the API limits changed\" at the end of the note \"Meetings/Partner Agenda.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Meetings/Partner Agenda.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Partner Agenda\\n\\n- timeline review\\n- resourcing check\\n'); obsidian-cli create \"Meetings/Partner Agenda.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "content=$(printf '%b' '- ask whether the API limits changed'); obsidian-cli create \"Meetings/Partner Agenda.md\" --content \"$content\" --append --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_contains_all_texts"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Meetings/Partner Agenda.md",
+        "expected_texts": [
+          "# Partner Agenda",
+          "- timeline review",
+          "- resourcing check",
+          "- ask whether the API limits changed"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

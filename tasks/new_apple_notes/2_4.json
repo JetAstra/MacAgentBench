@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_2_4",
+  "system_img": "default",
+  "instruction": "Using Apple Notes, retrieve all notes from the folder \"Ideas\" and save all note titles to a file named \"ideas_notes.md\" on the Desktop.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Ideas",
+        "note_title": "Idea backlog",
+        "note_body": "Idea backlog"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "memo notes -f \"Ideas\" | awk '/^[0-9]+\\./ { line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title != \"\") print title }' > \"$HOME/Desktop/ideas_notes.md\"",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_file_contains_all_titles_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Ideas",
+        "output_file": "$HOME/Desktop/ideas_notes.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "2_3",
+  "system_img": "default",
+  "instruction": "Using the Calendar App, set up a new calendar with the name 'Book Club'. After that, add a minimum of two events to this calendar.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_with_at_least_n_events"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "Book Club",
+        "event_cnt": 2
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

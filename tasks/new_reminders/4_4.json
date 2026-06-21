@@ -1,0 +1,53 @@
+{
+  "id": "new_reminders_4_4",
+  "system_img": "default",
+  "instruction": "Using the Reminders app, add a new reminder with the title \"Send status update\" to the \"Work\" list, setting its due date to \"2026-06-18\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Work\" --create && remindctl add --title \"Send status update\" --list \"Work\" --due \"2026-06-18\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists_in_list",
+      "new_reminders_check_reminder_due_date_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Send status update",
+        "list_name": "Work"
+      },
+      {
+        "title": "Send status update",
+        "list_name": "Work",
+        "due_date": "2026-06-18"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

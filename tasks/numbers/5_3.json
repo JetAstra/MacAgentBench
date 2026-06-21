@@ -1,0 +1,46 @@
+{
+  "id": "numbers_5_3",
+  "system_img": "default",
+  "instruction": "Within the Numbers app, take the cells in the range B1:C2 of the currently selected table and merge them together.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 5,
+        "cols": 5
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_cell_merge"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 5,
+        "merged_cell": [
+          1,
+          2,
+          2,
+          3
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

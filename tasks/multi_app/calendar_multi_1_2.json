@@ -1,0 +1,106 @@
+{
+  "id": "calendar_multi_1_2",
+  "system_img": "default",
+  "instruction": "Open the Calendar app and create a new calendar called '2008 Beijing Olympic'. Add three events, naming each after the capital city of one of the top three countries by gold medal count in the 2008 Beijing Olympics.\nHint: One of the event names should be \"Washington, D.C.\" (including the comma and periods).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_contains_events"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "2008 Beijing Olympic",
+        "event_names": [
+          "Beijing",
+          "Washington, D.C.",
+          "Moscow"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "create_calendar",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "calendar_check_calendar_exists",
+      "parameters": {
+        "calendar_name": "2008 Beijing Olympic"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_beijing",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_in_calendar",
+      "parameters": {
+        "calendar_name": "2008 Beijing Olympic",
+        "event_name": "Beijing"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_washington_dc",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_in_calendar",
+      "parameters": {
+        "calendar_name": "2008 Beijing Olympic",
+        "event_name": "Washington, D.C."
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_moscow",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_in_calendar",
+      "parameters": {
+        "calendar_name": "2008 Beijing Olympic",
+        "event_name": "Moscow"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

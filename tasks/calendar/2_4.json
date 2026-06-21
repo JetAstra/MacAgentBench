@@ -1,0 +1,39 @@
+{
+  "id": "2_4",
+  "system_img": "default",
+  "instruction": "Open the Calendar App and set up a new calendar with the name 'Personal Projects'. After that, add a minimum of three events to this calendar.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_with_at_least_n_events"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "Personal Projects",
+        "event_cnt": 3
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

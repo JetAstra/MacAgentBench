@@ -1,0 +1,66 @@
+{
+  "id": "new_apple_notes_8_4",
+  "system_img": "default",
+  "instruction": "Using Apple Notes, take the note called \"Reading Queue\" that is currently in the \"Notes\" folder and relocate it to the \"Ideas\" folder.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Reading Queue",
+        "note_body": "Move this note to the ideas folder."
+      }
+    },
+    {
+      "type": "new_apple_notes_seed_folder",
+      "parameters": {
+        "folder_name": "Ideas"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "note_index=$(memo notes | awk '/^[0-9]+\\./ { idx=$1; sub(/\\./, \"\", idx); line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title == \"Reading Queue\") { print idx; exit } }')\nif [ -z \"$note_index\" ]; then\n  echo \"Note not found: Reading Queue\"\n  exit 1\nfi\nprintf '%s\\n%s\\n' \"$note_index\" \"Ideas\" | memo notes --move",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_in_folder",
+      "new_apple_notes_check_note_exists_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Reading Queue",
+        "folder_name": "Ideas"
+      },
+      {
+        "note_title": "Reading Queue",
+        "folder_name": "Notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_false",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

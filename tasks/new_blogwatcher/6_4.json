@@ -1,0 +1,41 @@
+{
+  "id": "new_blogwatcher_6_4",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, set all unread articles from \"GitLab Blog Feed\" as read.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"GitLab Blog Feed\" \"https://about.gitlab.com/atom.xml\" --feed-url \"https://about.gitlab.com/atom.xml\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher read-all --blog \"GitLab Blog Feed\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_has_no_unread_articles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "GitLab Blog Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

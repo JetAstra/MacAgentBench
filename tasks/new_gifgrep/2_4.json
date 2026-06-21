@@ -1,0 +1,41 @@
+{
+  "id": "new_gifgrep_2_4",
+  "system_img": "default",
+  "instruction": "Search Tenor for \"happy dance\" GIFs, take the first result, and download that GIF to save it at \"$HOME/Desktop/gifgrep_download_2_4.gif\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "first_url=$(gifgrep \"happy dance\" --source tenor --format url | head -n 1)\nif [ -z \"$first_url\" ]; then\n  echo \"No GIF URL found for query: happy dance\"\n  exit 1\nfi\ncurl -L \"$first_url\" -o \"$HOME/Desktop/gifgrep_download_2_4.gif\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_download_matches_first_result"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_download_2_4.gif",
+        "query": "happy dance",
+        "source": "tenor"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

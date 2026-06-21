@@ -1,0 +1,43 @@
+{
+  "id": "new_obsidian_7_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Remove the note located at \"Reading/Obsolete Summary.md\" from Obsidian.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Reading/Obsolete Summary.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Obsolete Summary\\n\\nSuperseded by a newer note.\\n'); obsidian-cli create \"Reading/Obsolete Summary.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli delete \"Reading/Obsolete Summary.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Reading/Obsolete Summary.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

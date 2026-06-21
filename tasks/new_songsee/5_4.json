@@ -1,0 +1,45 @@
+{
+  "id": "new_songsee_5_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using the Terminal, run songsee to create a spectrogram of \"$HOME/Desktop/Ode to Joy.mp3\" with a width of 1920 and a height of 1080, saving the output to \"$HOME/Desktop/songsee_sized_4.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_sized_4.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --width 1920 --height 1080 -o \"$HOME/Desktop/songsee_sized_4.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_sized_4.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

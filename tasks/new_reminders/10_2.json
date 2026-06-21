@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_10_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and delete the list \"Client Follow-ups\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl list \"Client Follow-ups\" --create",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Client Follow-ups\" --delete",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_list_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "list_name": "Client Follow-ups"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

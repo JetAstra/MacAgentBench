@@ -14,6 +14,7 @@ class OpenClawAgent:
         agent_name="main",
         app_name="OpenClaw",
         local_config_path="/home/fuyikun/Documents/OS-Mac/openclaw.json",
+        remote_config_name="openclaw.json",
         remote_config_dir="/Users/pipiwu/.openclaw",
         remote_sessions_dir="/Users/pipiwu/.openclaw/agents/main/sessions",
         app_wait_timeout=60,
@@ -26,6 +27,7 @@ class OpenClawAgent:
         self.agent_name = agent_name
         self.app_name = app_name
         self.local_config_path = local_config_path
+        self.remote_config_name = remote_config_name
         self.remote_config_dir = remote_config_dir
         self.remote_sessions_dir = remote_sessions_dir
         self.app_wait_timeout = app_wait_timeout
@@ -51,8 +53,9 @@ class OpenClawAgent:
         }
 
     def sync_config(self, env):
-        config_name = self.local_config_path.split("/")[-1]
-        remote_config_path = f"{self.remote_config_dir.rstrip('/')}/{config_name}"
+        remote_config_path = (
+            f"{self.remote_config_dir.rstrip('/')}/{self.remote_config_name}"
+        )
         logger.info(
             f"[OpenClaw] Syncing config {self.local_config_path} -> {remote_config_path}"
         )
@@ -74,7 +77,7 @@ class OpenClawAgent:
             logger.info(
                 f"[OpenClaw] Ready check attempt {attempt_idx}, waited={total_waited}s"
             )
-            stdout, stderr, exit_status = env.run_command_with_status(check_command)
+            stdout, stderr, exit_status = env.run_command_with_status(check_command, timeout=30)
             ready = False
             parsed = None
             if exit_status == 0 and stdout.strip():
@@ -153,7 +156,9 @@ class OpenClawAgent:
         prepare_result = self.prepare_env(env)
         command = self.build_command(instruction)
         logger.info(f"[OpenClaw] Executing agent command: {command}")
-        stdout, stderr, exit_status = env.run_command_with_status(command)
+        stdout, stderr, exit_status = env.run_command_with_status(
+            command, timeout=self.task_timeout_seconds + 60
+        )
         logger.info(
             f"[OpenClaw] Agent command finished: exit_status={exit_status}, stdout={stdout!r}, stderr={stderr!r}"
         )

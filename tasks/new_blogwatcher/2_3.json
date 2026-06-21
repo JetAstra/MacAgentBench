@@ -1,0 +1,40 @@
+{
+  "id": "new_blogwatcher_2_3",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, pull up all tracked blogs, then save all blog names to a file named \"tracked_blogs_3.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Wired Feed\" \"https://www.wired.com/feed/rss\" --feed-url \"https://www.wired.com/feed/rss\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher blogs > \"$HOME/Desktop/tracked_blogs_3.txt\" 2>&1",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_blog_names"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/tracked_blogs_3.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

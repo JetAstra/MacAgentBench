@@ -1,0 +1,41 @@
+{
+  "id": "1_4",
+  "system_img": "default",
+  "instruction": "Using the Calendar App, set up a recurring event titled 'Paper reading' that takes place each Friday at 9:00AM.\nHint: You need to configure the recurrence by selecting the 'Custom' option within the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_weekly_event"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "event_name": "Paper reading",
+        "start_hour": 9,
+        "start_minute": 0,
+        "day": "Friday"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

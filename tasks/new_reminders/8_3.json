@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_8_3",
+  "system_img": "default",
+  "instruction": "Within the Reminders app, find the reminder titled \"Call insurance\" and mark it as completed.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Call insurance\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Call insurance\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Call insurance\"\n  exit 1\nfi\nremindctl complete \"$reminder_id\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_completed"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Call insurance"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

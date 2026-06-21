@@ -1,0 +1,49 @@
+{
+  "id": "new_obsidian_5_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Obsidian, append the line \"Add a short paragraph about maintenance costs.\" at the end of the note \"Reading/Article Draft.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Reading/Article Draft.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '# Article Draft\\n\\nNeed one cleaner example for the intro.\\n'); obsidian-cli create \"Reading/Article Draft.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "content=$(printf '%b' 'Add a short paragraph about maintenance costs.'); obsidian-cli create \"Reading/Article Draft.md\" --content \"$content\" --append --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_contains_all_texts"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Reading/Article Draft.md",
+        "expected_texts": [
+          "# Article Draft",
+          "Need one cleaner example for the intro.",
+          "",
+          "Add a short paragraph about maintenance costs."
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

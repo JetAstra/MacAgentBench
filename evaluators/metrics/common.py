@@ -181,6 +181,17 @@ def contains_element(lst: list, element: str) -> bool:
     return element in lst
 
 
+def contains_all_elements(lst: list, elements: list) -> bool:
+    """
+    Checks if all elements in `elements` exist in the list.
+
+    :param lst: The list to search in.
+    :param elements: The list of elements to look for.
+    :return: True if all elements exist in the list, False otherwise.
+    """
+    return all(e in lst for e in elements)
+
+
 def check_list_length_and_contains_element(
     lst: list, op: str, number: int, element: str
 ):
@@ -193,3 +204,124 @@ def check_element_at_index(
         return exact_match(lst[idx], element)
     else:
         raise ValueError(f"Invalid idx: {idx}")
+
+
+# ====================================================================== #
+# Fine-grained metrics: return float in [0, 1] instead of bool
+# ====================================================================== #
+
+
+def is_non_empty(value) -> bool:
+    """
+    Returns True if value has any content, False if empty.
+
+    Handles strings, lists, tuples, dicts, and None:
+    - ``""`` → False
+    - ``[]`` → False
+    - ``None`` → False
+    - ``"hello"`` → True
+    - ``["item"]`` → True
+
+    Use this instead of ``ratio_match([""])`` for "has any content" checks,
+    because ``ratio_match([""])`` incorrectly matches empty strings.
+    """
+    if value is None:
+        return False
+    if isinstance(value, (str, list, tuple, dict)):
+        return len(value) > 0
+    return bool(value)
+
+
+def ratio_match(value, expected) -> float:
+    """
+    Fraction of items in ``expected`` that appear in ``value``.
+
+    Behaviour:
+    - ``expected`` is treated as a list (a single non-list value is wrapped).
+    - If ``value`` is a string, each expected item is matched as a substring.
+    - If ``value`` is a list/tuple/set, each expected item is matched as
+      either an exact element or a substring of any element.
+
+    Returns 0.0 for unsupported value types, 1.0 if ``expected`` is empty.
+
+    This is the float-valued counterpart to ``find_str_in_list`` /
+    ``contains_all_elements`` and is the primary tool for assigning
+    partial credit to "did the agent collect N of the expected items"
+    style checkpoints.
+    """
+    if expected is None:
+        return 1.0
+    if not isinstance(expected, (list, tuple)):
+        expected = [expected]
+    if not expected:
+        return 1.0
+
+    if isinstance(value, str):
+        hits = sum(1 for e in expected if str(e) in value)
+    elif isinstance(value, (list, tuple, set)):
+        def _present(e) -> bool:
+            es = str(e)
+            for v in value:
+                vs = str(v)
+                if es == vs or es in vs:
+                    return True
+            return False
+
+        hits = sum(1 for e in expected if _present(e))
+    else:
+        return 0.0
+
+    return hits / len(expected)
+
+
+def strip_accents(s: str) -> str:
+    """
+    Strip Unicode combining marks (accents) from a string.
+
+    ``"Bogotá"`` → ``"Bogota"``, ``"Schröder"`` → ``"Schroder"``,
+    ``"naïve"`` → ``"naive"``.  Case is preserved.
+
+    This is a shared utility used by :func:`exact_match_normalized`
+    and ``finder_check_file_exists_normalized``.
+    """
+    import unicodedata
+    return "".join(
+        c for c in unicodedata.normalize("NFD", str(s))
+        if unicodedata.category(c) != "Mn"
+    )
+
+
+def exact_match_normalized(value: str, expected: str) -> bool:
+    """
+    Accent-insensitive exact match.
+
+    Strips Unicode combining marks (accents) from both sides before
+    comparing, so ``"Bogotá"`` matches ``"Bogota"``. Case-sensitive
+    (use :func:`find_str_in_list_ci` when case-insensitivity is also
+    needed).
+
+    Added to fix clock_multi_3_1 where macOS returns ``"Bogotá"``
+    (with accent) but the task expected ``"Bogota"`` (without).
+    """
+    return strip_accents(value) == strip_accents(expected)
+
+
+def dict_match_ratio(value, expected) -> float:
+    """
+    Fraction of (key, value) pairs in ``expected`` that match in ``value``.
+
+    Both arguments must be dicts. For each key ``k`` in ``expected``,
+    a "hit" is counted iff ``k in value`` and ``value[k] == expected[k]``.
+
+    Returns 1.0 if ``expected`` is empty, 0.0 if either argument is not a dict.
+
+    This is the float-valued counterpart to ``dict_equal`` and is used
+    for "did the agent set N of the expected attributes" style checks
+    (e.g. Siri ``{"enabled": True, "voice": "American (Voice 4)"}``).
+    """
+    if not isinstance(value, dict) or not isinstance(expected, dict):
+        return 0.0
+    if not expected:
+        return 1.0
+    hits = sum(1 for k, v in expected.items() if k in value and value[k] == v)
+    return hits / len(expected)

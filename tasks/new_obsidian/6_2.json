@@ -1,0 +1,63 @@
+{
+  "id": "new_obsidian_6_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Move the note \"Projects/Archive This Draft.md\" to \"Archive/Archive This Draft.md\" in Obsidian.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Obsidian'",
+          "sleep 5",
+          "obsidian-cli delete \"Projects/Archive This Draft.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Archive/Archive This Draft.md\" --vault \"Benchmark\" || true",
+          "mkdir -p \"/Users/pipiwu/Documents/Benchmark/Benchmark/Archive\"",
+          "content=$(printf '%b' '# Archive This Draft\\n\\nmarker: archive-pass\\n'); obsidian-cli create \"Projects/Archive This Draft.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Archive Reference\\n\\nWiki link: [[Projects/Archive This Draft]]\\nMarkdown link: [source](Projects/Archive%20This%20Draft.md)\\n'); obsidian-cli create \"Journal/Archive Reference.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli move \"Projects/Archive This Draft.md\" \"Archive/Archive This Draft.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_moved",
+      "new_obsidian_check_links_updated_after_move"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "source_note_path": "Projects/Archive This Draft.md",
+        "target_note_path": "Archive/Archive This Draft.md",
+        "expected_text": "archive-pass"
+      },
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "referrer_note_path": "Journal/Archive Reference.md",
+        "old_link_text": "Projects/Archive This Draft",
+        "new_link_text": "Archive/Archive This Draft"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "4_4",
+  "system_img": "default",
+  "instruction": "Using the Terminal, make a new file located at /Users/Shared/test_file.txt",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_files_in_directory"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "/Users/Shared",
+        "required_files": [
+          "test_file.txt"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

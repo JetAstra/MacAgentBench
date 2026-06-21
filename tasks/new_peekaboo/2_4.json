@@ -1,0 +1,45 @@
+{
+  "id": "new_peekaboo_2_4",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using TextEdit, enter the text below exactly as shown, making sure to maintain the line breaks:\nWeekend errands\n- Pick up dry cleaning\n- Drop off donation bags",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'TextEdit'",
+          "open -a 'Terminal'",
+          "osascript -e 'tell application \"TextEdit\" to activate'",
+          "osascript -e 'tell application \"TextEdit\" to if (count of documents) = 0 then make new document'",
+          "osascript -e 'tell application \"TextEdit\" to set text of document 1 to \"\"'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset",
+    "textedit"
+  ],
+  "reference_command": "peekaboo app launch \"TextEdit\" && peekaboo type 'Weekend errands\n- Pick up dry cleaning\n- Drop off donation bags'",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_textedit_document_equals"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_content": "Weekend errands\n- Pick up dry cleaning\n- Drop off donation bags"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "id": "finder_multi_3_3",
+  "system_img": "default",
+  "instruction": "Could you search for every .sh file modified within the last 7 days? Using the terminal, locate these shell scripts and save their file paths into a text file called \"SH_modified_in_last_7_days.txt\" in the ~/Library/Saved directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p ~/Library/Saved",
+          "echo '#!/bin/bash' > ~/Documents/build.sh",
+          "echo '#!/bin/bash' > /Users/Shared/deploy.sh",
+          "echo '#!/bin/bash' > /Users/Shared/cleanup.sh",
+          "echo '#!/bin/bash' > ~/Documents/setup.sh"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_read_file_contents"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/pipiwu/Library/Saved/SH_modified_in_last_7_days.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "Documents/build.sh",
+              "Documents/setup.sh",
+              "/Users/Shared/deploy.sh",
+              "/Users/Shared/cleanup.sh"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "output_file_exists",
+      "weight": 0.2,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/SH_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_build_sh",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/SH_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/build.sh"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_setup_sh",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/SH_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/setup.sh"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_deploy_sh",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/SH_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/deploy.sh"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_cleanup_sh",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/SH_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/cleanup.sh"
+          ]
+        ]
+      }
+    }
+  ]
+}

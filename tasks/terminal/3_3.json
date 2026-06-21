@@ -1,0 +1,41 @@
+{
+  "id": "3_3",
+  "system_img": "default",
+  "instruction": "In the /private/tmp/ directory, create a hidden shell script whose file name contains the string sys_info. The script should output 'System check passed' and then exit. Its file permission needs to be set to 500 (read and execute for the owner, with no permissions granted to group or others). Make sure that only one file in that directory matches the pattern, and confirm the script is successfully executable via terminal.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_echo_macos_script"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "base_path": "/private/tmp",
+        "file_pattern": ".*sys_info*",
+        "permission": "500",
+        "expected_output": "System check passed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "new_blogwatcher_1_4",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, create a new blog entry with the name \"BBC Technology\" and the URL \"https://feeds.bbci.co.uk/news/technology/rss.xml\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher add \"BBC Technology\" \"https://feeds.bbci.co.uk/news/technology/rss.xml\" --feed-url \"https://feeds.bbci.co.uk/news/technology/rss.xml\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_exists"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "BBC Technology"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

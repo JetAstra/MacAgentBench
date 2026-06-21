@@ -1,0 +1,47 @@
+{
+  "id": "new_tmux_5_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Using Terminal, transmit `go` to the tmux session that is presently awaiting confirmation.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "tmux kill-session -t \"tmux-confirm-idle-d3\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-confirm-target-d3\" 2>/dev/null || true",
+          "tmux kill-session -t \"tmux-confirm-other-d3\" 2>/dev/null || true",
+          "tmux new-session -d -s \"tmux-confirm-idle-d3\" \"printf '%s\\\\n' 'sync queue: ready' 'TMUX_IDLE_MARKER_5C'; tail -f /dev/null\"",
+          "tmux new-session -d -s \"tmux-confirm-target-d3\" \"python3 -u -c 'import sys,time; print(\\\"Enter go to continue\\\", flush=True); print(\\\"TMUX_CONFIRM_PROMPT_5C\\\", flush=True); line=sys.stdin.readline().rstrip(\\\"\\\\r\\\\n\\\"); print(\\\"TMUX_CONFIRMED_5C\\\", flush=True) if line==\\\"go\\\" else print(\\\"TMUX_REJECTED_5C\\\", flush=True); time.sleep(3600)'\"",
+          "tmux new-session -d -s \"tmux-confirm-other-d3\" \"printf '%s\\\\n' 'backup stream: running' 'TMUX_OTHER_MARKER_5C'; tail -f /dev/null\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "tmux send-keys -t \"tmux-confirm-target-d3\" 'go' Enter",
+  "evaluator": {
+    "func": [
+      "new_tmux_check_pane_contains_text"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "target": "tmux-confirm-target-d3",
+        "expected_text": "TMUX_CONFIRMED_5C"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_6_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open the Reminders app, find every overdue reminder, and save all reminder titles to a file called \"overdue_tasks.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl overdue --json | jq -r '.. | .title? // empty' > \"$HOME/Desktop/overdue_tasks.txt\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_file_contains_overdue_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/overdue_tasks.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

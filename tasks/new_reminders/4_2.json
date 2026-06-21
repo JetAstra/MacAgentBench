@@ -1,0 +1,53 @@
+{
+  "id": "new_reminders_4_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and add a reminder titled \"Book train tickets\" to the \"Travel\" list with a due date of \"2026-05-01\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl list \"Travel\" --create && remindctl add --title \"Book train tickets\" --list \"Travel\" --due \"2026-05-01\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists_in_list",
+      "new_reminders_check_reminder_due_date_in_list"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Book train tickets",
+        "list_name": "Travel"
+      },
+      {
+        "title": "Book train tickets",
+        "list_name": "Travel",
+        "due_date": "2026-05-01"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "new_reminders_9_3",
+  "system_img": "default",
+  "instruction": "Within the Reminders app, find and remove the reminder that has the title \"Test reminder delete\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "remindctl add --title \"Test reminder delete\"",
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "reminder_id=$(remindctl all --json | jq -r '.[] | select(.title == \"Test reminder delete\") | .id' | head -n 1)\nif [ -z \"$reminder_id\" ]; then\n  echo \"Reminder not found: Test reminder delete\"\n  exit 1\nfi\nremindctl delete \"$reminder_id\" --force",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Test reminder delete"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

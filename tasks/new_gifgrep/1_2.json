@@ -1,0 +1,43 @@
+{
+  "id": "new_gifgrep_1_2",
+  "system_img": "default",
+  "instruction": "Look up \"team celebration\" on Tenor and write the GIF result URLs to \"$HOME/Desktop/gifgrep_urls_1_2.txt\", one URL per line.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gifgrep \"team celebration\" --source tenor --format url > \"$HOME/Desktop/gifgrep_urls_1_2.txt\"",
+  "evaluator": {
+    "func": [
+      "new_gifgrep_check_url_file_has_min_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gifgrep_urls_1_2.txt",
+        "min_lines": 1,
+        "query": "team celebration",
+        "source": "tenor",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

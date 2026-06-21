@@ -1,0 +1,38 @@
+{
+  "id": "3_3",
+  "system_img": "default",
+  "instruction": "Set up a Smart Folder configured to display all PDF files that were modified in the last 7 days, then save it at ~/Library/Saved Searches under the name 'filter_3.savedSearch'",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Finder'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_smart_folder_filters_pdf_in_seven_days"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "name": "filter_3"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

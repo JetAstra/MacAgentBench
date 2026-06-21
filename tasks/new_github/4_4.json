@@ -1,0 +1,41 @@
+{
+  "id": "new_github_4_4",
+  "system_img": "default",
+  "instruction": "Search for the most recent open issue in \"cli/cli\" that matches the keyword \"build\", then write it in the format \"#<number> <title>\" to the file \"$HOME/Desktop/gh_issue_search_4_4.txt\". If there are no matching issues, the file should be saved empty.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh issue list --repo cli/cli --state open --search 'build sort:created-desc' --limit 1 --json number,title --jq '.[] | \"#\\(.number) \\(.title)\"' > \"$HOME/Desktop/gh_issue_search_4_4.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_file_contains_live_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_issue_search_4_4.txt",
+        "expected_command": "gh issue list --repo cli/cli --state open --search 'build sort:created-desc' --limit 1 --json number,title --jq '.[] | \"#\\(.number) \\(.title)\"'",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

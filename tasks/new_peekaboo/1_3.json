@@ -1,0 +1,51 @@
+{
+  "id": "new_peekaboo_1_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Launch \"Calendar\" and ensure it's in the foreground.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "peekaboo app launch \"Calendar\"",
+  "evaluator": {
+    "func": [
+      "new_peekaboo_check_app_running",
+      "new_peekaboo_check_frontmost_app"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "app_name": "Calendar"
+      },
+      {
+        "app_name": "Calendar"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

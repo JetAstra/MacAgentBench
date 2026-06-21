@@ -1,0 +1,102 @@
+{
+  "id": "clock_multi_4_1",
+  "system_img": "default",
+  "instruction": "In the Clock App, set a timer with the minutes of 'Dennis Schroder's points in the 2023 FIBA Basketball World Cup final (Germany vs Serbia)', start the timer, then cancel it. Finally, clear the Recents section in the Timers view.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_check_clock_timer_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "minutes": 28
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "timer_hours",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "hours": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_minutes",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "minutes": 28
+          }
+        ]
+      }
+    },
+    {
+      "name": "timer_seconds_zero",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_timer_value",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "seconds": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "recents_cleared",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_check_timer_recents_empty",
+      "parameters": {},
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

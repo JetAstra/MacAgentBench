@@ -796,7 +796,7 @@ class AguvisAgent:
             logger.info("Generating content with Aguvis model: %s", model)
             client = OpenAI(
                 base_url=(
-                    "http://10.140.52.49:10004/v1" if self.url is None else self.url
+                    "http://YOUR_SERVER:10004/v1" if self.url is None else self.url
                 ),
                 api_key="empty",
             )
@@ -804,7 +804,7 @@ class AguvisAgent:
             if "7b" in model or "7B" in model:
                 response = requests.post(
                     (
-                        "http://101.132.136.195:7908/v1/chat/completions"
+                        "http://YOUR_SERVER:7908/v1/chat/completions"
                         if self.url is None
                         else self.url
                     ),
@@ -813,7 +813,7 @@ class AguvisAgent:
                 )
             elif "72b" in model or "72B" in model:
                 # client = OpenAI(
-                #     base_url="http://10.140.52.49:10004/v1",
+                #     base_url="http://YOUR_SERVER:10004/v1",
                 #     api_key="empty",
                 # )
                 response = client.chat.completions.create(
@@ -830,7 +830,7 @@ class AguvisAgent:
         elif "tars" in model.lower():
             client = OpenAI(
                 base_url=(
-                    "http://10.140.66.134:8000/v1" if self.url is None else self.url
+                    "http://YOUR_SERVER:8000/v1" if self.url is None else self.url
                 ),
                 api_key="empty",
             )
@@ -845,7 +845,7 @@ class AguvisAgent:
             return response.choices[0].message.content
         elif "uground" in model.lower():
             client = OpenAI(
-                base_url="http://10.140.60.1:8005/v1" if self.url is None else self.url,
+                base_url="http://YOUR_SERVER:8005/v1" if self.url is None else self.url,
                 api_key="empty",
             )
             response = client.chat.completions.create(

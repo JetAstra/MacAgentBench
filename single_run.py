@@ -89,12 +89,17 @@ def do_single_task(env: MacOSEnv, agent: PromptAgent, max_steps: int = 10):
                 break
         step_idx += 1
     result = env.evaluate_task()
-    logger.logger.info("Result: %.2f", result)
-    scores.append(result)
+    # ``result`` is either a bool (legacy tasks) or an EvalResult
+    # (tasks with scoring_components). Both are bool-castable; we
+    # always log/persist the bool form here so this debug script
+    # stays format-agnostic.
+    passed = bool(result)
+    logger.logger.info("Result: %.2f", float(passed))
+    scores.append(passed)
     with open(
         os.path.join(example_result_dir, "result.txt"), "w", encoding="utf-8"
     ) as f:
-        f.write(f"{result}\n")
+        f.write(f"{passed}\n")
     env.end_recording(os.path.join(example_result_dir, "recording.mp4"))
 
 

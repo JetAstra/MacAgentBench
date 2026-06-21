@@ -1,0 +1,42 @@
+{
+  "id": "4_2",
+  "system_img": "default",
+  "instruction": "Open the Notes app, create a note with the title \"Class Notes\", and add an attachment called \"math.txt\" to it.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "evaluator": {
+    "func": [
+      "notes_list_attachment_names_by_note_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_name": "Class Notes"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "math.txt"
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

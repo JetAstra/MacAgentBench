@@ -1,0 +1,63 @@
+{
+  "id": "new_obsidian_6_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Obsidian, relocate the note \"Reading/Move This Highlight.md\" so that it resides at \"Reading/Archive/Move This Highlight.md\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Obsidian'",
+          "sleep 5",
+          "obsidian-cli delete \"Reading/Move This Highlight.md\" --vault \"Benchmark\" || true",
+          "obsidian-cli delete \"Reading/Archive/Move This Highlight.md\" --vault \"Benchmark\" || true",
+          "mkdir -p \"/Users/pipiwu/Documents/Benchmark/Benchmark/Reading/Archive\"",
+          "content=$(printf '%b' '# Move This Highlight\\n\\nmarker: reading-shift\\n'); obsidian-cli create \"Reading/Move This Highlight.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "content=$(printf '%b' '# Highlight Reference\\n\\nWiki link: [[Reading/Move This Highlight]]\\nMarkdown link: [source](Reading/Move%20This%20Highlight.md)\\n'); obsidian-cli create \"Reading/Highlight Reference.md\" --content \"$content\" --overwrite --vault \"Benchmark\""
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli move \"Reading/Move This Highlight.md\" \"Reading/Archive/Move This Highlight.md\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_note_moved",
+      "new_obsidian_check_links_updated_after_move"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "source_note_path": "Reading/Move This Highlight.md",
+        "target_note_path": "Reading/Archive/Move This Highlight.md",
+        "expected_text": "reading-shift"
+      },
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "referrer_note_path": "Reading/Highlight Reference.md",
+        "old_link_text": "Reading/Move This Highlight",
+        "new_link_text": "Reading/Archive/Move This Highlight"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

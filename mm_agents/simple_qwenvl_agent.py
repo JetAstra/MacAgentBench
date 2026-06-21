@@ -35,7 +35,7 @@ class SimpleQwenvlAgent:
         platform: str = "macos",
         model: str = "simple_qwenvl",
         url: str = None,
-        # base_url: str = "http://10.140.60.36:10017/v1",
+        # base_url: str = "http://YOUR_SERVER:10017/v1",
         api_key: str = "empty",
         max_tokens: int = 1500,
         temperature: float = 0.5,
@@ -50,12 +50,12 @@ class SimpleQwenvlAgent:
         if self.url is not None:
             self.base_url = self.url
         else:
-            self.base_url = "http://10.140.60.1:11012"
+            self.base_url = "http://YOUR_SERVER:11012"
             # self.base_url = base_url
             if self.model == "gui_v91":
-                self.base_url = "http://10.140.60.93:10017/v1"
+                self.base_url = "http://YOUR_SERVER:10017/v1"
             elif self.model == "gui_v99":
-                self.base_url = "http://10.140.60.23:10019/v1"
+                self.base_url = "http://YOUR_SERVER:10019/v1"
         # else:
         #     raise ValueError("Unspported Model Name")
 

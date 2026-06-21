@@ -1,0 +1,39 @@
+{
+  "id": "1_4",
+  "system_img": "default",
+  "instruction": "Using the macOS Terminal app, set up a new Conda environment called ml_project, then install the scikit-learn package into that environment.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_package_in_conda_env"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "env_name": "ml_project",
+        "package_name": "scikit-learn"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

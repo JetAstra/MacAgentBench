@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_2_3",
+  "system_img": "default",
+  "instruction": "Open Apple Notes and look through all notes within the folder \"Travel\", then write all note titles to a file named \"travel_notes.md\" saved on the Desktop.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Travel",
+        "note_title": "Travel checklist",
+        "note_body": "Travel checklist"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "memo notes -f \"Travel\" | awk '/^[0-9]+\\./ { line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title != \"\") print title }' > \"$HOME/Desktop/travel_notes.md\"",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_file_contains_all_titles_in_folder"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_name": "Travel",
+        "output_file": "$HOME/Desktop/travel_notes.md"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

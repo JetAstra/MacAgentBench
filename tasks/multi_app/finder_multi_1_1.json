@@ -1,0 +1,90 @@
+{
+  "id": "finder_multi_1_1",
+  "system_img": "default",
+  "instruction": "Please open a Finder window, navigate to the path /Users/Shared/1/11/11/1, create an empty file named \"empty.txt\" if it does not already exist, and tag the file with the \"Red\" tag.",
+  "config": [],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_check_file_tag"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/Shared/1/11/11/1/empty.txt",
+        "target_tag": "Red"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "dir_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_folder_exists",
+      "parameters": {
+        "folder_path": "/Users/Shared/1/11/11/1"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "file_exists",
+      "weight": 0.25,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/empty.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "tag_attempted",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "finder_check_file_has_tag_xattr",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/empty.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "tag_correct",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "finder_check_file_tag",
+      "parameters": {
+        "file_path": "/Users/Shared/1/11/11/1/empty.txt",
+        "target_tag": "Red"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

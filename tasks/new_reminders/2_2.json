@@ -1,0 +1,51 @@
+{
+  "id": "new_reminders_2_2",
+  "system_img": "default",
+  "instruction": "Open the Reminders app and add a reminder with the title \"Quarterly planning\" and a due date of \"2026-05-07 14:00\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "reference_command": "remindctl add --title \"Quarterly planning\" --due \"2026-05-07 14:00\"",
+  "evaluator": {
+    "func": [
+      "new_reminders_check_reminder_exists",
+      "new_reminders_check_reminder_due_datetime"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "title": "Quarterly planning"
+      },
+      {
+        "title": "Quarterly planning",
+        "due_datetime": "2026-05-07 14:00"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

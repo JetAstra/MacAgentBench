@@ -1,0 +1,45 @@
+{
+  "id": "new_obsidian_8_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Obsidian and update the frontmatter field \"topic\" in \"Reading/Book Summary.md\" to \"design-systems\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "obsidian-cli delete \"Reading/Book Summary.md\" --vault \"Benchmark\" || true",
+          "content=$(printf '%b' '---\\ntopic: notes\\nstatus: draft\\n---\\n\\n# Book Summary\\n\\nStill collecting quotes.\\n'); obsidian-cli create \"Reading/Book Summary.md\" --content \"$content\" --overwrite --vault \"Benchmark\"",
+          "open -a 'Obsidian'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "obsidian"
+  ],
+  "reference_command": "obsidian-cli frontmatter \"Reading/Book Summary.md\" --edit --key \"topic\" --value \"design-systems\" --vault \"Benchmark\"",
+  "evaluator": {
+    "func": [
+      "new_obsidian_check_frontmatter_value"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "vault_path": "/Users/pipiwu/Documents/Benchmark/Benchmark",
+        "note_path": "Reading/Book Summary.md",
+        "key": "topic",
+        "expected_value": "design-systems"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

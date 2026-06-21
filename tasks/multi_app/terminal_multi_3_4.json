@@ -1,0 +1,101 @@
+{
+  "id": "terminal_multi_3_4",
+  "system_img": "default",
+  "instruction": "Read path.txt to see what it contains, then remove any files from the ~/Documents directory that do not appear in path.txt",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "echo -e \"~/Documents/keep1.txt\" > ~/Desktop/path.txt"
+        ]
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "touch ~/Documents/keep1.txt ~/Documents/remove1.txt ~/Documents/remove2.txt"
+        ]
+      }
+    }
+  ],
+  "reference_command": "rm ~/Documents/remove1.txt ~/Documents/remove2.txt",
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "terminal_check_files_in_directory",
+      "terminal_check_files_in_directory"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "keep1.txt"
+        ]
+      },
+      {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "remove1.txt"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_false",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "kept_keep1",
+      "weight": 0.5,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "keep1.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "deleted_remove1",
+      "weight": 0.5,
+      "capability": "file_ops",
+      "func": "terminal_check_files_in_directory",
+      "parameters": {
+        "folder_path": "~/Documents",
+        "required_files": [
+          "remove1.txt"
+        ]
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_false",
+        "parameters": []
+      }
+    }
+  ]
+}

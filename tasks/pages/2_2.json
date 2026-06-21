@@ -1,0 +1,40 @@
+{
+  "id": "pages_2_2",
+  "system_img": "default",
+  "instruction": "Open Pages and complete these steps:\n1. Create a new document.\n2. Type the following text into the body using green font color: Passwd: p@ssw0rd.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Pages'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "pages"
+  ],
+  "evaluator": {
+    "func": [
+      "pages_test_change_font_color"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "color": "green"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

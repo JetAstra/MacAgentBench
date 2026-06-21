@@ -1,0 +1,40 @@
+{
+  "id": "new_blogwatcher_7_4",
+  "system_img": "default",
+  "instruction": "Delete the blog called \"OReilly Radar Feed\" from blogwatcher.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"OReilly Radar Feed\" \"https://feeds.feedburner.com/oreilly/radar\" --feed-url \"https://feeds.feedburner.com/oreilly/radar\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "blogwatcher remove \"OReilly Radar Feed\" -y",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_blog_absent"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "OReilly Radar Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

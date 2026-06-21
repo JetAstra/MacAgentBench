@@ -1,0 +1,44 @@
+{
+  "id": "new_songsee_4_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Within Terminal, leverage songsee to produce a multi-panel visualization of \"$HOME/Desktop/Ode to Joy.mp3\" featuring spectrogram,mel,loudness,mfcc, saving the result to \"$HOME/Desktop/songsee_panel_3.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_panel_3.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --viz spectrogram,mel,loudness,mfcc -o \"$HOME/Desktop/songsee_panel_3.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_panel_3.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "viz_list": "spectrogram,mel,loudness,mfcc"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

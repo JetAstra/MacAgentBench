@@ -1,0 +1,78 @@
+{
+  "id": "3_2",
+  "system_img": "default",
+  "instruction": "Open the Calendar app. Create two calendars: \"Exercise\" and \"Eating\". Add a weekly recurring event titled \"Skateboard\" to the \"Exercise\" calendar every Monday, and a weekly recurring event titled \"Dinner\" to the \"Eating\" calendar every Monday.\nHint: The recurrence must be set using the 'Custom' option in the repeat settings.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced",
+      "calendar_check_calendar_contains_events",
+      "calendar_check_weekly_event_advanced"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "Exercise",
+        "event_names": [
+          "Skateboard"
+        ]
+      },
+      {
+        "event_name": "Skateboard"
+      },
+      {
+        "calendar_name": "Eating",
+        "event_names": [
+          "Dinner"
+        ]
+      },
+      {
+        "event_name": "Dinner"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      },
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

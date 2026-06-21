@@ -1,0 +1,46 @@
+{
+  "id": "new_songsee_8_3",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Working within Terminal, you'll want to run songsee to produce a multi-panel visualization of \"$HOME/Desktop/Ode to Joy.mp3\", beginning at 24.5 seconds with a duration of 6.5 seconds, leveraging spectrogram,chroma,loudness as the panel types, and saving the output to \"$HOME/Desktop/songsee_slice_panel_3.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_slice_panel_3.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --start 24.5 --duration 6.5 --viz spectrogram,chroma,loudness -o \"$HOME/Desktop/songsee_slice_panel_3.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_slice_panel_3.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "start_seconds": "24.5",
+        "duration_seconds": "6.5",
+        "viz_list": "spectrogram,chroma,loudness"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

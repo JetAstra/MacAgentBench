@@ -1,0 +1,43 @@
+{
+  "id": "1_4",
+  "system_img": "default",
+  "instruction": "Launch VSCode and add precisely two folders to the current workspace: /Users/Shared/frontend and /Users/Shared/backend. Ensure that no additional folders exist in the workspace, and save the workspace as a .code-workspace file located in the /Users/Shared directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p /Users/Shared/frontend",
+          "mkdir -p /Users/Shared/backend",
+          "open -a 'Visual Studio Code'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "vscode"
+  ],
+  "evaluator": {
+    "func": [
+      "vscode_check_workspace_folders"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "expected_folder_list": [
+          "frontend",
+          "backend"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

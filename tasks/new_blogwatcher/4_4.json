@@ -1,0 +1,42 @@
+{
+  "id": "new_blogwatcher_4_4",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, display all discovered articles, then save all article titles to a file called \"articles_4.txt\" on the Desktop.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"CNET News Feed\" \"https://www.cnet.com/rss/news/\" --feed-url \"https://www.cnet.com/rss/news/\"",
+          "blogwatcher scan",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "necessary": false,
+  "reference_command": "blogwatcher articles > \"$HOME/Desktop/articles_4.txt\"",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_file_contains_all_article_titles"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/articles_4.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

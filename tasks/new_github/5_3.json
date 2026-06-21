@@ -1,0 +1,40 @@
+{
+  "id": "new_github_5_3",
+  "system_img": "default",
+  "instruction": "Look up the top open issue in \"microsoft/vscode\" and write the following details to \"$HOME/Desktop/gh_issue_detail_5_3.txt\": issue_number, title, state, author_login, labels. You may use any clear text format. If any requested field is empty or missing, write it as \"none\". Should no open issue exist, save an empty file instead.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh issue list --repo microsoft/vscode --state open --limit 1 --json number,title,state,author,labels --jq '.[0] | \"issue_number: #\\(.number)\\ntitle: \\(.title)\\nstate: \\(.state)\\nauthor_login: \\(.author.login)\\nlabels: \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end))\"' > \"$HOME/Desktop/gh_issue_detail_5_3.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_top_issue_values_present"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_issue_detail_5_3.txt",
+        "repo": "microsoft/vscode"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

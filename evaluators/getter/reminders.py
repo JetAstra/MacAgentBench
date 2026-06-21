@@ -183,17 +183,21 @@ def reminders_get_due_year(
     """
     env.connect_ssh()
 
+    # Escape double quotes inside AppleScript string literals
+    safe_reminder = reminder_name.replace('\\', '\\\\').replace('"', '\\"')
+    safe_list = list_name.replace('\\', '\\\\').replace('"', '\\"')
+
     apple_script = f"""
     tell application "Reminders"
-        set theList to list "{list_name}"
-        set matchedReminder to first reminder of theList whose name is "{reminder_name}"
+        set theList to list "{safe_list}"
+        set matchedReminder to first reminder of theList whose name is "{safe_reminder}"
         set dueTime to due date of matchedReminder
     end tell
     return dueTime as string
     """
 
     try:
-        stdout, _ = env.run_command(f"osascript -e '{apple_script.strip()}'")
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script.strip())}")
         raw = (
             stdout.read().decode().strip()
             if hasattr(stdout, "read")
@@ -247,11 +251,22 @@ def reminders_check_all_completed_with_expected_items(
 
         reminders = [r.strip() for r in raw_output.split(";;") if r.strip()]
         parsed = {}
-        for entry in reminders:
-            name, completed = entry.split("||")
-            parsed[name.strip()] = completed.strip().lower() == "true"
 
-        # Check: all preset items must exist and be completed
+        for entry in reminders:
+            parts = entry.split("||")
+            if len(parts) != 2:
+                continue
+            
+            name, completed = [p.strip() for p in parts]
+            is_completed = completed.lower() == "true"
+            
+            if preset_items is not None:
+                if name not in preset_items and is_completed:
+                    logger.warning(f"Unauthorized item completed: {name}")
+                    return False
+            
+            parsed[name] = is_completed
+
         if preset_items:
             for item in preset_items:
                 if item not in parsed:
@@ -314,6 +329,108 @@ def reminders_check_on_date(
     except Exception as e:
         logger.error(f"Failed to check due date for reminder '{reminder_name}': {e}")
         return False
+
+
+# ====================================================================== #
+# Fine-grained checkpoint helper (added 2026-04-12).
+# ====================================================================== #
+
+
+def reminders_get_due_time(env, reminder_name: str) -> dict:
+    """
+    Get the due date/time of a reminder as a dict.
+
+    Returns ``{"hour": int, "minute": int, "has_due": True}`` on success,
+    or ``{}`` if the reminder doesn't exist or has no due date.
+
+    Use with ``dict_match_ratio`` to check hour and minute separately.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        reminder_name (str): Exact reminder name
+
+    Returns:
+        dict: ``{"hour": int, "minute": int, "has_due": True}`` or ``{}``.
+    """
+    env.connect_ssh()
+
+    safe_name = reminder_name.replace('\\', '\\\\').replace('"', '\\"')
+    apple_script = f"""
+    tell application "Reminders"
+        set matchedReminder to first reminder whose name is "{safe_name}"
+        set dueTime to due date of matchedReminder
+    end tell
+    return dueTime as string
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script.strip())}")
+        raw = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(f"[reminders_get_due_time] {reminder_name!r}: {raw}")
+
+        from dateutil import parser as dateparser
+        dt = dateparser.parse(raw)
+        if dt:
+            result = {"hour": dt.hour, "minute": dt.minute, "has_due": True}
+            logger.info(f"[reminders_get_due_time] Parsed: {result}")
+            return result
+        return {}
+    except Exception as e:
+        logger.error(f"[reminders_get_due_time] Failed for {reminder_name!r}: {e}")
+        return {}
+
+
+def reminders_get_due_date(env, reminder_name: str) -> dict:
+    """
+    Get the due date of a reminder as a dict with year/month/day.
+
+    Returns ``{"year": int, "month": int, "day": int, "has_due": True}``
+    on success, or ``{}`` if the reminder doesn't exist or has no due date.
+
+    Use with ``dict_match_ratio`` to check year, month, day separately.
+
+    Args:
+        env (MacOSEnv): macOS automation environment
+        reminder_name (str): Exact reminder name
+
+    Returns:
+        dict: ``{"year": int, "month": int, "day": int, "has_due": True}``
+              or ``{}``.
+    """
+    env.connect_ssh()
+
+    safe_name = reminder_name.replace('\\', '\\\\').replace('"', '\\"')
+    apple_script = f"""
+    tell application "Reminders"
+        set matchedReminder to first reminder whose name is "{safe_name}"
+        set dueTime to due date of matchedReminder
+    end tell
+    return dueTime as string
+    """
+
+    try:
+        stdout, _ = env.run_command(f"osascript -e {shlex.quote(apple_script.strip())}")
+        raw = (
+            stdout.read().decode().strip()
+            if hasattr(stdout, "read")
+            else stdout.strip()
+        )
+        logger.info(f"[reminders_get_due_date] {reminder_name!r}: {raw}")
+
+        from dateutil import parser as dateparser
+        dt = dateparser.parse(raw)
+        if dt:
+            result = {"year": dt.year, "month": dt.month, "day": dt.day, "has_due": True}
+            logger.info(f"[reminders_get_due_date] Parsed: {result}")
+            return result
+        return {}
+    except Exception as e:
+        logger.error(f"[reminders_get_due_date] Failed for {reminder_name!r}: {e}")
+        return {}
 
 
 if __name__ == "__main__":

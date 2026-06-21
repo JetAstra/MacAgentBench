@@ -1,0 +1,41 @@
+{
+  "id": "new_blogwatcher_3_4",
+  "system_img": "default",
+  "instruction": "Using blogwatcher, check all tracked blogs for updates.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "blogwatcher add \"Google Technology Blog Feed\" \"https://blog.google/technology/rss/\" --feed-url \"https://blog.google/technology/rss/\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "necessary": false,
+  "reference_command": "blogwatcher scan",
+  "evaluator": {
+    "func": [
+      "new_blogwatcher_check_scan_success_for_blog"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "blog_name": "Google Technology Blog Feed"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

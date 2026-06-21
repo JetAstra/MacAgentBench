@@ -1,0 +1,41 @@
+{
+  "id": "1_2",
+  "system_img": "default",
+  "instruction": "Open System Settings, turn on 'Ask Siri', and change Siri's voice to 'South African (Voice 2)'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'System Settings'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "mac_system_settings_no_kill"
+  ],
+  "evaluator": {
+    "func": [
+      "setting_get_siri_status_and_voice"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "dict_equal",
+          "parameters": [
+            {
+              "enabled": true,
+              "voice": "South African (Voice 2)"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

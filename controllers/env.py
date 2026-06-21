@@ -1,5 +1,6 @@
 import yaml
 import paramiko
+import threading
 
 import time
 import shlex
@@ -137,24 +138,65 @@ class MacOSEnv:
         else:
             raise ValueError(f"Unspported mode: {self.mode}")
 
-    def run_command(self, command: str, decode: bool = True):
-        if self.use_eval_ssh:
-            return self.run_eval_command(command, decode=decode)
+    def _run_with_hard_timeout(self, func, timeout, fallback, use_eval=False):
+        """Execute func() in a thread with a hard timeout.
+        If it doesn't complete within timeout seconds, close the relevant
+        ssh client and return fallback.
+        """
+        result = [None]
+        exception = [None]
+        def target():
+            try:
+                result[0] = func()
+            except Exception as e:
+                exception[0] = e
+        t = threading.Thread(target=target, daemon=True)
+        t.start()
+        t.join(timeout)
+        if t.is_alive() or exception[0]:
+            if t.is_alive():
+                logger.warning(f"[hard_timeout] {timeout}s exceeded")
+            else:
+                logger.warning(f"[hard_timeout] command failed: {exception[0]}")
+            if use_eval:
+                try:
+                    self.eval_ssh_client.close()
+                except Exception:
+                    pass
+                self.eval_ssh_client = None
+            else:
+                try:
+                    self.ssh_client.close()
+                except Exception:
+                    pass
+                self.ssh_client = None
+                try:
+                    self.sftp_client.close()
+                except Exception:
+                    pass
+                self.sftp_client = None
+            return fallback
+        return result[0]
 
+    def _run_command_inner(self, command: str, decode: bool = True):
         if not self.ssh_client:
             self.connect_ssh()
-            # raise ValueError("SSH client not connected.")
-
         stdin, stdout, stderr = self.ssh_client.exec_command(command, get_pty=True)
-
         if decode:
-            # logger.info(stdout)
-            # logger.info(command)
             out = stdout.read().decode("utf-8", errors="replace").strip()
-            err = stderr.read().decode("utf-8", errors="replace").strip()
+            err = ""
             return out, err
         else:
-            return stdout, stderr  # raw paramiko ChannelFile
+            return stdout, stderr
+
+    def run_command(self, command: str, decode: bool = True, timeout: int = 300):
+        if self.use_eval_ssh:
+            return self.run_eval_command(command, decode=decode)
+        return self._run_with_hard_timeout(
+            lambda: self._run_command_inner(command, decode),
+            timeout,
+            fallback=("", "") if decode else (None, None),
+        )
 
     def run_command_no_pty(self, command: str, decode: bool = True):
         if self.use_eval_ssh:
@@ -171,39 +213,56 @@ class MacOSEnv:
             return out, err
         return stdout, stderr
 
-    def run_command_with_status(self, command: str, decode: bool = True):
+    def _run_command_with_status_inner(self, command: str, decode: bool = True):
+        if not self.ssh_client:
+            self.connect_ssh()
+        stdin, stdout, stderr = self.ssh_client.exec_command(command, get_pty=True)
+        if decode:
+            out = stdout.read().decode("utf-8", errors="replace").strip()
+            err = ""
+            status = stdout.channel.recv_exit_status()
+            return out, err, status
+        status = stdout.channel.recv_exit_status()
+        return stdout, stderr, status
+
+    def run_command_with_status(self, command: str, decode: bool = True, timeout: int = 300):
+        """Run a command via SSH and return (stdout, stderr, exit_status).
+
+        Args:
+            timeout: Max seconds to wait for the command to finish.
+                     Default 300s (5 min). If exceeded, returns empty
+                     output with exit_status=-1 instead of hanging forever.
+        """
         if self.use_eval_ssh:
             if not self.eval_ssh_client:
                 self.connect_eval_ssh()
 
             stdin, stdout, stderr = self.eval_ssh_client.exec_command(
-                command, get_pty=False
+                command, get_pty=False, timeout=timeout
             )
 
-            if decode:
-                out = stdout.read().decode("utf-8", errors="replace").strip()
-                err = stderr.read().decode("utf-8", errors="replace").strip()
+            try:
+                if decode:
+                    stdout.channel.settimeout(timeout)
+                    stderr.channel.settimeout(timeout)
+                    out = stdout.read().decode("utf-8", errors="replace").strip()
+                    err = stderr.read().decode("utf-8", errors="replace").strip()
+                    status = stdout.channel.recv_exit_status()
+                    return out, err, status
+
                 status = stdout.channel.recv_exit_status()
-                return out, err, status
+                return stdout, stderr, status
+            except Exception as e:
+                logger.warning(f"[run_command_with_status] timeout/error after {timeout}s: {e}")
+                return ("", str(e), -1) if decode else (None, None, -1)
 
-            status = stdout.channel.recv_exit_status()
-            return stdout, stderr, status
+        return self._run_with_hard_timeout(
+            lambda: self._run_command_with_status_inner(command, decode),
+            timeout,
+            fallback=("", f"hard timeout after {timeout}s", -1) if decode else (None, None, -1),
+        )
 
-        if not self.ssh_client:
-            self.connect_ssh()
-
-        stdin, stdout, stderr = self.ssh_client.exec_command(command, get_pty=True)
-
-        if decode:
-            out = stdout.read().decode("utf-8", errors="replace").strip()
-            err = stderr.read().decode("utf-8", errors="replace").strip()
-            status = stdout.channel.recv_exit_status()
-            return out, err, status
-
-        status = stdout.channel.recv_exit_status()
-        return stdout, stderr, status
-
-    def run_eval_command(self, command: str, decode: bool = True):
+    def _run_eval_command_inner(self, command: str, decode: bool = True):
         if not self.eval_ssh_client:
             self.connect_eval_ssh()
 
@@ -214,6 +273,14 @@ class MacOSEnv:
             err = stderr.read().decode("utf-8", errors="replace").strip()
             return out, err
         return stdout, stderr
+
+    def run_eval_command(self, command: str, decode: bool = True, timeout: int = 300):
+        return self._run_with_hard_timeout(
+            lambda: self._run_eval_command_inner(command, decode),
+            timeout,
+            fallback=("", "") if decode else (None, None),
+            use_eval=True,
+        )
 
     def _get_obs(self):
         return {
@@ -306,7 +373,8 @@ class MacOSEnv:
 
             logger.info(f"Uploaded script to: {remote_tmp_path}")
 
-            full_cmd = f"sudo python3 {remote_tmp_path}"
+            # full_cmd = f"sudo python3 {remote_tmp_path}"
+            full_cmd = f"sudo /usr/bin/python3 {remote_tmp_path}"
             stdout, stderr = self.run_command(full_cmd)
             logger.info(f"[exec code] {python_code}")
             logger.info(f"[exec output] {stdout}")
@@ -326,7 +394,7 @@ class MacOSEnv:
         :param remote_tmp_path: Remote temporary path to store screenshot
         :return: Screenshot image content as bytes (e.g., PNG format); returns b'' on failure
         """
-        capture_cmd = f"sudo screencapture -C {remote_tmp_path}"
+        capture_cmd = f"screencapture -C {remote_tmp_path}"
 
         try:
             self.connect_ssh()
@@ -334,7 +402,8 @@ class MacOSEnv:
             stdout, stderr = self.run_command(capture_cmd, decode=False)
 
             out = stdout.read().decode().strip() if hasattr(stdout, "read") else ""
-            err = stderr.read().decode().strip() if hasattr(stderr, "read") else ""
+            # PTY merges stderr into stdout, so stderr is always empty
+            err = ""
             logger.debug(f"[stdout] {out}")
             logger.debug(f"[stderr] {err}")
 
@@ -482,10 +551,42 @@ class MacOSEnv:
         local_path.parent.mkdir(parents=True, exist_ok=True)
         local_frames_dir = local_path.parent / f"{local_path.stem}_frames"
         self.fetch_dir(remote_frames_dir, str(local_frames_dir))
+        # Compress PNG frames to JPEG to save disk space (~10x smaller)
+        self._compress_frames(local_frames_dir)
         logger.info(f"Recording frames saved to {local_frames_dir}")
         local_log_path = local_path.parent / "recording.log"
         self.fetch_file(remote_log_path, str(local_log_path))
         logger.info(f"Recording log saved to {local_log_path}")
+
+    @staticmethod
+    def _compress_frames(frames_dir: Path, quality: int = 70):
+        """Convert PNG frames to JPEG to save disk space.
+
+        Replaces each .png file in *frames_dir* with a .jpg at the given
+        quality (default 70). Keeps original resolution for readability.
+        A typical 2MB PNG screenshot becomes ~200KB JPEG (~10x smaller).
+        """
+        try:
+            from PIL import Image
+        except ImportError:
+            logger.warning(
+                "[_compress_frames] Pillow not installed, skipping compression"
+            )
+            return
+
+        frames_dir = Path(frames_dir)
+        if not frames_dir.exists():
+            return
+
+        for png_file in frames_dir.glob("*.png"):
+            try:
+                jpg_file = png_file.with_suffix(".jpg")
+                with Image.open(png_file) as img:
+                    img = img.convert("RGB")
+                    img.save(jpg_file, "JPEG", quality=quality)
+                png_file.unlink()
+            except Exception as e:
+                logger.warning(f"[_compress_frames] Failed to compress {png_file.name}: {e}")
 
     def connect_sftp(self):
         self.connect_ssh()
@@ -619,15 +720,47 @@ class MacOSEnv:
 
     def evaluate_task(self):
         """
-        Evaluate the task using the evaluation spec provided in `self.task.evaluator`.
+        Evaluate the task and return either a ``bool`` (legacy) or an
+        ``EvalResult`` (fine-grained), depending on what the task JSON
+        declares.
 
-        This function executes a list of getter functions and evaluates their outputs
-        using metric functions, as specified in the evaluator config.
+        Dispatch rule:
+        - If the task has a non-empty ``scoring_components`` field, run
+          the fine-grained code path and return an ``EvalResult`` whose
+          ``__bool__`` reports strict completion (``score == 1.0``).
+        - Otherwise, run the original ``evaluator``-based code path
+          unchanged and return a plain ``bool``.
 
-        Returns:
-            bool: True if all/any evaluations pass based on the configured logical conjunction.
+        This dispatch keeps every task that has *not* opted into
+        fine-grained evaluation (currently everything outside
+        ``tasks/multi_app/``) bit-for-bit identical to the previous
+        behaviour.
+
+        Backward compatibility:
+        - ``bool(env.evaluate_task())`` works for both return types.
+        - The ``result.txt`` writer in ``batch_run.py`` detects the
+          return type and serialises the legacy ``{completed, ...}``
+          shape unless an ``EvalResult`` is produced.
         """
-        if not self.task or not self.task.evaluator:
+        if not self.task:
+            logger.warning("No task loaded.")
+            return False
+
+        if getattr(self.task, "scoring_components", None):
+            return self._evaluate_task_fine_grained()
+        return self._evaluate_task_legacy()
+
+    def _evaluate_task_legacy(self):
+        """
+        Original boolean evaluator. Runs every getter listed under
+        ``self.task.evaluator``, applies the configured metric, and
+        combines the results with ``and`` / ``or``.
+
+        This is the unchanged pre-fine-grained code path. Tasks that
+        have *not* declared ``scoring_components`` continue to flow
+        through here verbatim.
+        """
+        if not self.task.evaluator:
             logger.warning("No evaluator found in task.")
             return False
 
@@ -703,6 +836,157 @@ class MacOSEnv:
         # Combine results based on conjunction type: 'and' or 'or'
         return all(results) if conj == "and" else any(results)
 
+    def _evaluate_task_fine_grained(self):
+        """
+        Fine-grained evaluator. Runs each entry in
+        ``self.task.scoring_components`` independently, applies its
+        ``rule``, normalises the result to a ``[0, 1]`` score, and
+        returns an :class:`EvalResult` whose total score is the
+        weighted sum of component scores.
+
+        See ``FINE_GRAINED_EVAL_DESIGN.md`` for the schema and the
+        scoring formula. The error-handling philosophy is permissive:
+        any exception inside a component (missing getter, getter raise,
+        bad rule, type mismatch) zeroes that component but does not
+        abort the task — so a single broken checkpoint never crashes
+        the whole evaluation.
+        """
+        from evaluators.eval_result import EvalComponent, EvalResult
+
+        components_spec = self.task.scoring_components or []
+
+        # Soft validation: warn if weights don't sum to 1.0.
+        total_weight = sum(float(c.get("weight", 0) or 0) for c in components_spec)
+        if components_spec and abs(total_weight - 1.0) > 1e-6:
+            logger.warning(
+                f"[fine-grained] Task '{self.task.task_id}': scoring_components "
+                f"weights sum to {total_weight:.4f}, expected 1.0"
+            )
+
+        eval_components: list[EvalComponent] = []
+        prev_use_eval_ssh = self.use_eval_ssh
+        self.use_eval_ssh = True
+        try:
+            # Reset the applications, mirroring the legacy path.
+            reset_applications(self, self.task.related_apps)
+
+            for spec in components_spec:
+                comp = self._evaluate_one_component(spec)
+                eval_components.append(comp)
+        finally:
+            self.use_eval_ssh = prev_use_eval_ssh
+
+        result = EvalResult(
+            task_id=self.task.task_id,
+            components=eval_components,
+        )
+        logger.info(
+            f"[fine-grained] {result.task_id}: score={result.score:.3f} "
+            f"({result.n_checkpoints_passed}/{result.n_checkpoints} chkpts) "
+            f"completed={result.completed}"
+        )
+        return result
+
+    def _evaluate_one_component(self, spec: dict):
+        """
+        Run a single fine-grained scoring component:
+        getter -> rule -> normalised score -> :class:`EvalComponent`.
+
+        Permissive: any failure (missing getter, getter raise, bad
+        metric, unknown type) is logged and reported as ``score=0`` for
+        that component; the rest of the task continues to evaluate.
+        """
+        from evaluators.eval_result import EvalComponent
+
+        name = spec.get("name", "<unnamed>")
+        weight = float(spec.get("weight", 0) or 0)
+        capability = spec.get("capability", "")
+        func_name = spec.get("func", "")
+        params = spec.get("parameters", {}) or {}
+        rule = spec.get("rule", {}) or {}
+
+        # ---- Step 1: call the getter ----
+        try:
+            getter_module = importlib.import_module("evaluators.getter")
+            getter_func = getattr(getter_module, func_name)
+        except (AttributeError, ImportError) as e:
+            logger.error(
+                f"[fine-grained] Component '{name}': getter '{func_name}' "
+                f"not found: {e}"
+            )
+            return EvalComponent(
+                name=name, weight=weight, capability=capability,
+                score=0.0, func=func_name, parameters=params,
+                raw_output=f"<getter not found: {e}>"[:200],
+            )
+
+        try:
+            output = getter_func(self, **params)
+        except Exception as e:
+            logger.error(
+                f"[fine-grained] Component '{name}': getter '{func_name}' "
+                f"raised: {e}"
+            )
+            return EvalComponent(
+                name=name, weight=weight, capability=capability,
+                score=0.0, func=func_name, parameters=params,
+                raw_output=f"<getter error: {e}>"[:200],
+            )
+
+        raw_output_str = str(output)[:200]
+
+        # ---- Step 2: apply the rule ----
+        score = 0.0
+        try:
+            metric_type = rule.get("type", "common")
+            metric_func_name = rule.get("func", "is_true")
+            metric_params = rule.get("parameters", [])
+
+            metric_module = importlib.import_module(
+                f"evaluators.metrics.{metric_type}"
+            )
+            metric_func = getattr(metric_module, metric_func_name)
+
+            if isinstance(metric_params, list):
+                metric_result = metric_func(output, *metric_params)
+            elif isinstance(metric_params, dict):
+                metric_result = metric_func(output, **metric_params)
+            else:
+                metric_result = metric_func(output, metric_params)
+
+            # Normalise to [0, 1]:
+            #  - bool                 -> 1.0 / 0.0
+            #  - int / float in [0,1] -> as-is (clipped)
+            #  - anything else        -> 0.0
+            if isinstance(metric_result, bool):
+                score = 1.0 if metric_result else 0.0
+            elif isinstance(metric_result, (int, float)):
+                score = max(0.0, min(1.0, float(metric_result)))
+            else:
+                logger.warning(
+                    f"[fine-grained] Component '{name}': metric "
+                    f"'{metric_func_name}' returned non-numeric "
+                    f"{type(metric_result).__name__}, scoring as 0"
+                )
+                score = 0.0
+
+            logger.info(
+                f"[fine-grained] {name}: {func_name} => {raw_output_str[:60]} "
+                f"| {metric_func_name}({metric_params}) => {metric_result} "
+                f"(score={score:.3f}, weight={weight})"
+            )
+        except Exception as e:
+            logger.error(
+                f"[fine-grained] Component '{name}': rule failed: {e}"
+            )
+            score = 0.0
+
+        return EvalComponent(
+            name=name, weight=weight, capability=capability,
+            score=score, func=func_name, parameters=params,
+            raw_output=raw_output_str,
+        )
+
 
 class TaskController:
     def __init__(
@@ -719,6 +1003,11 @@ class TaskController:
         self.config = self.task.get("config", [])
         self.related_apps = self.task.get("related_apps", [])
         self.evaluator = self.task.get("evaluator", {})
+        # Fine-grained evaluation spec — only present for tasks that
+        # have opted in (currently only some tasks under tasks/multi_app/).
+        # When non-empty, MacOSEnv.evaluate_task() will dispatch to the
+        # fine-grained code path and return an EvalResult instead of bool.
+        self.scoring_components = self.task.get("scoring_components", [])
 
         self.step_no = 0
         self.action_history = []

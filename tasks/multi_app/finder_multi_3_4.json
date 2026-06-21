@@ -1,0 +1,138 @@
+{
+  "id": "finder_multi_3_4",
+  "system_img": "default",
+  "instruction": "Please search for every .json file that has been modified within the last 7 days. Use the terminal to find these JSON files and save their file paths to a text file called \"JSON_modified_in_last_7_days.txt\" located in the ~/Library/Saved directory.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "mkdir -p ~/Library/Saved",
+          "echo '{\"name\": \"test\"}' > ~/Documents/config.json",
+          "echo '{\"key\": \"value\"}' > /Users/Shared/settings.json",
+          "echo '{\"id\": 1}' > ~/Documents/manifest.json",
+          "echo '{\"version\": 2}' > /Users/Shared/package.json"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "finder",
+    "terminal"
+  ],
+  "evaluator": {
+    "func": [
+      "finder_read_file_contents"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "file_path": "/Users/pipiwu/Library/Saved/JSON_modified_in_last_7_days.txt"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_str_in_list",
+          "parameters": [
+            [
+              "Documents/config.json",
+              "/Users/Shared/settings.json",
+              "Documents/manifest.json",
+              "/Users/Shared/package.json"
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "output_file_exists",
+      "weight": 0.2,
+      "capability": "file_ops",
+      "func": "finder_check_file_exists",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/JSON_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_config_json",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/JSON_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/config.json"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_settings_json",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/JSON_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/settings.json"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_manifest_json",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/JSON_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "Documents/manifest.json"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_package_json",
+      "weight": 0.2,
+      "capability": "research",
+      "func": "finder_read_file_contents",
+      "parameters": {
+        "file_path": "/Users/pipiwu/Library/Saved/JSON_modified_in_last_7_days.txt"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "/Users/Shared/package.json"
+          ]
+        ]
+      }
+    }
+  ]
+}

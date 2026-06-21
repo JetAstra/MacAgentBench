@@ -1,0 +1,53 @@
+{
+  "id": "new_songsee_9_2",
+  "system_img": "default",
+  "necessary": false,
+  "instruction": "Open Terminal and run songsee to create a multi-panel visualization of \"$HOME/Desktop/Ode to Joy.mp3\" with spectrogram,mel,loudness,mfcc. Set the start time to 14 seconds, duration to 9 seconds, style to inferno, dimensions to 1440 width by 810 height, window 2048, hop 256, and frequency range 100 Hz to 7000 Hz. Save the output as a PNG to \"$HOME/Desktop/songsee_combo_2.png\".",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "rm -f \"$HOME/Desktop/songsee_combo_2.png\"",
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "songsee \"$HOME/Desktop/Ode to Joy.mp3\" --viz spectrogram,mel,loudness,mfcc --start 14 --duration 9 --style inferno --width 1440 --height 810 --window 2048 --hop 256 --min-freq 100 --max-freq 7000 --format png -o \"$HOME/Desktop/songsee_combo_2.png\"",
+  "evaluator": {
+    "func": [
+      "new_songsee_check_render_matches_expected"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/songsee_combo_2.png",
+        "input_audio": "$HOME/Desktop/Ode to Joy.mp3",
+        "image_format": "png",
+        "viz_list": "spectrogram,mel,loudness,mfcc",
+        "start_seconds": "14",
+        "duration_seconds": "9",
+        "style": "inferno",
+        "width": 1440,
+        "height": 810,
+        "window": 2048,
+        "hop": 256,
+        "min_freq": 100,
+        "max_freq": 7000
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

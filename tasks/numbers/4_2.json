@@ -1,0 +1,42 @@
+{
+  "id": "numbers_4_2",
+  "system_img": "default",
+  "instruction": "Open the Numbers app and, in the currently selected table, use Find and Replace to replace all occurrences of '10' with '20'.",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "numbers_init_table",
+      "parameters": {
+        "rows": 5,
+        "cols": 5
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_value_replacement"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "rows": 5,
+        "cols": 5,
+        "target_value": 10,
+        "replace_value": 20
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

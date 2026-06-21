@@ -1,0 +1,119 @@
+{
+  "id": "clock_multi_1_4",
+  "system_img": "default",
+  "instruction": "Using the Clock App, create an alarm at the local time of the first 2023 Turkey-Syria earthquake that hit on February 6 according to Wikipedia. Schedule it for everyday (Monday through Sunday), give it the label 'Kahramanmaras', and set the alarm sound to 'Silk'.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Clock'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "clock",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "clock_list_alarms"
+    ],
+    "conj": "and",
+    "parameters": [
+      {}
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "find_dict",
+          "parameters": [
+            {
+              "time": "4:17AM",
+              "label": "Kahramanmaras",
+              "repeat": "Every day",
+              "sound": "Silk"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "alarm_exists",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Kahramanmaras"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "label": "Kahramanmaras"
+          }
+        ]
+      }
+    },
+    {
+      "name": "time_correct",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Kahramanmaras"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "time": "4:17AM"
+          }
+        ]
+      }
+    },
+    {
+      "name": "repeat_every_day",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Kahramanmaras"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "repeat": "Every day"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sound_correct",
+      "weight": 0.25,
+      "capability": "content_match",
+      "func": "clock_get_alarm_by_label",
+      "parameters": {
+        "label": "Kahramanmaras"
+      },
+      "rule": {
+        "type": "common",
+        "func": "dict_match_ratio",
+        "parameters": [
+          {
+            "sound": "Silk"
+          }
+        ]
+      }
+    }
+  ]
+}

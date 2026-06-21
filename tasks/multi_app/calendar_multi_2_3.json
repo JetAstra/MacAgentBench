@@ -1,0 +1,105 @@
+{
+  "id": "calendar_multi_2_3",
+  "system_img": "default",
+  "instruction": "Using the Calendar App, set up a recurring event titled 'TianGanDiZhi' that repeats every Monday, where the start time corresponds to the beginning of '午时' in Chinese.\nHint: The recurrence must be set using the 'Custom' option in the repeat settings.",
+  "instruction_zh": "创建一个每周一循环的事件叫做'天干地支'，提醒时间为'中国的午时'的开始",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_weekly_event_advanced"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "event_name": "TianGanDiZhi",
+        "start_hour": 11,
+        "start_minute": 0
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "create_event",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "calendar_check_event_exists",
+      "parameters": {
+        "event_name": "TianGanDiZhi"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "is_recurring_weekly",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "calendar_check_event_is_recurring",
+      "parameters": {
+        "event_name": "TianGanDiZhi",
+        "frequency": "WEEKLY"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "on_monday",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "calendar_check_event_weekday",
+      "parameters": {
+        "event_name": "TianGanDiZhi",
+        "weekday": "Monday"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "start_at_wushi",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_start_time",
+      "parameters": {
+        "event_name": "TianGanDiZhi",
+        "hour": 11,
+        "minute": 0
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

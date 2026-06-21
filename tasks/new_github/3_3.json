@@ -1,0 +1,41 @@
+{
+  "id": "new_github_3_3",
+  "system_img": "default",
+  "instruction": "In the \"microsoft/vscode\" repository, locate the most recent open pull request carrying the label \"triage-needed\", then write it out in the format \"#<number> | <labels> | <title>\" to \"$HOME/Desktop/gh_open_prs_3_3.txt\". Should no matching pull request exist, the file should be saved empty.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "gh pr list --repo microsoft/vscode --search 'label:\"triage-needed\" sort:created-desc' --limit 1 --json number,title,labels --jq '.[] | \"#\\(.number) | \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end)) | \\(.title)\"' > \"$HOME/Desktop/gh_open_prs_3_3.txt\"",
+  "evaluator": {
+    "func": [
+      "new_github_check_file_contains_live_lines"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/gh_open_prs_3_3.txt",
+        "expected_command": "gh pr list --repo microsoft/vscode --search 'label:\"triage-needed\" sort:created-desc' --limit 1 --json number,title,labels --jq '.[] | \"#\\(.number) | \\(([.labels[].name] | if length == 0 then \"none\" else join(\",\") end)) | \\(.title)\"'",
+        "min_overlap": 1
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

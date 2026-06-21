@@ -1,0 +1,106 @@
+{
+  "id": "calendar_multi_1_3",
+  "system_img": "default",
+  "instruction": "Using the Calendar app, set up a new calendar with the name '2016 Rio Olympic'. Next, go ahead and create three events, giving each one the name of the capital city corresponding to one of the top three countries ranked by gold medal count at the 2016 Rio Olympics.\nHint: One of the event names should be \"Washington, D.C.\" (including the comma and periods).",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Calendar'",
+          "open -a 'Google Chrome'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "calendar",
+    "safari"
+  ],
+  "evaluator": {
+    "func": [
+      "calendar_check_calendar_contains_events"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "calendar_name": "2016 Rio Olympic",
+        "event_names": [
+          "Washington, D.C.",
+          "London",
+          "Beijing"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "create_calendar",
+      "weight": 0.25,
+      "capability": "app_state",
+      "func": "calendar_check_calendar_exists",
+      "parameters": {
+        "calendar_name": "2016 Rio Olympic"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_washington_dc",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_in_calendar",
+      "parameters": {
+        "calendar_name": "2016 Rio Olympic",
+        "event_name": "Washington, D.C."
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_london",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_in_calendar",
+      "parameters": {
+        "calendar_name": "2016 Rio Olympic",
+        "event_name": "London"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_beijing",
+      "weight": 0.25,
+      "capability": "research",
+      "func": "calendar_check_event_in_calendar",
+      "parameters": {
+        "calendar_name": "2016 Rio Olympic",
+        "event_name": "Beijing"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    }
+  ]
+}

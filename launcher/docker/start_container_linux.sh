@@ -6,8 +6,8 @@ docker_name=$1
 host_port=$2
 
 # Read image paths from environment variables or assign default fallback values
-mac_hdd_img=${MACOS_ARENA_MAC_HDD_IMG_PATH:-"path/to/mac_hdd_ng_copy.img"}
-base_system_img=${MACOS_ARENA_BASESYSTEM_IMG_PATH:-"path/to/BaseSystem.img"}
+mac_hdd_img=${MAC_AGENT_BENCH_MAC_HDD_IMG_PATH:-"path/to/mac_hdd_ng_copy.img"}
+base_system_img=${MAC_AGENT_BENCH_BASESYSTEM_IMG_PATH:-"path/to/BaseSystem.img"}
 
 if [ -z "$docker_name" ] || [ -z "$host_port" ]; then
     echo "Usage: $0 <docker_name> <host_port>"
@@ -17,7 +17,6 @@ fi
 sudo docker run -itd \
     --name "$docker_name" \
     --device /dev/kvm \
-    -p 5901:5901 \
     -p "$host_port":10022 \
     -e EXTRA="-vnc 0.0.0.0:1,password=off" \
     -v /tmp/.X11-unix:/tmp/.X11-unix \

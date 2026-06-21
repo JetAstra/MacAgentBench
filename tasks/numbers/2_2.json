@@ -1,0 +1,48 @@
+{
+  "id": "numbers_2_2",
+  "system_img": "default",
+  "instruction": "Open the Numbers app and create a new blank document. If the first sheet has no table, insert one. Enter 'MacOS' into the cell at row 1, column 2 (cell A2).",
+  "necessary": true,
+  "reference_command": "",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Numbers'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "numbers"
+  ],
+  "evaluator": {
+    "func": [
+      "numbers_test_cell_operation"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "cells": [
+          [
+            1,
+            2
+          ]
+        ],
+        "values": [
+          "MacOS"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

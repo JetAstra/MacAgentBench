@@ -1,0 +1,48 @@
+{
+  "id": "new_apple_notes_6_2",
+  "system_img": "default",
+  "instruction": "Open Apple Notes, find the note titled \"Weekly Goals\", and append the line \"Add one milestone for Friday.\" to it.",
+  "config": [
+    {
+      "type": "new_apple_notes_seed_folder_and_note",
+      "parameters": {
+        "folder_name": "Notes",
+        "note_title": "Weekly Goals",
+        "note_body": "Week overview"
+      }
+    },
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Notes'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "notes"
+  ],
+  "reference_command": "note_index=$(memo notes | awk '/^[0-9]+\\./ { idx=$1; sub(/\\./, \"\", idx); line=$0; sub(/^[0-9]+\\. /, \"\", line); n=split(line, parts, \" - \"); title=parts[n]; if (title == \"Weekly Goals\") { print idx; exit } }')\nif [ -z \"$note_index\" ]; then\n  echo \"Note not found: Weekly Goals\"\n  exit 1\nfi\ncat > /tmp/memo_auto_edit.sh <<'EOF'\n#!/usr/bin/env bash\nfile=\"$1\"\n\ncat > \"$file\" <<'TXT'\nWeekly Goals\n\nWeek overview\nAdd one milestone for Friday.\nTXT\nEOF\n\nchmod +x /tmp/memo_auto_edit.sh\nprintf '%s\\n' \"$note_index\" | env EDITOR=/tmp/memo_auto_edit.sh memo notes --edit",
+  "evaluator": {
+    "func": [
+      "new_apple_notes_check_note_exists_with_content"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "note_title": "Weekly Goals",
+        "note_content": "Add one milestone for Friday."
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

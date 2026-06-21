@@ -1,0 +1,85 @@
+{
+  "id": "terminal_multi_6_4",
+  "system_img": "default",
+  "instruction": "Open the file 'memo.txt' found on the Desktop and read its contents. Then, set that content as the note body of a reminder named 'work memo terminal_multi_6_3' within the macOS Reminders app. Should no reminder with that title already exist, go ahead and create one first.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "echo 'submit report' > ~/Desktop/memo.txt"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal",
+    "reminder"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_body_by_name"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "work memo terminal_multi_6_3"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": "submit report"
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "reminder_exists",
+      "weight": 0.34,
+      "capability": "app_state",
+      "func": "new_reminders_check_reminder_exists",
+      "parameters": {
+        "title": "work memo terminal_multi_6_3"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_body",
+      "weight": 0.33,
+      "capability": "content_match",
+      "func": "reminders_get_body_by_name",
+      "parameters": {
+        "reminder_name": "work memo terminal_multi_6_3"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_non_empty",
+        "parameters": []
+      }
+    },
+    {
+      "name": "body_correct",
+      "weight": 0.33,
+      "capability": "research",
+      "func": "reminders_get_body_by_name",
+      "parameters": {
+        "reminder_name": "work memo terminal_multi_6_3"
+      },
+      "rule": {
+        "type": "common",
+        "func": "exact_match",
+        "parameters": [
+          "submit report"
+        ]
+      }
+    }
+  ]
+}

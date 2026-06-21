@@ -1,0 +1,40 @@
+{
+  "id": "new_himalaya_5_2",
+  "system_img": "default",
+  "instruction": "Search the Inbox for the most recent email with \"security\" in its subject line. Export that email's raw MIME content to \"$HOME/Desktop/mail_export_5_2.eml\". If no matching email is found, write \"none\" to that file instead.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Terminal'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "terminal_no_reset"
+  ],
+  "reference_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then id=\"\"; else id=$(printf '%s\\n' \"$all\" | jq -s -r 'add | [.[] | select((.subject // \"\") | test(\"security\";\"i\"))][0].id // empty'); fi; if [ -n \"$id\" ]; then himalaya message export --folder Inbox \"$id\" --full > \"$HOME/Desktop/mail_export_5_2.eml\"; else printf 'none\\n' > \"$HOME/Desktop/mail_export_5_2.eml\"; fi",
+  "evaluator": {
+    "func": [
+      "new_himalaya_check_file_equals_live_output"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "output_file": "$HOME/Desktop/mail_export_5_2.eml",
+        "expected_command": "all=$(for p in {1..50}; do out=$(himalaya envelope list --folder Inbox --page \"$p\" --page-size 100 -o json 2>/dev/null || true); [ -z \"$out\" ] && break; [ \"$out\" = \"[]\" ] && break; echo \"$out\"; done); if [ -z \"$all\" ]; then id=\"\"; else id=$(printf '%s\\n' \"$all\" | jq -s -r 'add | [.[] | select((.subject // \"\") | test(\"security\";\"i\"))][0].id // empty'); fi; if [ -n \"$id\" ]; then himalaya message export --folder Inbox \"$id\" --full; else printf 'none\\n'; fi"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "is_true",
+          "parameters": []
+        }
+      }
+    ]
+  }
+}

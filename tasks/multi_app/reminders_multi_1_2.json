@@ -1,0 +1,143 @@
+{
+  "id": "reminders_multi_1_2",
+  "system_img": "default",
+  "instruction": "Look up King's Joy restaurant in Beijing using Safari and identify its 6-digit postal code. Open the Reminders app, create a list called \"Restaurant Reservations\", and add a reminder due in the year 2100 with the title \"King's Joy:{postal code}\", replacing {postal code} with the 6-digit code using no spaces or separators.",
+  "config": [
+    {
+      "type": "cmd",
+      "parameters": {
+        "command": [
+          "open -a 'Reminders'"
+        ]
+      }
+    }
+  ],
+  "related_apps": [
+    "reminders"
+  ],
+  "evaluator": {
+    "func": [
+      "reminders_get_due_year"
+    ],
+    "conj": "and",
+    "parameters": [
+      {
+        "reminder_name": "King's Joy:100007",
+        "list_name": "Restaurant Reservations"
+      }
+    ],
+    "expected": [
+      {
+        "type": "common",
+        "rules": {
+          "func": "exact_match",
+          "parameters": [
+            2100
+          ]
+        }
+      }
+    ]
+  },
+  "scoring_components": [
+    {
+      "name": "list_exists",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "new_reminders_check_list_exists",
+      "parameters": {
+        "list_name": "Restaurant Reservations"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "has_reminder_name",
+      "weight": 0.17,
+      "capability": "app_state",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Restaurant Reservations"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "King's Joy"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_beijing_prefix",
+      "weight": 0.16,
+      "capability": "research",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Restaurant Reservations"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "100"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_postal_code",
+      "weight": 0.17,
+      "capability": "research",
+      "func": "reminders_get_titles_in_list",
+      "parameters": {
+        "list_name": "Restaurant Reservations"
+      },
+      "rule": {
+        "type": "common",
+        "func": "ratio_match",
+        "parameters": [
+          [
+            "100007"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "has_exact_title",
+      "weight": 0.16,
+      "capability": "content_match",
+      "func": "new_reminders_check_reminder_exists_in_list",
+      "parameters": {
+        "title": "King's Joy:100007",
+        "list_name": "Restaurant Reservations"
+      },
+      "rule": {
+        "type": "common",
+        "func": "is_true",
+        "parameters": []
+      }
+    },
+    {
+      "name": "due_year",
+      "weight": 0.17,
+      "capability": "content_match",
+      "func": "reminders_get_due_year",
+      "parameters": {
+        "reminder_name": "King's Joy:100007",
+        "list_name": "Restaurant Reservations"
+      },
+      "rule": {
+        "type": "common",
+        "func": "exact_match",
+        "parameters": [
+          2100
+        ]
+      }
+    }
+  ]
+}
